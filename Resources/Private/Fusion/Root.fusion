@@ -1,0 +1,6 @@
+# you need to include ALL packages you want to use here, there is no AutoInclude!
+include: resource://Neos.Fusion/Private/Fusion/Root.fusion
+include: resource://Neos.Fusion.Form/Private/Fusion/Root.fusion
+
+# include all files in here
+include: **/*.fusion

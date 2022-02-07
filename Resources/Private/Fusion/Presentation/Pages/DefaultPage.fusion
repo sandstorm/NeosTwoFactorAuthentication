@@ -1,0 +1,21 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage) < prototype(Sandstorm.NeosTwoFactorAuthentication:Page.AbstractPage) {
+    head {
+        headTags = Neos.Fusion:Component {
+            renderer = afx`
+                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+                <meta http-equiv="x-ua-compatible" content="ie=edge"/>
+            `
+        }
+        stylesheets {
+            app = afx`
+                <link rel="stylesheet" type="text/css" href="..."/>
+            `
+        }
+
+    }
+    body = Your.Package:BodyLayout.Default {
+        javascripts.app = afx`
+            <script src="..."></script>
+        `
+    }
+}

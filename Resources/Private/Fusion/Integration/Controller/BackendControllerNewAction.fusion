@@ -1,0 +1,32 @@
+Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoFactorAuthentication:Page.AbstractPage {
+    body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
+        teaserTitle = ${I18n.id('module.new.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+        teaserText = ${I18n.id('module.new.description').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+
+        content = Neos.Fusion:Component {
+            renderer = afx`
+            <Neos.Fusion.Form:Form form.target.action="create"}>
+                <Neos.Fusion.Form:Hidden field.name="secret" field.value={secret}/>
+
+                <div class="neos-span6">
+                    <img src={qrCode}/>
+                </div>
+
+                <Neos.Fusion.Form:Input
+                    field.name="secondFactorFromApp"
+                    attributes.required="required"
+                    attributes.id="secondFactorFromApp"
+                    attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                    attributes.class="neos-span5"
+                    attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                    attributes.autocomplete="off"
+                />
+
+                <Neos.Fusion.Form:Button>
+                    {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+                </Neos.Fusion.Form:Button>
+            </Neos.Fusion.Form:Form>
+            `
+        }
+    }
+}

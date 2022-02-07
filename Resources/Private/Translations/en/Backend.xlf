@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+	<file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext">
+		<body>
+			<trans-unit id="module.label" xml:space="preserve">
+				<source>Two Factor Authentication</source>
+			</trans-unit>
+
+			<trans-unit id="module.description" xml:space="preserve">
+                <source>TODO: description</source>
+            </trans-unit>
+
+            <trans-unit id="module.index.title" xml:space="preserve">
+                <source>List of all registered second factors</source>
+            </trans-unit>
+
+            <trans-unit id="module.new.title" xml:space="preserve">
+                <source>Register new second factor</source>
+            </trans-unit>
+            <trans-unit id="module.new.description" xml:space="preserve">
+                <source>To register a new second factor, scan the QR code with any TOTP app and enter the code</source>
+            </trans-unit>
+            <trans-unit id="module.new.description" xml:space="preserve">
+                <source>To register a new second factor, scan the QR code with any TOTP app and enter the code</source>
+            </trans-unit>
+            <trans-unit id="module.new.submit-otp" xml:space="preserve">
+                <source>Register new OTP</source>
+            </trans-unit>
+		</body>
+	</file>
+</xliff>

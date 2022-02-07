@@ -1,0 +1,11 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.Footer) < prototype(Neos.Fusion:Component) {
+    primaryAction = ''
+
+    renderer = afx`
+        <div class="neos-footer">
+            <a class="neos-button neos-button-primary" href={props.primaryAction}>
+                Create Second Factor
+            </a>
+        </div>
+    `
+}

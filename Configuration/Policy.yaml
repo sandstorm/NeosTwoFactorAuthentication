@@ -5,9 +5,18 @@ privilegeTargets:
     'Sandstorm.NeosTwoFactorAuthentication:BackendLogin':
       matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\LoginController->(.*)Action())'
 
+    'Sandstorm.NeosTwoFactorAuthentication:BackendModule':
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\BackendController->(.*)Action())'
+
 roles:
   'Neos.Flow:Everybody':
     privileges:
       -
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendLogin'
+        permission: GRANT
+
+  'Neos.Neos:Administrator':
+    privileges:
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
         permission: GRANT

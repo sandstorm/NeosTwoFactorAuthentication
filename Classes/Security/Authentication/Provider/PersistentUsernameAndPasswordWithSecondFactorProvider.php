@@ -2,13 +2,13 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider;
 
+use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Authentication\Provider\PersistedUsernamePasswordProvider;
 use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Error\SecondFactorRequiredException;
 use Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor;
-use Neos\Flow\Annotations as Flow;
 
 class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUsernamePasswordProvider
 {

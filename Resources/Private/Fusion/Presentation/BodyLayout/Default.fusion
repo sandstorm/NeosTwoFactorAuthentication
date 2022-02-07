@@ -1,0 +1,21 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default) < prototype(Neos.Fusion:Component) {
+    content = ''
+    teaserTitle = ''
+    teaserText = ''
+
+    footer = ''
+
+    renderer = afx`
+        <main>
+            <h1>{props.teaserTitle}</h1>
+
+            <h3>{props.teaserText}</h3>
+
+            {props.content}
+        </main>
+
+        <footer>
+            {props.footer}
+        </footer>
+    `
+}

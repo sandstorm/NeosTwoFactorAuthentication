@@ -3,6 +3,21 @@ Neos:
     fusion:
       autoInclude:
         'Sandstorm.NeosTwoFactorAuthentication': true
+    modules:
+      management:
+        submodules:
+          twoFactorAuthentication:
+            controller: 'Sandstorm\NeosTwoFactorAuthentication\Controller\BackendController'
+            label: 'Sandstorm.NeosTwoFactorAuthentication:Backend:module.label'
+            description: 'Sandstorm.NeosTwoFactorAuthentication:Backend:module.description'
+            icon: 'fas fa-lock'
+
+    userInterface:
+      translation:
+        autoInclude:
+          'Sandstorm.NeosTwoFactorAuthentication':
+            - '*'
+
   Flow:
     http:
       middlewares:
@@ -10,8 +25,7 @@ Neos:
           middleware: 'Sandstorm\NeosTwoFactorAuthentication\Http\Middleware\SecondFactorRedirectMiddleware'
     mvc:
       routes:
-        'Sandstorm.NeosTwoFactorAuthentication':
-          position: 'after Neos.Neos'
+        'Sandstorm.NeosTwoFactorAuthentication': true
 
     security:
       authentication:

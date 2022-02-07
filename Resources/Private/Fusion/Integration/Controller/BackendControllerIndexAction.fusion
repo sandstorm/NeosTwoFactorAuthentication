@@ -1,0 +1,21 @@
+Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTwoFactorAuthentication:Page.AbstractPage {
+    body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
+        teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+        teaserText = 'teaser text'
+        content = Neos.Fusion:Loop {
+            items = ${factors}
+            itemName = 'factor'
+            itemRenderer = Neos.Fusion:Component {
+                renderer = '#########'
+            }
+        }
+
+        footer = Sandstorm.NeosTwoFactorAuthentication:Component.Footer {
+            primaryAction = Neos.Fusion:UriBuilder {
+                package = 'Sandstorm.NeosTwoFactorAuthentication'
+                controller = 'Backend'
+                action = 'new'
+            }
+        }
+    }
+}

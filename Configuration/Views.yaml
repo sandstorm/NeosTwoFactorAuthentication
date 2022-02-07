@@ -1,0 +1,6 @@
+-
+  requestFilter: 'isPackage("Sandstorm.NeosTwoFactorAuthentication") && isController("Login") && isAction("index") && isFormat("html")'
+  viewObjectName: 'Neos\Fusion\View\FusionView'
+  options:
+    fusionPathPatterns:
+      - 'resource://Sandstorm.NeosTwoFactorAuthentication/Private/Fusion/Login'

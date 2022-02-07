@@ -1,0 +1,13 @@
+privilegeTargets:
+
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+
+    'Sandstorm.NeosTwoFactorAuthentication:BackendLogin':
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\LoginController->(.*)Action())'
+
+roles:
+  'Neos.Flow:Everybody':
+    privileges:
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendLogin'
+        permission: GRANT

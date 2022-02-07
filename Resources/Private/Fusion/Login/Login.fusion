@@ -1,0 +1,3 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Login) < prototype(Neos.Fusion:Component) {
+    renderer = 'login comming soon'
+}

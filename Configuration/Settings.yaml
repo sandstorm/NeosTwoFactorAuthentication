@@ -1,0 +1,21 @@
+Neos:
+  Neos:
+    fusion:
+      autoInclude:
+        'Sandstorm.NeosTwoFactorAuthentication': true
+  Flow:
+    http:
+      middlewares:
+        'secondFactorRedirectMiddleware':
+          middleware: 'Sandstorm\NeosTwoFactorAuthentication\Http\Middleware\SecondFactorRedirectMiddleware'
+    mvc:
+      routes:
+        'Sandstorm.NeosTwoFactorAuthentication':
+          position: 'after Neos.Neos'
+
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            provider: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider\PersistentUsernameAndPasswordWithSecondFactorProvider
+            token: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor

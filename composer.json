@@ -1,0 +1,18 @@
+{
+    "description": "",
+    "type": "neos-package",
+    "name": "sandstorm/neostwofactorauthentication",
+    "require": {
+        "neos/neos": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Sandstorm\\NeosTwoFactorAuthentication\\": "Classes/"
+        }
+    },
+    "extra": {
+        "neos": {
+            "package-key": "Sandstorm.NeosTwoFactorAuthentication"
+        }
+    }
+}

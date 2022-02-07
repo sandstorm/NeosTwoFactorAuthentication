@@ -1,0 +1,7 @@
+- name: 'Sandstorm Two Factor Authentication'
+  uriPattern: 'neos/two-factor-login'
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@controller': 'Login'
+    '@action': 'neosBackendLoginRedirect'
+    '@format': 'html'

@@ -17,7 +17,7 @@ class SecondFactorRedirectMiddleware implements MiddlewareInterface
             return $next->handle($request);
         } catch (SecondFactorRequiredException $exception) {
             return new Response(303, [
-                'Location' => '/neos/secondFactorLogin'
+                'Location' => '/neos/two-factor-login'
             ]);
         }
     }

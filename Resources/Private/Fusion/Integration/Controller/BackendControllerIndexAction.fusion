@@ -1,4 +1,4 @@
-Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTwoFactorAuthentication:Page.AbstractPage {
+Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
         teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
         teaserText = 'teaser text'

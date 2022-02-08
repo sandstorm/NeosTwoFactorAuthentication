@@ -3,5 +3,18 @@
   defaults:
     '@package': 'Sandstorm.NeosTwoFactorAuthentication'
     '@controller': 'Login'
-    '@action': 'neosBackendLoginRedirect'
+    '@action': 'askForSecondFactor'
     '@format': 'html'
+  httpMethods: ['GET']
+  appendExceedingArguments: true
+
+- name: 'Sandstorm Two Factor Authentication - Validation'
+  uriPattern: 'neos/two-factor-login'
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@controller': 'Authentication'
+    '@action': 'checkOtp'
+    '@format': 'html'
+  httpMethods: ['POST']
+  appendExceedingArguments: true
+

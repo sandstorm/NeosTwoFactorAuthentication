@@ -33,3 +33,29 @@ Neos:
           'Neos.Neos:Backend':
             provider: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider\PersistentUsernameAndPasswordWithSecondFactorProvider
             token: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor
+            requestPatterns:
+              'Sandstorm.NeosTwoFactorAuthentication:SecondFactor':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\AuthenticationController'
+
+#          'Sandstorm.NeosTwoFactorAuthentication:SecondFactor':
+#            label: 'Sandstorm - Neos Backend Second Factor'
+#            provider: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider\PersistentUsernameAndPasswordWithSecondFactorProvider
+#            token: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor
+#            requestPatterns:
+#              'Neos.Neos:BackendControllers':
+#                pattern: 'ControllerObjectName'
+#                patternOptions:
+#                  controllerObjectNamePattern: 'Neos\Neos\Controller\.*'
+#              'Neos.Neos:ServiceControllers':
+#                pattern: 'ControllerObjectName'
+#                patternOptions:
+#                  controllerObjectNamePattern: 'Neos\Neos\Service\.*'
+#            entryPoint: WebRedirect
+#            entryPointOptions:
+#              routeValues:
+#                '@package': Sandstorm.NeosTwoFactorAuthentication
+#                '@controller': Login
+#                '@action': askForSecondFactor
+#                '@format': html

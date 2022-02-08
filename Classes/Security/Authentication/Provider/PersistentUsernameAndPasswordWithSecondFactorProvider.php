@@ -6,9 +6,11 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Authentication\Provider\PersistedUsernamePasswordProvider;
 use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Error\SecondFactorRequiredException;
 use Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor;
+use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
 class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUsernamePasswordProvider
 {
@@ -33,15 +35,22 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
         parent::authenticate($authenticationToken);
 
         $account = $authenticationToken->getAccount();
+
         if (!$account) {
             return;
         }
 
         // second factor was submitted, in this case username and password are not submitted
         if ($authenticationToken->secondFactorWasSubmitted()) {
-            // TODO: check if second factor is correct
-            $secondFactorIsCorrect = true;
-            if ($secondFactorIsCorrect) {
+            // TODO: support multiple second factors
+            $secondFactorIsValid = false;
+            /** @var SecondFactor[] $secondFactors */
+            $secondFactors = $this->secondFactorRepository->findByAccount($account);
+            if (count($secondFactors) > 0) {
+                $secondFactorIsValid = TOTPService::checkIfOtpIsValid($secondFactors[0]->getSecret(), $authenticationToken->getSecondFactor());
+            }
+
+            if ($secondFactorIsValid) {
                 $authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
 
                 // prevent second factor form from appearing again by persisting second factor was authenticated

@@ -1,11 +1,11 @@
-Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoFactorAuthentication:Page.AbstractPage {
+Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
         teaserTitle = ${I18n.id('module.new.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
         teaserText = ${I18n.id('module.new.description').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
         content = Neos.Fusion:Component {
             renderer = afx`
-            <Neos.Fusion.Form:Form form.target.action="create"}>
+            <Neos.Fusion.Form:Form form.target.action="create">
                 <Neos.Fusion.Form:Hidden field.name="secret" field.value={secret}/>
 
                 <div class="neos-span6">

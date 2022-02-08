@@ -8,6 +8,7 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\Flow\Security\Authentication\AuthenticationManagerInterface;
 use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Fusion\View\FusionView;
 
@@ -24,27 +25,18 @@ class LoginController extends ActionController
      */
     protected $securityContext;
 
+    /**
+     * @var AuthenticationManagerInterface
+     * @Flow\Inject
+     */
+    protected $authenticationManager;
+
 
     /**
      * This action decides which tokens are already authenticated
      * and decides which is next to authenticate
      */
-    public function neosBackendLoginRedirectAction()
+    public function askForSecondFactorAction()
     {
-        die('ACTION begin');
-        $authenticatedTokens = $this->securityContext->getAuthenticationTokens();
-        if (count($authenticatedTokens) == 0) {
-            \Neos\Flow\var_dump('####################');
-            die();
-        } else {
-            \Neos\Flow\var_dump($authenticatedTokens);
-            \Neos\Flow\var_dump('MORE TOKENS!!!');
-            die();
-        }
-    }
-
-    public function secondFactorAction()
-    {
-
     }
 }

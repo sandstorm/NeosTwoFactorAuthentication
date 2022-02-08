@@ -14,7 +14,7 @@ use Neos\Flow\Annotations as Flow;
 class SecondFactor
 {
     // For apps like the google authenticator
-    const TYPE_OTP = 1;
+    const TYPE_TOTP = 1;
 
     // using the webauthn standard supported by most modern browsers
     const TYPE_PUBLIC_KEY = 2;

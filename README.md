@@ -4,6 +4,15 @@ Extend the Neos backend login to support second factors. At the moment we only s
 
 Support for WebAuthn is planed!
 
+## What this package does
+
+https://user-images.githubusercontent.com/12086990/153027757-ac715746-0575-4555-bce1-c44603747945.mov
+
+This package allows all users to register their personal TOTP token (Authenticator App). As an Administrator you are
+able to delete those token for the users again, in case they locked them self out.
+
+![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
+
 ## How we did it
 
 * We extended the `PersistedUsernamePasswordProvider` to implement the second factor logic.

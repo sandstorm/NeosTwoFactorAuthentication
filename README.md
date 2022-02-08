@@ -1,8 +1,24 @@
 # Neos Backend 2FA
 
+Extend the Neos backend login to support second factors. At the moment we only support TOTP tokens.
+
+Support for WebAuthn is planed!
+
 ## How we did it
 
-* Extended `PersistedUsernamePasswordProvider` to allow for some second factor logic
+* We extended the `PersistedUsernamePasswordProvider` to implement the second factor logic.
+* The second factor is part of the `UsernameAndPasswordWithSecondFactor`-token, which extends the `UsernameAndPassword`-token.
+* Whenever the `PersistentUsernameAndPasswordWithSecondFactorProvider` detects that the second factor is missing, it will throw a `SecondFactorRequiredException`.
+* This Exception is caught by our custom http-middleware `SecondFactorRedirectMiddleware`
+* The middleware triggers a redirect to show the second factor prompt.
+* The `Neos.Neos:Backend` gets overridden in this package to allow second factors.
+
+## When updating Neos, those part will likely crash:
+
+* the login screen for the second factor is a hard copy of the login screen from the `Neos.Neos` package
+  * just replaced the username/password form with the form for the second factor
+  * maybe has to be replaced when neos gets updated
+* hopefully the rest of this package is solid enough to survive the next mayor Neos versions ;)
 
 ## Why not ...?
 

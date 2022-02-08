@@ -2,14 +2,16 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
-use OTPHP\TOTP;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Context;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Fusion\View\FusionView;
+use Neos\Neos\Domain\Model\User;
+use Neos\Party\Domain\Service\PartyService;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto\SecondFactorDto;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
@@ -30,6 +32,12 @@ class BackendController extends AbstractModuleController
      */
     protected $securityContext;
 
+    /**
+     * @var PartyService
+     * @Flow\Inject
+     */
+    protected $partyService;
+
     protected $defaultViewObjectName = FusionView::class;
 
     /**
@@ -38,9 +46,24 @@ class BackendController extends AbstractModuleController
     public function indexAction()
     {
         $account = $this->securityContext->getAccount();
-        $factors = $this->secondFactorRepository->findByAccount($account);
 
-        $this->view->assign('factors', $factors);
+        if ($this->securityContext->hasRole('Neos.Neos:Administrator')) {
+            $factors = $this->secondFactorRepository->findAll();
+        } else {
+            $factors = $this->secondFactorRepository->findByAccount($account);
+        }
+
+        $factorsAndPerson = array_map(function ($factor) {
+            /** @var SecondFactor $factor */
+            $party = $this->partyService->getAssignedPartyOfAccount($factor->getAccount());
+            $user = null;
+            if ($party instanceof User) {
+                $user = $party;
+            }
+            return new SecondFactorDto($factor, $user);
+        }, $factors->toArray());
+
+        $this->view->assign('factorsAndPerson', $factorsAndPerson);
     }
 
     /**
@@ -89,8 +112,14 @@ class BackendController extends AbstractModuleController
      */
     public function deleteAction(SecondFactor $secondFactor)
     {
-        $this->secondFactorRepository->remove($secondFactor);
-        $this->persistenceManager->persistAll();
+        if (
+            $this->securityContext->hasRole('Neos.Neos:Administrator')
+            || $secondFactor->getAccount() === $this->securityContext->getAccount()
+        ) {
+            $this->secondFactorRepository->remove($secondFactor);
+            $this->persistenceManager->persistAll();
+        }
+
         $this->redirect('index');
     }
 }

@@ -15,6 +15,11 @@ roles:
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:LoginWithSecondFactor'
         permission: GRANT
 
+  'Neos.Neos:AbstractEditor':
+    privileges:
+      - privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
+        permission: GRANT
+
   'Neos.Neos:Administrator':
     privileges:
       -

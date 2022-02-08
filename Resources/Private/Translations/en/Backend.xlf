@@ -17,11 +17,21 @@
                 <source>Create Second Factor</source>
             </trans-unit>
 
+            <trans-unit id="module.index.delete.header" xml:space="preserve">
+                <source>Do you really want to delete the second factor?</source>
+            </trans-unit>
+            <trans-unit id="module.index.delete.text" xml:space="preserve">
+                <source>Deleting a second factor can not be undone!</source>
+            </trans-unit>
+            <trans-unit id="module.index.delete.cancel" xml:space="preserve">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="module.index.delete.confirm" xml:space="preserve">
+                <source>Delete Second Factor</source>
+            </trans-unit>
+
             <trans-unit id="module.new.title" xml:space="preserve">
                 <source>Register new second factor</source>
-            </trans-unit>
-            <trans-unit id="module.new.description" xml:space="preserve">
-                <source>To register a new second factor, scan the QR code with any TOTP app and enter the code</source>
             </trans-unit>
             <trans-unit id="module.new.description" xml:space="preserve">
                 <source>To register a new second factor, scan the QR code with any TOTP app and enter the code</source>

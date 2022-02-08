@@ -1,7 +1,5 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList) < prototype(Neos.Fusion:Component) {
-    secondFactors = ''
-
-    foo = Neos.Fusion:Loop
+    factorsAndPerson = ''
 
     renderer = afx`
         <table class="neos-table">
@@ -13,10 +11,16 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList) < pr
             </tr>
             </thead>
             <tbody>
-            <Neos.Fusion:Loop items={props.secondFactors} itemName="factor" @children="itemRenderer"
-                              iterationName="iterator">
-                <Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry factor={factor}
-                                                                                        iterator={iterator}/>
+            <Neos.Fusion:Loop
+                items={props.factorsAndPerson}
+                itemName="factorAndPerson"
+                @children="itemRenderer"
+                iterationName="iterator"
+            >
+                <Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry
+                    factorAndPerson={factorAndPerson}
+                    iterator={iterator}
+                />
             </Neos.Fusion:Loop>
             </tbody>
         </table>
@@ -24,20 +28,20 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList) < pr
 }
 
 prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry) < prototype(Neos.Fusion:Component) {
-    factor = ''
+    factorAndPerson = ''
     iterator = ''
 
     editUri = Neos.Fusion:UriBuilder {
         action = 'edit'
         arguments = Neos.Fusion:DataStructure {
-            secondFactor = ${factor}
+            secondFactor = ${factorAndPerson.secondFactor}
         }
     }
 
     renderer = afx`
         <tr>
-            <td>{props.factor.account.accountIdentifier}</td>
-            <td>{props.factor.typeAsName}</td>
+            <td>{props.factorAndPerson.user.name.fullName} ({props.factorAndPerson.secondFactor.account.accountIdentifier})</td>
+            <td>{props.factorAndPerson.secondFactor.typeAsName}</td>
             <td>
                 <button class="neos-button neos-button-danger" data-toggle="modal"
                         href={'#user-' + props.iterator.index} title="todo" data-neos-toggle="tooltip">
@@ -50,21 +54,23 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry
                             <div class="neos-modal-header">
                                 <button type="button" class="neos-close neos-button" data-dismiss="modal"></button>
                                 <div class="neos-header">
-                                    HEADER
+                                    {I18n.id('module.index.delete.header').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                                 </div>
                                 <div>
                                     <div class="neos-subheader">
                                         <p>
-                                            SUBHEADER
+                                            {I18n.id('module.index.delete.text').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                                         </p>
                                     </div>
                                 </div>
                             </div>
                             <div class="neos-modal-footer">
-                                <a href="#" class="neos-button" data-dismiss="modal">CANCEL</a>
-                                <Neos.Fusion.Form:Form form.target.action="delete" attributes.class="neos-inline" form.target.arguments={{secondFactor: props.factor}}>
+                                <a href="#" class="neos-button" data-dismiss="modal">
+                                    {I18n.id('module.index.delete.cancel').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+                                </a>
+                                <Neos.Fusion.Form:Form form.target.action="delete" attributes.class="neos-inline" form.target.arguments={{secondFactor: props.factorAndPerson.secondFactor}}>
                                     <Neos.Fusion.Form:Button attributes.class="neos-button neos-button-danger">
-                                        CONFIRM DELETION
+                                        {I18n.id('module.index.delete.confirm').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                                     </Neos.Fusion.Form:Button>
                                 </Neos.Fusion.Form:Form>
                             </div>

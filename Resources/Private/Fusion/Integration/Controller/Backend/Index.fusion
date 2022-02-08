@@ -3,7 +3,7 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTw
         teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
         content = Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList {
-            secondFactors = ${factors}
+            factorsAndPerson = ${factorsAndPerson}
         }
 
         footer = Sandstorm.NeosTwoFactorAuthentication:Component.Footer {

@@ -1,4 +1,11 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep) < prototype(Neos.Fusion:Component) {
+    severityMapping = Neos.Fusion:DataStructure {
+        OK = 'success'
+        Notice = 'notice'
+        Warning = 'warning'
+        Error = 'error'
+    }
+
     renderer = afx`
         <Neos.Fusion.Form:Form form.target.action="checkOtp" form.target.controller="Authentication">
             <Neos.Fusion.Form:Input
@@ -16,6 +23,18 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep)
                     Submit
                 </Neos.Fusion.Form:Button>
             </div>
+
+            <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
+                <div class={'neos-tooltip neos-bottom neos-in neos-tooltip-' + props.severityMapping[flashMessage.severity]}>
+                    <script @if.error={flashMessage.severity == 'Error'}>
+                        {"document.querySelector('fieldset').classList.add('effect--shake');"}
+                    </script>
+                    <div class="neos-tooltip-arrow"></div>
+                    <div class="neos-tooltip-inner" role="alert">
+                        {I18n.id('flashMessage.' + flashMessage.code).value(flashMessage).package('Neos.Neos').source('Main')}
+                    </div>
+                </div>
+            </Neos.Fusion:Loop>
         </Neos.Fusion.Form:Form>
     `
 }

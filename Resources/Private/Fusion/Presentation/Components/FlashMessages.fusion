@@ -1,0 +1,11 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.FlashMessages) < prototype(Neos.Fusion:Component) {
+    flashMessages = ${[]}
+
+    renderer = afx`
+        <ul id="neos-notifications-inline">
+            <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
+                <li data-type={String.toLowerCase(props.flashMessage.severity)}>{flashMessage}</li>
+            </Neos.Fusion:Loop>
+        </ul>
+    `
+}

@@ -3,10 +3,13 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default) < prototype(
     teaserTitle = ''
     teaserText = ''
 
+    flashMessages = ${[]}
+
     footer = ''
 
     renderer = afx`
         <main>
+            <Sandstorm.NeosTwoFactorAuthentication:Component.FlashMessages flashMessages={props.flashMessages}/>
             <h1>{props.teaserTitle}</h1>
 
             <h3>{props.teaserText}</h3>

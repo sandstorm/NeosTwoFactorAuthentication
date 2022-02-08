@@ -1,5 +1,7 @@
 Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
+        flashMessages = ${flashMessages}
+
         teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
         content = Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList {

@@ -29,7 +29,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.AbstractPage) < prototype(N
             {props.head}
         </head>
         <body>
-        {props.body}
+            {props.body}
         </body>
         </html>
     `

@@ -75,7 +75,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                             </h1>
 
                             <div class="neos-login-body neos">
-                                <Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep/>
+                                <Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep flashMessages={props.flashMessages}/>
                             </div>
                         </div>
                     </main>

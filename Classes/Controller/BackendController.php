@@ -4,11 +4,15 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
 use Neos\Flow\Security\Context;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Domain\Model\User;
+use Neos\Neos\Domain\Repository\DomainRepository;
+use Neos\Neos\Domain\Repository\SiteRepository;
 use Neos\Party\Domain\Service\PartyService;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto\SecondFactorDto;
@@ -38,6 +42,24 @@ class BackendController extends AbstractModuleController
      */
     protected $partyService;
 
+    /**
+     * @var DomainRepository
+     * @Flow\Inject
+     */
+    protected $domainRepository;
+
+    /**
+     * @Flow\Inject
+     * @var SiteRepository
+     */
+    protected $siteRepository;
+
+    /**
+     * @Flow\Inject
+     * @var FlashMessageService
+     */
+    protected $flashMessageService;
+
     protected $defaultViewObjectName = FusionView::class;
 
     /**
@@ -63,7 +85,10 @@ class BackendController extends AbstractModuleController
             return new SecondFactorDto($factor, $user);
         }, $factors->toArray());
 
-        $this->view->assign('factorsAndPerson', $factorsAndPerson);
+        $this->view->assignMultiple([
+            'factorsAndPerson' => $factorsAndPerson,
+            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+        ]);
     }
 
     /**
@@ -72,17 +97,23 @@ class BackendController extends AbstractModuleController
     public function newAction()
     {
         $otp = TOTPService::generateNewTotp();
-
         $secret = $otp->getSecret();
-        // TODO: ...&issuer=$issuer
-        // TODO: name of the site, currently just "neos"
-        $oauthData = "otpauth://totp/neos?secret=$secret";
+
+        $currentDomain = $this->domainRepository->findOneByActiveRequest();
+        $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
+        $currentSiteName = $currentSite->getName();
+
+        $userIdentifier = $this->securityContext->getAccount()->getAccountIdentifier();
+        $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&issuer=$currentSiteName";
         $qrCode = (new QRCode(new QROptions([
             'outputType' => QRCode::OUTPUT_MARKUP_SVG
         ])))->render($oauthData);
 
-        $this->view->assign('secret', $secret);
-        $this->view->assign('qrCode', $qrCode);
+        $this->view->assignMultiple([
+            'secret' => $secret,
+            'qrCode' => $qrCode,
+            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+        ]);
     }
 
     /**
@@ -93,7 +124,7 @@ class BackendController extends AbstractModuleController
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
-            $this->addFlashMessage('Submitted OTP was not correct');
+            $this->addFlashMessage('Submitted OTP was not correct', '', Message::SEVERITY_WARNING);
             $this->redirect('new');
         }
 
@@ -103,6 +134,8 @@ class BackendController extends AbstractModuleController
         $secondFactor->setType(SecondFactor::TYPE_TOTP);
         $this->secondFactorRepository->add($secondFactor);
         $this->persistenceManager->persistAll();
+
+        $this->addFlashMessage('Successfully created otp');
         $this->redirect('index');
     }
 
@@ -118,6 +151,7 @@ class BackendController extends AbstractModuleController
         ) {
             $this->secondFactorRepository->remove($secondFactor);
             $this->persistenceManager->persistAll();
+            $this->addFlashMessage('Second factor was deleted');
         }
 
         $this->redirect('index');

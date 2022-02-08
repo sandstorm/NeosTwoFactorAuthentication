@@ -2,6 +2,9 @@
     "description": "",
     "type": "neos-package",
     "name": "sandstorm/neostwofactorauthentication",
+    "license": [
+        "MIT"
+    ],
     "require": {
         "php": "^7.4 | ^8.0",
         "neos/neos": "^7.0",

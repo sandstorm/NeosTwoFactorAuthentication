@@ -90,9 +90,6 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                 </div>
 
                 <script>{"
-                                    if (document.querySelector('#username').value) {
-                                        document.querySelector('#password').focus();
-                                    }
                                     document.querySelector('form').addEventListener('submit', function() {
                                         document.querySelector('.neos-login-btn').classList.toggle('neos-hidden');
                                         document.querySelector('.neos-login-btn.neos-disabled').classList.toggle('neos-hidden');

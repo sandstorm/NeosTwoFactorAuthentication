@@ -1,0 +1,21 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep) < prototype(Neos.Fusion:Component) {
+    renderer = afx`
+        <Neos.Fusion.Form:Form form.target.action="checkOtp" form.target.controller="Authentication">
+            <Neos.Fusion.Form:Input
+                field.name="__authentication[Sandstorm][NeosTwoFactorAuthentication][Security][Authentication][Token][UsernamePasswordWithSecondFactor][secondFactor]"
+                attributes.required="required"
+                attributes.id="secondFactor"
+                attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                attributes.class="neos-span12"
+                attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                attributes.autocomplete="off"
+            />
+
+            <div class="neos-actions">
+                <Neos.Fusion.Form:Button attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn">
+                    Submit
+                </Neos.Fusion.Form:Button>
+            </div>
+        </Neos.Fusion.Form:Form>
+    `
+}

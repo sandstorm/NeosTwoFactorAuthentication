@@ -1,24 +1,6 @@
-Sandstorm.NeosTwoFactorAuthentication.LoginController.askForSecondFactor = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
-    body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
-        teaserTitle = 'Second factor'
-        content = Neos.Fusion:Component {
-            renderer = afx`
-                <Neos.Fusion.Form:Form form.target.action="checkOtp" form.target.controller="Authentication">
-                    <Neos.Fusion.Form:Input
-                        field.name="__authentication[Sandstorm][NeosTwoFactorAuthentication][Security][Authentication][Token][UsernamePasswordWithSecondFactor][secondFactor]"
-                        attributes.required="required"
-                        attributes.id="secondFactor"
-                        attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
-                        attributes.class="neos-span12"
-                        attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
-                        attributes.autocomplete="off"
-                    />
-
-                    <Neos.Fusion.Form:Button>
-                        Submit
-                    </Neos.Fusion.Form:Button>
-                </Neos.Fusion.Form:Form>
-            `
-        }
-    }
+Sandstorm.NeosTwoFactorAuthentication.LoginController.askForSecondFactor = Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage {
+    site = ${site}
+    styles = ${styles}
+    username = ${username}
+    flashMessages = ${flashMessages}
 }

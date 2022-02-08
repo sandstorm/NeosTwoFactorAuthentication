@@ -28,6 +28,7 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
 
     public function authenticate(TokenInterface $authenticationToken)
     {
+        // \Neos\Flow\Var_dump($authenticationToken);
         if (!($authenticationToken instanceof UsernameAndPasswordWithSecondFactor)) {
             throw new UnsupportedAuthenticationTokenException(sprintf('This provider cannot authenticate the given token. The token must implement %s', UsernameAndPasswordWithSecondFactor::class), 1217339840);
         }
@@ -56,6 +57,8 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
                 // prevent second factor form from appearing again by persisting second factor was authenticated
                 $authenticationToken->setAuthenticatedWithSecondFactor(true);
             } else {
+                // deny access again because second factor was invalid
+                $authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_NEEDED);
                 throw new SecondFactorRequiredException();
             }
         }

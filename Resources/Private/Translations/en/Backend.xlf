@@ -13,6 +13,9 @@
             <trans-unit id="module.index.title" xml:space="preserve">
                 <source>List of all registered second factors</source>
             </trans-unit>
+            <trans-unit id="module.index.create" xml:space="preserve">
+                <source>Create Second Factor</source>
+            </trans-unit>
 
             <trans-unit id="module.new.title" xml:space="preserve">
                 <source>Register new second factor</source>

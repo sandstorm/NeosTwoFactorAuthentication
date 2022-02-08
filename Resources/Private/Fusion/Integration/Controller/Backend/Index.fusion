@@ -1,16 +1,13 @@
 Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
         teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
-        teaserText = 'teaser text'
-        content = Neos.Fusion:Loop {
-            items = ${factors}
-            itemName = 'factor'
-            itemRenderer = Neos.Fusion:Component {
-                renderer = '#########'
-            }
+
+        content = Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList {
+            secondFactors = ${factors}
         }
 
         footer = Sandstorm.NeosTwoFactorAuthentication:Component.Footer {
+            title = ${I18n.id('module.index.create').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
             primaryAction = Neos.Fusion:UriBuilder {
                 package = 'Sandstorm.NeosTwoFactorAuthentication'
                 controller = 'Backend'

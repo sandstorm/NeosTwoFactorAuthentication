@@ -82,4 +82,15 @@ class BackendController extends AbstractModuleController
         $this->persistenceManager->persistAll();
         $this->redirect('index');
     }
+
+    /**
+     * @param SecondFactor $secondFactor
+     * @return void
+     */
+    public function deleteAction(SecondFactor $secondFactor)
+    {
+        $this->secondFactorRepository->remove($secondFactor);
+        $this->persistenceManager->persistAll();
+        $this->redirect('index');
+    }
 }

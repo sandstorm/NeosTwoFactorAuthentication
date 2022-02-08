@@ -2,6 +2,7 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain\Model;
 
+use http\Exception\InvalidArgumentException;
 use Neos\Flow\Security\Account;
 use Doctrine\ORM\Mapping as ORM;
 use Neos\Flow\Annotations as Flow;
@@ -60,6 +61,14 @@ class SecondFactor
     }
 
     /**
+     * @return string
+     */
+    public function getTypeAsName(): string
+    {
+        return self::typeToString($this->getType());
+    }
+
+    /**
      * @param int $type
      */
     public function setType(int $type): void
@@ -81,5 +90,22 @@ class SecondFactor
     public function setSecret(string $secret): void
     {
         $this->secret = $secret;
+    }
+
+    public function __toString(): string
+    {
+        return $this->account->getAccountIdentifier() . " with " . self::typeToString($this->type);
+    }
+
+    public static function typeToString(int $type): string
+    {
+        switch ($type) {
+            case self::TYPE_TOTP:
+                return 'OTP';
+            case self::TYPE_PUBLIC_KEY:
+                return 'Public Key';
+            default:
+                throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
+        }
     }
 }

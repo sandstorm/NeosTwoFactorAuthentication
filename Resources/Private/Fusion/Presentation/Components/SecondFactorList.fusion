@@ -1,0 +1,78 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList) < prototype(Neos.Fusion:Component) {
+    secondFactors = ''
+
+    foo = Neos.Fusion:Loop
+
+    renderer = afx`
+        <table class="neos-table">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <Neos.Fusion:Loop items={props.secondFactors} itemName="factor" @children="itemRenderer"
+                              iterationName="iterator">
+                <Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry factor={factor}
+                                                                                        iterator={iterator}/>
+            </Neos.Fusion:Loop>
+            </tbody>
+        </table>
+    `
+}
+
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry) < prototype(Neos.Fusion:Component) {
+    factor = ''
+    iterator = ''
+
+    editUri = Neos.Fusion:UriBuilder {
+        action = 'edit'
+        arguments = Neos.Fusion:DataStructure {
+            secondFactor = ${factor}
+        }
+    }
+
+    renderer = afx`
+        <tr>
+            <td>{props.factor.account.accountIdentifier}</td>
+            <td>{props.factor.typeAsName}</td>
+            <td>
+                <button class="neos-button neos-button-danger" data-toggle="modal"
+                        href={'#user-' + props.iterator.index} title="todo" data-neos-toggle="tooltip">
+                    <i class="fas fa-trash-alt icon-white"></i>
+                </button>
+
+                <div class="neos-hide" id={'user-' + props.iterator.index}>
+                    <div class="neos-modal-centered">
+                        <div class="neos-modal-content">
+                            <div class="neos-modal-header">
+                                <button type="button" class="neos-close neos-button" data-dismiss="modal"></button>
+                                <div class="neos-header">
+                                    HEADER
+                                </div>
+                                <div>
+                                    <div class="neos-subheader">
+                                        <p>
+                                            SUBHEADER
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="neos-modal-footer">
+                                <a href="#" class="neos-button" data-dismiss="modal">CANCEL</a>
+                                <Neos.Fusion.Form:Form form.target.action="delete" attributes.class="neos-inline" form.target.arguments={{secondFactor: props.factor}}>
+                                    <Neos.Fusion.Form:Button attributes.class="neos-button neos-button-danger">
+                                        CONFIRM DELETION
+                                    </Neos.Fusion.Form:Button>
+                                </Neos.Fusion.Form:Form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="neos-modal-backdrop neos-in"></div>
+                </div>
+            </td>
+        </tr>
+    `
+}

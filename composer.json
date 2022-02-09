@@ -7,7 +7,7 @@
     ],
     "require": {
         "php": "^7.4 | ^8.0",
-        "neos/neos": "^7.0",
+        "neos/neos": "^5.3 | ^7.0",
         "neos/fusion": "*",
         "neos/fusion-afx": "*",
         "neos/fusion-form": "*",

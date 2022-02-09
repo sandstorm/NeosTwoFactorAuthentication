@@ -3,6 +3,7 @@
 namespace Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Security\Account;
 use Neos\Flow\Security\Authentication\Provider\PersistedUsernamePasswordProvider;
 use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
@@ -43,15 +44,7 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
 
         // second factor was submitted, in this case username and password are not submitted
         if ($authenticationToken->secondFactorWasSubmitted()) {
-            // TODO: support multiple second factors
-            $secondFactorIsValid = false;
-            /** @var SecondFactor[] $secondFactors */
-            $secondFactors = $this->secondFactorRepository->findByAccount($account);
-            if (count($secondFactors) > 0) {
-                $secondFactorIsValid = TOTPService::checkIfOtpIsValid($secondFactors[0]->getSecret(), $authenticationToken->getSecondFactor());
-            }
-
-            if ($secondFactorIsValid) {
+            if ($this->enteredTokenMatchesAnySecondFactor($authenticationToken->getSecondFactor(), $account)) {
                 $authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_SUCCESSFUL);
 
                 // prevent second factor form from appearing again by persisting second factor was authenticated
@@ -75,5 +68,26 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
                 throw new SecondFactorRequiredException();
             }
         }
+    }
+
+    /**
+     * Check if the given token matches any registered second factor
+     *
+     * @param string $enteredSecondFactor
+     * @param Account $account
+     * @return bool
+     */
+    protected function enteredTokenMatchesAnySecondFactor(string $enteredSecondFactor, Account $account): bool
+    {
+        /** @var SecondFactor[] $secondFactors */
+        $secondFactors = $this->secondFactorRepository->findByAccount($account);
+        foreach ($secondFactors as $secondFactor) {
+            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor);
+            if ($isValid) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

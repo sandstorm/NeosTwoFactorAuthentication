@@ -21,15 +21,15 @@ class SecondFactorDto
     /**
      * @return SecondFactor|string
      */
-    public function getSecondFactor(): SecondFactor|string
+    public function getSecondFactor(): SecondFactor
     {
         return $this->secondFactor;
     }
 
     /**
-     * @return Person|string|null
+     * @return User
      */
-    public function getUser(): string|Person|null
+    public function getUser(): User
     {
         return $this->user;
     }

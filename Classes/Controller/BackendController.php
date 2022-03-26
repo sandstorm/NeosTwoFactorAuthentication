@@ -102,9 +102,10 @@ class BackendController extends AbstractModuleController
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
         $currentSiteName = $currentSite->getName();
+        $urlEncodedSiteName = urlencode($currentSiteName);
 
         $userIdentifier = $this->securityContext->getAccount()->getAccountIdentifier();
-        $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&issuer=$currentSiteName";
+        $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&period=30&issuer=$urlEncodedSiteName";
         $qrCode = (new QRCode(new QROptions([
             'outputType' => QRCode::OUTPUT_MARKUP_SVG
         ])))->render($oauthData);

@@ -20,7 +20,8 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 **iOS**:
 * Google Authenticator (used for development) ✅
 * Authy ✅
-* Microsoft Authenticator ❌
+* Microsoft Authenticator ✅
+* 1Password ✅
 
 **Android**:
 * Google Authenticator ✅

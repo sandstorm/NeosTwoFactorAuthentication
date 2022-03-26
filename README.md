@@ -13,6 +13,20 @@ able to delete those token for the users again, in case they locked them self ou
 
 ![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
 
+## Tested 2FA apps
+
+Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
+
+**iOS**:
+* Google Authenticator (used for development) ✅
+* Authy ✅
+* Microsoft Authenticator ❌
+
+**Android**:
+* Google Authenticator ✅
+* Microsoft Authenticator ✅
+* Authy ✅
+
 ## How we did it
 
 * We extended the `PersistedUsernamePasswordProvider` to implement the second factor logic.

@@ -7,7 +7,7 @@
     ],
     "require": {
         "php": "^7.4 | ^8.0",
-        "neos/neos": "^5.3 | ^7.0",
+        "neos/neos": "^5.3 | ^7.0 | ^8.0",
         "neos/fusion": "*",
         "neos/fusion-afx": "*",
         "neos/fusion-form": "*",
@@ -22,6 +22,25 @@
     "extra": {
         "neos": {
             "package-key": "Sandstorm.NeosTwoFactorAuthentication"
-        }
+        },
+        "applied-flow-migrations": [
+            "Neos.Twitter.Bootstrap-20161124204912",
+            "Neos.Party-20161124225257",
+            "Neos.Imagine-20161124231742",
+            "Neos.Seo-20170127154600",
+            "Neos.Flow-20180415105700",
+            "Neos.Neos-20180907103800",
+            "Neos.Neos.Ui-20190319094900",
+            "Neos.Flow-20190425144900",
+            "Neos.Flow-20190515215000",
+            "Neos.Flow-20200813181400",
+            "Neos.Flow-20201003165200",
+            "Neos.Flow-20201109224100",
+            "Neos.Flow-20201205172733",
+            "Neos.Flow-20201207104500",
+            "Neos.Neos-20220318111600",
+            "Neos.Flow-20220318174300",
+            "Neos.Fusion-20220326120900"
+        ]
     }
 }

@@ -14,6 +14,7 @@ class AuthenticationController extends ActionController
     /**
      * trigger authentication again after user submitted second factor
      * @Flow\SkipCsrfProtection
+     * @Flow\Session(autoStart=true)
      */
     public function checkOtpAction()
     {

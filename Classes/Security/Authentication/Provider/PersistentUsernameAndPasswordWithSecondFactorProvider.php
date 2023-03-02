@@ -9,6 +9,7 @@ use Neos\Flow\Security\Authentication\TokenInterface;
 use Neos\Flow\Security\Exception\UnsupportedAuthenticationTokenException;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Error\SecondFactorEnforcedSetupException;
 use Sandstorm\NeosTwoFactorAuthentication\Error\SecondFactorRequiredException;
 use Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
@@ -22,6 +23,12 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
      */
     protected SecondFactorRepository $secondFactorRepository;
 
+    /**
+     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthentication")
+     * @var bool
+     */
+    protected $enforceTwoFactorAuthentication;
+
     public function getTokenClassNames()
     {
         return [UsernameAndPasswordWithSecondFactor::class];
@@ -29,7 +36,6 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
 
     public function authenticate(TokenInterface $authenticationToken)
     {
-        // \Neos\Flow\Var_dump($authenticationToken);
         if (!($authenticationToken instanceof UsernameAndPasswordWithSecondFactor)) {
             throw new UnsupportedAuthenticationTokenException(sprintf('This provider cannot authenticate the given token. The token must implement %s', UsernameAndPasswordWithSecondFactor::class), 1217339840);
         }
@@ -61,6 +67,14 @@ class PersistentUsernameAndPasswordWithSecondFactorProvider extends PersistedUse
         }
 
         if ($authenticationToken->getAuthenticationStatus() === TokenInterface::AUTHENTICATION_SUCCESSFUL) {
+            # if 2fa enforced && 2fa not set up (!isEnabledForAccount)
+            # redirect to 2fa setup
+            if ($this->enforceTwoFactorAuthentication && !$this->secondFactorRepository->isEnabledForAccount($account)) {
+                // This exception gets caught inside the {@see SecondFactorRedirectMiddleware}
+                // which leads to redirect to 2fa setup view in backend controller
+                throw new SecondFactorEnforcedSetupException();
+            }
+
             if ($this->secondFactorRepository->isEnabledForAccount($account) && !$authenticationToken->isAuthenticatedWithSecondFactor()) {
                 // deny access again because second factor is required
                 $authenticationToken->setAuthenticationStatus(TokenInterface::AUTHENTICATION_NEEDED);

@@ -8,6 +8,7 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Mvc\Controller\ActionController;
@@ -17,6 +18,8 @@ use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
@@ -56,6 +59,12 @@ class LoginController extends ActionController
      * @var FlashMessageService
      */
     protected $flashMessageService;
+
+    /**
+     * @var SecondFactorRepository
+     * @Flow\Inject
+     */
+    protected $secondFactorRepository;
 
     /**
      * This action decides which tokens are already authenticated
@@ -107,9 +116,38 @@ class LoginController extends ActionController
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
             'username' => $username,
             'site' => $currentSite,
+            'secret' => $secret,
             'qrCode' => $qrCode,
             'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
         ]);
+    }
+
+    public function createSecondFactorAction(string $secret, string $secondFactorFromApp)
+    {
+        // TODO: validate Token
+        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
+
+        if (!$isValid) {
+            $this->addFlashMessage('Submitted OTP was not correct', '', Message::SEVERITY_WARNING);
+            $this->redirect('setupSecondFactor');
+        }
+
+        $secondFactorAuthenticationTokens = $this->securityContext->getAuthenticationTokensOfType(UsernameAndPasswordWithSecondFactor::class);
+        // TODO: error if empty
+        // TODO: check token status (is authentication successful)
+
+        $account = $secondFactorAuthenticationTokens[0]->getAccount();
+
+        $secondFactor = new SecondFactor();
+        $secondFactor->setAccount($account);
+        $secondFactor->setSecret($secret);
+        $secondFactor->setType(SecondFactor::TYPE_TOTP);
+        $this->secondFactorRepository->add($secondFactor);
+        $this->persistenceManager->persistAll();
+
+        $this->addFlashMessage('Successfully created otp');
+        // TODO: login because 2fa is set up with valid otp or force relogin with new otp
+        $this->redirect('index');
     }
 
     /**

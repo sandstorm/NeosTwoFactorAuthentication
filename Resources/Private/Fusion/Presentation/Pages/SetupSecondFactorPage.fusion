@@ -42,7 +42,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                     <title>{I18n.translate('login.index.title', 'Login to')} {props.site.name}</title>
                     <Neos.Fusion:Loop items={props.styles}>
                         <link rel="stylesheet" @children="attributes.href">
-                        <Neos.Fusion:ResourceUri path={item}/>
+                            <Neos.Fusion:ResourceUri path={item}/>
                         </link>
                     </Neos.Fusion:Loop>
 
@@ -60,47 +60,70 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                     </style>
                 </head>
                 <body class={["neos", props.backgroundImageSource ? 'neos--bg' : null]} style="">
-                <img @if.set={props.backgroundImageSourceIsWebp} style="display: none" src="data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA" onload="document.documentElement.classList.add('webp')" onerror="document.documentElement.classList.add('no-webp')"/>
-                <div class="neos-modal-centered">
-                    <main class="neos-login-main">
-                        <div class={['neos-login-box', props.backgroundImageSource ? 'background-image-active' : null]}>
-                            <figure class="neos-login-box-logo">
-                                <img class="neos-login-box-logo-resource" @children="attributes.src" width="200px" height="200px" alt="Neos Logo">
-                                <Neos.Fusion:ResourceUri path="resource://Neos.Neos/Public/Images/Login/Logo.svg" />
-                                </img>
-                            </figure>
+                    <img @if.set={props.backgroundImageSourceIsWebp} style="display: none" src="data:image/webp;base64,UklGRiIAAABXRUJQVlA4IBYAAAAwAQCdASoBAAEADsD+JaQAA3AAAAAA" onload="document.documentElement.classList.add('webp')" onerror="document.documentElement.classList.add('no-webp')"/>
+                    <div class="neos-modal-centered">
+                        <main class="neos-login-main">
+                            <div class={['neos-login-box', props.backgroundImageSource ? 'background-image-active' : null]}>
+                                <figure class="neos-login-box-logo">
+                                    <img class="neos-login-box-logo-resource" @children="attributes.src" width="200px" height="200px" alt="Neos Logo">
+                                        <Neos.Fusion:ResourceUri path="resource://Neos.Neos/Public/Images/Login/Logo.svg" />
+                                    </img>
+                                </figure>
 
-                            <h1 class="neos-login-heading">
-                                {I18n.id('login.index.title').value('Login to').package('Neos.Neos').source('Main')} <strong>{site.name}</strong>
-                            </h1>
+                                <h1 class="neos-login-heading">
+                                    {I18n.id('login.index.title').value('Login to').package('Neos.Neos').source('Main')} <strong>{site.name}</strong>
+                                </h1>
 
-                            <div class="neos-login-body neos">
-                                <Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep flashMessages={props.flashMessages}/>
-                                <div class="neos-control-group">
-                                    <img src={qrCode} style="width: 100%; max-width: 400px"/>
+                                <div class="neos-login-body neos">
+                                    <Sandstorm.NeosTwoFactorAuthentication:Component.FlashMessages flashMessages={props.flashMessages} />
+                                    <Neos.Fusion.Form:Form form.target.action="createSecondFactor">
+                                        <Neos.Fusion.Form:Hidden field.name="secret" field.value={secret}/>
+
+                                        <div class="neos-control-group">
+                                            <img src={qrCode} style="width: 100%; max-width: 400px"/>
+                                        </div>
+
+                                        <div class="neos-control-group">
+                                            <Neos.Fusion.Form:Input
+                                                field.name="secondFactorFromApp"
+                                                attributes.required="required"
+                                                attributes.id="secondFactorFromApp"
+                                                attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                                attributes.class="neos-span5"
+                                                attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                                attributes.autocomplete="off"
+                                            />
+                                        </div>
+
+                                        <div class="neos-control-group">
+                                            <Neos.Fusion.Form:Button>
+                                                {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+                                            </Neos.Fusion.Form:Button>
+                                        </div>
+                                    </Neos.Fusion.Form:Form>
                                 </div>
                             </div>
-                        </div>
-                    </main>
-                    <footer class="neos-login-footer">
-                        <p>
-                            <a href="http://neos.io" target="_blank">Neos</a> –&nbsp;
-                            © 2006-{Date.format('now', 'Y')} This is free software, licensed under GPL3 or higher, and you are welcome to redistribute it under certain conditions;&nbsp;
-                            Neos comes with ABSOLUTELY NO WARRANTY;&nbsp;
-                            See <a href="http://neos.io" target="_blank">neos.io</a> for more details. Obstructing the appearance of this notice is prohibited by law.
-                        </p>
-                    </footer>
-                </div>
+                        </main>
+                        <footer class="neos-login-footer">
+                            <p>
+                                <a href="http://neos.io" target="_blank">Neos</a> –&nbsp;
+                                © 2006-{Date.format('now', 'Y')} This is free software, licensed under GPL3 or higher, and you are welcome to redistribute it under certain conditions;&nbsp;
+                                Neos comes with ABSOLUTELY NO WARRANTY;&nbsp;
+                                See <a href="http://neos.io" target="_blank">neos.io</a> for more details. Obstructing the appearance of this notice is prohibited by law.
+                            </p>
+                        </footer>
+                    </div>
 
-                <script>{"
-                                    document.querySelector('form').addEventListener('submit', function() {
-                                        document.querySelector('.neos-login-btn').classList.toggle('neos-hidden');
-                                        document.querySelector('.neos-login-btn.neos-disabled').classList.toggle('neos-hidden');
-                                    });
-                                    try {
-                                        document.querySelector('form[name=\"login\"] input[name=\"lastVisitedNode\"]').value = sessionStorage.getItem('Neos.Neos.lastVisitedNode');
-                                    } catch(e) {}
-                                "}</script>
+                    <script>{"
+                        document.querySelector('form').addEventListener('submit', function() {
+                            document.querySelector('.neos-login-btn').classList.toggle('neos-hidden');
+                            document.querySelector('.neos-login-btn.neos-disabled').classList.toggle('neos-hidden');
+                        });
+                        try {
+                            document.querySelector('form[name=\"login\"] input[name=\"lastVisitedNode\"]').value = sessionStorage.getItem('Neos.Neos.lastVisitedNode');
+                        } catch(e) {}
+                    "}
+                    </script>
                 </body>
                 </html>
             `

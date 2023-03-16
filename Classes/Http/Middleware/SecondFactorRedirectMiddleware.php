@@ -22,7 +22,7 @@ class SecondFactorRedirectMiddleware implements MiddlewareInterface
             ]);
         } catch (SecondFactorEnforcedSetupException $exception) {
             return new Response(303, [
-                'Location' => '/neos/setup-two-factor-login'
+                'Location' => '/neos/setup-second-factor'
             ]);
         }
     }

@@ -122,6 +122,13 @@ class LoginController extends ActionController
         ]);
     }
 
+    /**
+     * TODO: extract this to separate function, currently duplicated from BackendController
+     *
+     * @param string $secret
+     * @param string $secondFactorFromApp
+     * @return void
+     */
     public function createSecondFactorAction(string $secret, string $secondFactorFromApp)
     {
         // TODO: validate Token
@@ -146,8 +153,8 @@ class LoginController extends ActionController
         $this->persistenceManager->persistAll();
 
         $this->addFlashMessage('Successfully created otp');
-        // TODO: login because 2fa is set up with valid otp or force relogin with new otp
-        $this->redirect('index');
+        // TODO: login because 2fa is set up with valid otp or force re-login with new otp
+        $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
     }
 
     /**

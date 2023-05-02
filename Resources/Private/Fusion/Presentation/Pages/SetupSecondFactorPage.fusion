@@ -76,7 +76,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
 
                                 <div class="neos-login-body neos">
                                     <Sandstorm.NeosTwoFactorAuthentication:Component.FlashMessages flashMessages={props.flashMessages} />
-                                    <Neos.Fusion.Form:Form form.target.action="createSecondFactor">
+                                    <Neos.Fusion.Form:Form form.target.action="setupSecondFactor">
                                         <Neos.Fusion.Form:Hidden field.name="secret" field.value={secret}/>
 
                                         <div class="neos-control-group">

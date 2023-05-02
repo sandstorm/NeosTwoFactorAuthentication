@@ -13,7 +13,7 @@
   httpMethods: ['POST']
   defaults:
     '@package': 'Sandstorm.NeosTwoFactorAuthentication'
-    '@controller': 'Authentication'
+    '@controller': 'Login'
     '@action': 'checkOtp'
     '@format': 'html'
   appendExceedingArguments: true
@@ -29,7 +29,7 @@
   appendExceedingArguments: true
 
 - name: 'Sandstorm Two Factor Authentication - Create 2FA'
-  uriPattern: 'neos/create-second-factor'
+  uriPattern: 'neos/setup-second-factor'
   defaults:
       '@package': 'Sandstorm.NeosTwoFactorAuthentication'
       '@controller': 'Login'

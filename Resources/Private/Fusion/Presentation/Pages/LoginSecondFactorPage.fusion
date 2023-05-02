@@ -42,7 +42,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                     <title>{I18n.translate('login.index.title', 'Login to')} {props.site.name}</title>
                     <Neos.Fusion:Loop items={props.styles}>
                         <link rel="stylesheet" @children="attributes.href">
-                        <Neos.Fusion:ResourceUri path={item}/>
+                            <Neos.Fusion:ResourceUri path={item}/>
                         </link>
                     </Neos.Fusion:Loop>
 

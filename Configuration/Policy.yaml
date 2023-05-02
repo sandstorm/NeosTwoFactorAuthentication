@@ -3,21 +3,19 @@ privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'Sandstorm.NeosTwoFactorAuthentication:LoginWithSecondFactor':
-      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\(Login|Authentication)Controller->(.*)Action())'
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\LoginController->(.*)Action())'
 
     'Sandstorm.NeosTwoFactorAuthentication:BackendModule':
       matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\BackendController->(.*)Action())'
 
 roles:
-  'Neos.Flow:Everybody':
+  'Neos.Neos:AbstractEditor':
     privileges:
       -
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:LoginWithSecondFactor'
         permission: GRANT
-
-  'Neos.Neos:AbstractEditor':
-    privileges:
-      - privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
         permission: GRANT
 
   'Neos.Neos:Administrator':

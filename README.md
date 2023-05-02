@@ -29,11 +29,11 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 * Authy ✅
 
 ## How we did it
-
+> TODO: Reflect re-implementation in docs!
 * We extended the `PersistedUsernamePasswordProvider` to implement the second factor logic.
 * The second factor is part of the `UsernameAndPasswordWithSecondFactor`-token, which extends the `UsernameAndPassword`-token.
 * Whenever the `PersistentUsernameAndPasswordWithSecondFactorProvider` detects that the second factor is missing, it will throw a `SecondFactorRequiredException`.
-* This Exception is caught by our custom http-middleware `SecondFactorRedirectMiddleware`
+* This Exception is caught by our custom http-middleware `SecondFactorMiddleware`
 * The middleware triggers a redirect to show the second factor prompt.
 * The `Neos.Neos:Backend` gets overridden in this package to allow second factors.
 

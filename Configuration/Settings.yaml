@@ -22,7 +22,7 @@ Neos:
     http:
       middlewares:
         'secondFactorRedirectMiddleware':
-          middleware: 'Sandstorm\NeosTwoFactorAuthentication\Http\Middleware\SecondFactorRedirectMiddleware'
+          middleware: 'Sandstorm\NeosTwoFactorAuthentication\Http\Middleware\SecondFactorMiddleware'
     mvc:
       routes:
         'Sandstorm.NeosTwoFactorAuthentication': true
@@ -31,34 +31,11 @@ Neos:
       authentication:
         providers:
           'Neos.Neos:Backend':
-            provider: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider\PersistentUsernameAndPasswordWithSecondFactorProvider
-            token: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor
             requestPatterns:
               'Sandstorm.NeosTwoFactorAuthentication:SecondFactor':
                 pattern: 'ControllerObjectName'
                 patternOptions:
-                  controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(AuthenticationController|LoginController)'
-
-#          'Sandstorm.NeosTwoFactorAuthentication:SecondFactor':
-#            label: 'Sandstorm - Neos Backend Second Factor'
-#            provider: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Provider\PersistentUsernameAndPasswordWithSecondFactorProvider
-#            token: Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\Token\UsernameAndPasswordWithSecondFactor
-#            requestPatterns:
-#              'Neos.Neos:BackendControllers':
-#                pattern: 'ControllerObjectName'
-#                patternOptions:
-#                  controllerObjectNamePattern: 'Neos\Neos\Controller\.*'
-#              'Neos.Neos:ServiceControllers':
-#                pattern: 'ControllerObjectName'
-#                patternOptions:
-#                  controllerObjectNamePattern: 'Neos\Neos\Service\.*'
-#            entryPoint: WebRedirect
-#            entryPointOptions:
-#              routeValues:
-#                '@package': Sandstorm.NeosTwoFactorAuthentication
-#                '@controller': Login
-#                '@action': askForSecondFactor
-#                '@format': html
+                  controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(AuthenticationController|LoginController|BackendController)'
 
 Sandstorm:
     NeosTwoFactorAuthentication:

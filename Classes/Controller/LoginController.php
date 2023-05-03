@@ -11,17 +11,21 @@ use chillerlan\QRCode\QROptions;
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException;
 use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
+use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Security\Account;
 use Neos\Flow\Security\Context as SecurityContext;
-use Neos\Flow\Session\SessionManagerInterface;
+use Neos\Flow\Session\Exception\SessionNotStartedException;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
-use Sandstorm\NeosTwoFactorAuthentication\Http\Middleware\SecondFactorMiddleware;
+use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
 class LoginController extends ActionController
@@ -62,10 +66,10 @@ class LoginController extends ActionController
     protected $secondFactorRepository;
 
     /**
-     * @Flow\Inject(lazy=false)
-     * @var SessionManagerInterface
+     * @Flow\Inject
+     * @var SecondFactorSessionStorageService
      */
-    protected $sessionManager;
+    protected $secondFactorSessionStorageService;
 
     /**
      * This action decides which tokens are already authenticated
@@ -84,29 +88,30 @@ class LoginController extends ActionController
             'site' => $currentSite,
             'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
         ]);
-
-        // TODO: should we safe redirect to original request?
     }
 
+    /**
+     * @throws StopActionException
+     * @throws SessionNotStartedException
+     */
     public function checkOtpAction(string $otp)
     {
         $account = $this->securityContext->getAccount();
 
         $isValidOtp = $this->enteredTokenMatchesAnySecondFactor($otp, $account);
 
-        // WHY: We need to check the OTP here and set the authentication status on the Session Object of 2FA package
-        // see Sandstorm/NeosTwoFactor
         if ($isValidOtp) {
-            $this->sessionManager->getCurrentSession()->putData(
-                SecondFactorMiddleware::SESSION_OBJECT_ID,
-                [SecondFactorMiddleware::SESSION_OBJECT_AUTH_STATUS => SecondFactorMiddleware::SECOND_FACTOR_AUTHENTICATED]
-            );
+            $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
         } else {
             // FIXME: not visible in View!
-            $this->addFlashMessage('Invalid otp!', 'Error', Message::SEVERITY_ERROR);
+            $this->addFlashMessage('Invalid OTP!', 'Error', Message::SEVERITY_ERROR);
         }
 
-        // TODO: should we safe redirect to original request?
+        $originalRequest = $this->securityContext->getInterceptedRequest();
+        if ($originalRequest !== null) {
+            $this->redirectToRequest($originalRequest);
+        }
+
         $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
     }
 
@@ -165,13 +170,14 @@ class LoginController extends ActionController
     }
 
     /**
-     * TODO: extract this to separate function, currently duplicated from BackendController
-     *
      * @param string $secret
      * @param string $secondFactorFromApp
      * @return void
+     * @throws IllegalObjectTypeException
+     * @throws SessionNotStartedException
+     * @throws StopActionException
      */
-    public function createSecondFactorAction(string $secret, string $secondFactorFromApp)
+    public function createSecondFactorAction(string $secret, string $secondFactorFromApp): void
     {
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
@@ -179,6 +185,8 @@ class LoginController extends ActionController
             $this->addFlashMessage('Submitted OTP was not correct', '', Message::SEVERITY_WARNING);
             $this->redirect('setupSecondFactor');
         }
+
+        // TODO: extract this to separate function, currently duplicated from BackendController
 
         $account = $this->securityContext->getAccount();
 
@@ -191,18 +199,19 @@ class LoginController extends ActionController
 
         $this->addFlashMessage('Successfully created otp');
 
-        // TODO: Discuss: we could skip this to force the user to enter a otp again directly after setup
-        $this->sessionManager->getCurrentSession()->putData(
-            SecondFactorMiddleware::SESSION_OBJECT_ID,
-            [SecondFactorMiddleware::SESSION_OBJECT_AUTH_STATUS => SecondFactorMiddleware::SECOND_FACTOR_AUTHENTICATED]
-        );
+        $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 
-        // TODO: should we safe redirect to original request?
+        $originalRequest = $this->securityContext->getInterceptedRequest();
+        if ($originalRequest !== null) {
+            $this->redirectToRequest($originalRequest);
+        }
+
         $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
     }
 
     /**
      * @return array
+     * @throws InvalidConfigurationTypeException
      */
     protected function getNeosSettings(): array
     {

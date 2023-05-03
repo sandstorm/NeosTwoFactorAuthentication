@@ -3,42 +3,54 @@
 namespace Sandstorm\NeosTwoFactorAuthentication\Http\Middleware;
 
 use GuzzleHttp\Psr7\Response;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Http\ServerRequestAttributes;
+use Neos\Flow\Mvc\ActionRequestFactory;
 use Neos\Flow\Security\Context as SecurityContext;
-use Neos\Flow\Session\SessionManagerInterface;
+use Neos\Flow\Security\Exception\AuthenticationRequiredException;
+use Neos\Flow\Session\Exception\SessionNotStartedException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
-use Neos\Flow\Annotations as Flow;
+use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 
 class SecondFactorMiddleware implements MiddlewareInterface
 {
-    const SESSION_OBJECT_ID = 'Sandstorm/NeosTwoFactorAuthentication';
-    const SESSION_OBJECT_AUTH_STATUS = 'authenticationStatus';
-
-    const SECOND_FACTOR_AUTHENTICATION_NEEDED = 'SECOND_FACTOR_AUTHENTICATION_NEEDED';
-    const SECOND_FACTOR_AUTHENTICATED = 'SECOND_FACTOR_AUTHENTICATED';
+    const LOGGING_PREFIX = 'Sandstorm/NeosTwoFactorAuthentication: ';
 
     /**
-     * TODO: Why lazy false?
-     * @Flow\Inject(lazy=false)
-     * @var SessionManagerInterface
-     */
-    protected $sessionManager;
-
-    /**
-     * @Flow\Inject(lazy=false)
+     * @Flow\Inject
      * @var SecurityContext
      */
     protected $securityContext;
 
     /**
-     * @Flow\Inject(lazy=false)
+     * @Flow\Inject
      * @var SecondFactorRepository
      */
     protected $secondFactorRepository;
+
+    /**
+     * @Flow\Inject
+     * @var ActionRequestFactory
+     */
+    protected $actionRequestFactory;
+
+    /**
+     * @Flow\Inject(name="Neos.Flow:SecurityLogger")
+     * @var LoggerInterface
+     */
+    protected $securityLogger;
+
+    /**
+     * @Flow\Inject
+     * @var SecondFactorSessionStorageService
+     */
+     protected $secondFactorSessionStorageService;
 
     /**
      * @Flow\InjectConfiguration(path="enforceTwoFactorAuthentication")
@@ -47,20 +59,18 @@ class SecondFactorMiddleware implements MiddlewareInterface
     protected $enforceTwoFactorAuthentication;
 
     /**
-     * @Flow\Inject(name="Neos.Flow:SecurityLogger")
-     * @var LoggerInterface
+     * TODO: Document checks that are done in order (because the order matters here)!
+     * @throws AuthenticationRequiredException
+     * @throws SessionNotStartedException
      */
-    protected $securityLogger;
-
-    // TODO: break up into smaller functions to remove complexity
     public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $authenticationTokens = $this->securityContext->getAuthenticationTokens();
 
         if (empty($authenticationTokens)) {
-            $this->securityLogger->info(
-                'Sandstorm/NeosTwoFactorAuthentication: ' .
-                'No authentication tokens found, skipping second factor'
+            $this->securityLogger->debug(
+                self::LOGGING_PREFIX .
+                'No authentication tokens found, skipping second factor.'
             );
             return $next->handle($request);
         }
@@ -68,9 +78,9 @@ class SecondFactorMiddleware implements MiddlewareInterface
         // WHY: we currently only support 'Neos.Neos:Backend' provider (which ever is used) because the
         //      second factor feature is currently only build for Neos Editors use case
         if (!array_key_exists('Neos.Neos:Backend', $authenticationTokens)) {
-            $this->securityLogger->error(
-                'Sandstorm/NeosTwoFactorAuthentication: ' .
-                'No authentication token for "Neos.Neos:Backend" found, skipping second factor'
+            $this->securityLogger->debug(
+                self::LOGGING_PREFIX .
+                'No authentication token for "Neos.Neos:Backend" found, skipping second factor.'
             );
             return $next->handle($request);
         }
@@ -79,9 +89,9 @@ class SecondFactorMiddleware implements MiddlewareInterface
 
         // ignore unauthenticated requests
         if (!$isAuthenticated) {
-            $this->securityLogger->info(
-                'Sandstorm/NeosTwoFactorAuthentication: ' .
-                'Not authenticated on "Neos.Neos:Backend" auth provider, skipping second factor'
+            $this->securityLogger->debug(
+                self::LOGGING_PREFIX .
+                'Not authenticated on "Neos.Neos:Backend" authentication provider, skipping second factor.'
             );
             return $next->handle($request);
         }
@@ -94,47 +104,44 @@ class SecondFactorMiddleware implements MiddlewareInterface
             && !$this->enforceTwoFactorAuthentication
         ) {
             $this->securityLogger->debug(
-                'Sandstorm/NeosTwoFactorAuthentication: ' .
-                'Second factor not enforced and set up for account, skipping second factor'
+                self::LOGGING_PREFIX .
+                'Second factor not enabled for account but not enforced, skipping second factor.'
             );
             return $next->handle($request);
         }
 
-        // get 2FA data from session
-        $currentSession = $this->sessionManager->getCurrentSession();
-        // TODO: ValueObject/DTO
-        $twoFactorData = $currentSession->getData(self::SESSION_OBJECT_ID);
+        $this->secondFactorSessionStorageService->initializeTwoFactorSessionObject();
 
-        // if session has no 2FA data object, we initialize a default
-        if (empty($twoFactorData)) {
-            $currentSession->putData(
-                self::SESSION_OBJECT_ID,
-                [
-                    self::SESSION_OBJECT_AUTH_STATUS => self::SECOND_FACTOR_AUTHENTICATION_NEEDED,
-                ]
-            );
-            $twoFactorData = $currentSession->getData(self::SESSION_OBJECT_ID);
-        }
+        $authenticationStatus = $this->secondFactorSessionStorageService->getAuthenticationStatus();
 
         // already authenticated
-        if ($twoFactorData[self::SESSION_OBJECT_AUTH_STATUS] === self::SECOND_FACTOR_AUTHENTICATED) {
+        if ($authenticationStatus === AuthenticationStatus::AUTHENTICATED) {
+            $this->securityLogger->debug(
+                self::LOGGING_PREFIX .
+                'Second factor already authenticated.'
+            );
             return $next->handle($request);
         }
 
         if (
             $this->secondFactorRepository->isEnabledForAccount($account)
-            && $twoFactorData[self::SESSION_OBJECT_AUTH_STATUS] === self::SECOND_FACTOR_AUTHENTICATION_NEEDED
+            && $authenticationStatus === AuthenticationStatus::AUTHENTICATION_NEEDED
         ) {
-            // TODO: discuss
-            // WHY: We use the request URI as part of the state
-            $isAskingFor2FA = str_ends_with($request->getUri()->getPath(), 'neos/two-factor-login');
-            if ($isAskingFor2FA) {
+            // WHY: We use the request URI as part of state. This prevents the middleware to enter a redirect loop.
+            $isAskingForOTP = str_ends_with($request->getUri()->getPath(), 'neos/two-factor-login');
+            if ($isAskingForOTP) {
                 return $next->handle($request);
             }
 
-            if ($request->getMethod() === 'POST') {
-                return new Response(401);
-            }
+            $this->securityLogger->debug(
+                self::LOGGING_PREFIX .
+                'Second factor enabled and not authenticated, redirecting to 2FA login.',
+                [$authenticationStatus]
+            );
+
+            // WHY: Set intercepted request to be able to redirect after 2FA.
+            //      See Sandstorm/NeosTwoFactorAuthentication/LoginController
+            $this->registerOriginalRequestForRedirect($request);
 
             return new Response(303, ['Location' => '/neos/two-factor-login']);
         }
@@ -143,20 +150,34 @@ class SecondFactorMiddleware implements MiddlewareInterface
             $this->enforceTwoFactorAuthentication &&
             !$this->secondFactorRepository->isEnabledForAccount($account)
         ) {
-            // ignore if setup is in progress
+            // WHY: We use the request URI as part of state. This prevents the middleware to enter a redirect loop.
             $isSettingUp2FA = str_ends_with($request->getUri()->getPath(), 'neos/setup-second-factor');
             if ($isSettingUp2FA) {
                 return $next->handle($request);
             }
 
-            if ($request->getMethod() === 'POST') {
-                return new Response(401);
-            }
+            $this->securityLogger->debug(
+                self::LOGGING_PREFIX .
+                'Second factor enforced and not enabled for account, redirecting to 2FA setup.'
+            );
+
+            // WHY: Set intercepted request to be able to redirect after 2FA.
+            //      See Sandstorm/NeosTwoFactorAuthentication/LoginController
+            $this->registerOriginalRequestForRedirect($request);
 
             return new Response(303, ['Location' => '/neos/setup-second-factor']);
         }
 
-        // TODO: Throw here?
-        die('this should not happen^^');
+        throw new AuthenticationRequiredException("You have to be logged in with second factor!");
     }
+
+    private function registerOriginalRequestForRedirect(ServerRequestInterface $request): void
+    {
+        $routingMatchResults = $request->getAttribute(ServerRequestAttributes::ROUTING_RESULTS) ?? [];
+        $actionRequest = $this->actionRequestFactory->createActionRequest($request, $routingMatchResults);
+
+        $this->securityContext->setInterceptedRequest($actionRequest);
+    }
+
+
 }

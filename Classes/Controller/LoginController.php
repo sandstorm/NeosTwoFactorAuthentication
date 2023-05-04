@@ -182,7 +182,8 @@ class LoginController extends ActionController
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
-            $this->addFlashMessage('Submitted OTP was not correct', '', Message::SEVERITY_WARNING);
+            // TODO: Translate Flash Message
+            $this->addFlashMessage('Submitted OTP was not correct.', '', Message::SEVERITY_WARNING);
             $this->redirect('setupSecondFactor');
         }
 
@@ -197,7 +198,8 @@ class LoginController extends ActionController
         $this->secondFactorRepository->add($secondFactor);
         $this->persistenceManager->persistAll();
 
-        $this->addFlashMessage('Successfully created otp');
+        // TODO: Translate Flash Message
+        $this->addFlashMessage('Successfully created OTP.');
 
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 

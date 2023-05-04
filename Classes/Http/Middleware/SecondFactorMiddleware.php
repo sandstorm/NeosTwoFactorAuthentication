@@ -76,7 +76,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
         }
 
         // WHY: we currently only support 'Neos.Neos:Backend' provider (which ever is used) because the
-        //      second factor feature is currently only build for Neos Editors use case
+        //      second factor feature is currently only built for Neos Editors use case
         if (!array_key_exists('Neos.Neos:Backend', $authenticationTokens)) {
             $this->securityLogger->debug(
                 self::LOGGING_PREFIX .
@@ -168,7 +168,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
             return new Response(303, ['Location' => '/neos/setup-second-factor']);
         }
 
-        throw new AuthenticationRequiredException("You have to be logged in with second factor!");
+        throw new AuthenticationRequiredException('You have to be logged in with a second factor!');
     }
 
     private function registerOriginalRequestForRedirect(ServerRequestInterface $request): void

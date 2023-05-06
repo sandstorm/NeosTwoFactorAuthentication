@@ -21,8 +21,8 @@ use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageServ
 class SecondFactorMiddleware implements MiddlewareInterface
 {
     const LOGGING_PREFIX = 'Sandstorm/NeosTwoFactorAuthentication: ';
-    const SECOND_FACTOR_LOGIN_URI = 'neos/second-factor-login';
-    const SECOND_FACTOR_SETUP_URI = 'neos/second-factor-setup';
+    const SECOND_FACTOR_LOGIN_URI = '/neos/second-factor-login';
+    const SECOND_FACTOR_SETUP_URI = '/neos/second-factor-setup';
 
     /**
      * @Flow\Inject

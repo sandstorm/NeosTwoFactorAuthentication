@@ -21,6 +21,8 @@ use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageServ
 class SecondFactorMiddleware implements MiddlewareInterface
 {
     const LOGGING_PREFIX = 'Sandstorm/NeosTwoFactorAuthentication: ';
+    const SECOND_FACTOR_LOGIN_URI = 'neos/second-factor-login';
+    const SECOND_FACTOR_SETUP_URI = 'neos/second-factor-setup';
 
     /**
      * @Flow\Inject
@@ -128,7 +130,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
             && $authenticationStatus === AuthenticationStatus::AUTHENTICATION_NEEDED
         ) {
             // WHY: We use the request URI as part of state. This prevents the middleware to enter a redirect loop.
-            $isAskingForOTP = str_ends_with($request->getUri()->getPath(), 'neos/two-factor-login');
+            $isAskingForOTP = str_ends_with($request->getUri()->getPath(), self::SECOND_FACTOR_LOGIN_URI);
             if ($isAskingForOTP) {
                 return $next->handle($request);
             }
@@ -143,7 +145,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
             //      See Sandstorm/NeosTwoFactorAuthentication/LoginController
             $this->registerOriginalRequestForRedirect($request);
 
-            return new Response(303, ['Location' => '/neos/two-factor-login']);
+            return new Response(303, ['Location' => self::SECOND_FACTOR_LOGIN_URI]);
         }
 
         if (
@@ -151,7 +153,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
             !$this->secondFactorRepository->isEnabledForAccount($account)
         ) {
             // WHY: We use the request URI as part of state. This prevents the middleware to enter a redirect loop.
-            $isSettingUp2FA = str_ends_with($request->getUri()->getPath(), 'neos/setup-second-factor');
+            $isSettingUp2FA = str_ends_with($request->getUri()->getPath(), self::SECOND_FACTOR_SETUP_URI);
             if ($isSettingUp2FA) {
                 return $next->handle($request);
             }
@@ -165,7 +167,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
             //      See Sandstorm/NeosTwoFactorAuthentication/LoginController
             $this->registerOriginalRequestForRedirect($request);
 
-            return new Response(303, ['Location' => '/neos/setup-second-factor']);
+            return new Response(303, ['Location' => self::SECOND_FACTOR_SETUP_URI]);
         }
 
         throw new AuthenticationRequiredException("You have to be logged in with second factor!");

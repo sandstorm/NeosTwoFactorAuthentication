@@ -94,7 +94,7 @@ class LoginController extends ActionController
      * @throws StopActionException
      * @throws SessionNotStartedException
      */
-    public function checkOtpAction(string $otp)
+    public function checkSecondFactorAction(string $otp)
     {
         $account = $this->securityContext->getAccount();
 

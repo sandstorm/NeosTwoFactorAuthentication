@@ -6,8 +6,6 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
  * This file is part of the Sandstorm.NeosTwoFactorAuthentication package.
  */
 
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
@@ -72,12 +70,18 @@ class LoginController extends ActionController
     protected $secondFactorSessionStorageService;
 
     /**
+     * @Flow\Inject
+     * @var TOTPService
+     */
+    protected $TOTPService;
+
+    /**
      * This action decides which tokens are already authenticated
      * and decides which is next to authenticate
      *
      * ATTENTION: this code is copied from the Neos.Neos:LoginController
      */
-    public function askForSecondFactorAction(?string $username = null)
+    public function askForSecondFactorAction(?string $username = null): void
     {
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
@@ -94,7 +98,7 @@ class LoginController extends ActionController
      * @throws StopActionException
      * @throws SessionNotStartedException
      */
-    public function checkSecondFactorAction(string $otp)
+    public function checkSecondFactorAction(string $otp): void
     {
         $account = $this->securityContext->getAccount();
 
@@ -116,48 +120,19 @@ class LoginController extends ActionController
     }
 
     /**
-     * Check if the given token matches any registered second factor
-     *
-     * @param string $enteredSecondFactor
-     * @param Account $account
-     * @return bool
-     */
-    private function enteredTokenMatchesAnySecondFactor(string $enteredSecondFactor, Account $account): bool
-    {
-        /** @var SecondFactor[] $secondFactors */
-        $secondFactors = $this->secondFactorRepository->findByAccount($account);
-        foreach ($secondFactors as $secondFactor) {
-            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor);
-            if ($isValid) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
      * This action decides which tokens are already authenticated
      * and decides which is next to authenticate
      *
      * ATTENTION: this code is copied from the Neos.Neos:LoginController
      */
-    public function setupSecondFactorAction(?string $username = null)
+    public function setupSecondFactorAction(?string $username = null): void
     {
         $otp = TOTPService::generateNewTotp();
         $secret = $otp->getSecret();
+        $qrCode = $this->TOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
 
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
-        $currentSiteName = $currentSite->getName();
-        $urlEncodedSiteName = urlencode($currentSiteName);
-
-        $userIdentifier = $this->securityContext->getAccount()->getAccountIdentifier();
-
-        $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&period=30&issuer=$urlEncodedSiteName";
-        $qrCode = (new QRCode(new QROptions([
-            'outputType' => QRCode::OUTPUT_MARKUP_SVG
-        ])))->render($oauthData);
 
         $this->view->assignMultiple([
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
@@ -186,16 +161,9 @@ class LoginController extends ActionController
             $this->redirect('setupSecondFactor');
         }
 
-        // TODO: extract this to separate function, currently duplicated from BackendController
-
         $account = $this->securityContext->getAccount();
 
-        $secondFactor = new SecondFactor();
-        $secondFactor->setAccount($account);
-        $secondFactor->setSecret($secret);
-        $secondFactor->setType(SecondFactor::TYPE_TOTP);
-        $this->secondFactorRepository->add($secondFactor);
-        $this->persistenceManager->persistAll();
+        $this->secondFactorRepository->createSecondFactorForAccount($secret, $account);
 
         $this->addFlashMessage('Successfully created otp');
 
@@ -207,6 +175,27 @@ class LoginController extends ActionController
         }
 
         $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
+    }
+
+    /**
+     * Check if the given token matches any registered second factor
+     *
+     * @param string $enteredSecondFactor
+     * @param Account $account
+     * @return bool
+     */
+    private function enteredTokenMatchesAnySecondFactor(string $enteredSecondFactor, Account $account): bool
+    {
+        /** @var SecondFactor[] $secondFactors */
+        $secondFactors = $this->secondFactorRepository->findByAccount($account);
+        foreach ($secondFactors as $secondFactor) {
+            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor);
+            if ($isValid) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

@@ -21,7 +21,7 @@ class SecondFactorSessionStorageService
     /**
      * @throws SessionNotStartedException
      */
-    public function setAuthenticationStatus(AuthenticationStatus $authenticationStatus): void
+    public function setAuthenticationStatus(string $authenticationStatus): void
     {
         $this->sessionManager->getCurrentSession()->putData(
             self::SESSION_OBJECT_ID,
@@ -34,7 +34,7 @@ class SecondFactorSessionStorageService
     /**
      * @throws SessionNotStartedException
      */
-    public function getAuthenticationStatus(): AuthenticationStatus
+    public function getAuthenticationStatus(): string
     {
         $storageObject = $this->sessionManager->getCurrentSession()->getData(self::SESSION_OBJECT_ID);
 

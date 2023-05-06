@@ -2,8 +2,8 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain;
 
-enum AuthenticationStatus: string
+class AuthenticationStatus
 {
-    case AUTHENTICATION_NEEDED = 'AUTHENTICATION_NEEDED';
-    case AUTHENTICATED = 'AUTHENTICATED';
+    const AUTHENTICATION_NEEDED = 'AUTHENTICATION_NEEDED';
+    const AUTHENTICATED = 'AUTHENTICATED';
 }

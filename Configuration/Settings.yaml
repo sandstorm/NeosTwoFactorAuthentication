@@ -36,7 +36,7 @@ Neos:
               'Sandstorm.NeosTwoFactorAuthentication:SecondFactor':
                 pattern: 'ControllerObjectName'
                 patternOptions:
-                  controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(AuthenticationController|LoginController|BackendController)'
+                  controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(LoginController|BackendController)'
 
 Sandstorm:
     NeosTwoFactorAuthentication:

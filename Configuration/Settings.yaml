@@ -23,6 +23,7 @@ Neos:
       middlewares:
         'secondFactorRedirectMiddleware':
           middleware: 'Sandstorm\NeosTwoFactorAuthentication\Http\Middleware\SecondFactorMiddleware'
+          position: 'after securityEntryPoint'
     mvc:
       routes:
         'Sandstorm.NeosTwoFactorAuthentication': true

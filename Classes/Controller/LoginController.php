@@ -6,15 +6,25 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
  * This file is part of the Sandstorm.NeosTwoFactorAuthentication package.
  */
 
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException;
 use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
-use Neos\Flow\Security\Authentication\AuthenticationManagerInterface;
+use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Security\Account;
 use Neos\Flow\Security\Context as SecurityContext;
+use Neos\Flow\Session\Exception\SessionNotStartedException;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
+use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
 class LoginController extends ActionController
 {
@@ -28,12 +38,6 @@ class LoginController extends ActionController
      * @Flow\Inject
      */
     protected $securityContext;
-
-    /**
-     * @var AuthenticationManagerInterface
-     * @Flow\Inject
-     */
-    protected $authenticationManager;
 
     /**
      * @var DomainRepository
@@ -54,12 +58,30 @@ class LoginController extends ActionController
     protected $flashMessageService;
 
     /**
+     * @var SecondFactorRepository
+     * @Flow\Inject
+     */
+    protected $secondFactorRepository;
+
+    /**
+     * @Flow\Inject
+     * @var SecondFactorSessionStorageService
+     */
+    protected $secondFactorSessionStorageService;
+
+    /**
+     * @Flow\Inject
+     * @var TOTPService
+     */
+    protected $tOTPService;
+
+    /**
      * This action decides which tokens are already authenticated
      * and decides which is next to authenticate
      *
      * ATTENTION: this code is copied from the Neos.Neos:LoginController
      */
-    public function askForSecondFactorAction(?string $username = null, bool $unauthorized = false)
+    public function askForSecondFactorAction(?string $username = null): void
     {
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
@@ -68,12 +90,121 @@ class LoginController extends ActionController
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
             'username' => $username,
             'site' => $currentSite,
-            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
         ]);
     }
 
     /**
+     * @throws StopActionException
+     * @throws SessionNotStartedException
+     */
+    public function checkSecondFactorAction(string $otp): void
+    {
+        $account = $this->securityContext->getAccount();
+
+        $isValidOtp = $this->enteredTokenMatchesAnySecondFactor($otp, $account);
+
+        if ($isValidOtp) {
+            $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
+        } else {
+            // FIXME: not visible in View!
+            $this->addFlashMessage('Invalid OTP!', 'Error', Message::SEVERITY_ERROR);
+        }
+
+        $originalRequest = $this->securityContext->getInterceptedRequest();
+        if ($originalRequest !== null) {
+            $this->redirectToRequest($originalRequest);
+        }
+
+        $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
+    }
+
+    /**
+     * This action decides which tokens are already authenticated
+     * and decides which is next to authenticate
+     *
+     * ATTENTION: this code is copied from the Neos.Neos:LoginController
+     */
+    public function setupSecondFactorAction(?string $username = null): void
+    {
+        $otp = TOTPService::generateNewTotp();
+        $secret = $otp->getSecret();
+        $qrCode = $this->tOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
+
+        $currentDomain = $this->domainRepository->findOneByActiveRequest();
+        $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
+
+        $this->view->assignMultiple([
+            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
+            'username' => $username,
+            'site' => $currentSite,
+            'secret' => $secret,
+            'qrCode' => $qrCode,
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
+        ]);
+    }
+
+    /**
+     * @param string $secret
+     * @param string $secondFactorFromApp
+     * @return void
+     * @throws IllegalObjectTypeException
+     * @throws SessionNotStartedException
+     * @throws StopActionException
+     */
+    public function createSecondFactorAction(string $secret, string $secondFactorFromApp): void
+    {
+        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
+
+        if (!$isValid) {
+            $this->addFlashMessage('Submitted OTP was not correct.', '', Message::SEVERITY_WARNING);
+            $this->redirect('setupSecondFactor');
+        }
+
+        $account = $this->securityContext->getAccount();
+
+        $this->secondFactorRepository->createSecondFactorForAccount($secret, $account);
+
+        $this->addFlashMessage('Successfully created otp.');
+
+        $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
+
+        $originalRequest = $this->securityContext->getInterceptedRequest();
+        if ($originalRequest !== null) {
+            $this->redirectToRequest($originalRequest);
+        }
+
+        $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
+    }
+
+    /**
+     * Check if the given token matches any registered second factor
+     *
+     * @param string $enteredSecondFactor
+     * @param Account $account
+     * @return bool
+     */
+    private function enteredTokenMatchesAnySecondFactor(string $enteredSecondFactor, Account $account): bool
+    {
+        /** @var SecondFactor[] $secondFactors */
+        $secondFactors = $this->secondFactorRepository->findByAccount($account);
+        foreach ($secondFactors as $secondFactor) {
+            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor);
+            if ($isValid) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return array
+     * @throws InvalidConfigurationTypeException
      */
     protected function getNeosSettings(): array
     {

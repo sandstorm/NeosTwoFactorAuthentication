@@ -2,7 +2,7 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain\Model;
 
-use http\Exception\InvalidArgumentException;
+use Neos\Flow\Http\InvalidArgumentException;
 use Neos\Flow\Security\Account;
 use Doctrine\ORM\Mapping as ORM;
 use Neos\Flow\Annotations as Flow;

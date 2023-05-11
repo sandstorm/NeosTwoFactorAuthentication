@@ -13,6 +13,18 @@ able to delete those token for the users again, in case they locked them self ou
 
 ![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
 
+## Settings
+### Enforce 2FA
+To enforce the setup and usage of 2FA you can add the following to your `Settings.yaml`.
+```yml
+Sandstorm:
+    NeosTwoFactorAuthentication:
+        # enforce 2FA for all users
+        enforceTwoFactorAuthentication: true
+```
+With this setting, no user can login into the CMS without setting up a second factor first.
+
+
 ## Tested 2FA apps
 
 Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!

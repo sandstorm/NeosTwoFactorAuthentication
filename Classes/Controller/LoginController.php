@@ -73,7 +73,7 @@ class LoginController extends ActionController
      * @Flow\Inject
      * @var TOTPService
      */
-    protected $TOTPService;
+    protected $tOTPService;
 
     /**
      * This action decides which tokens are already authenticated
@@ -90,7 +90,9 @@ class LoginController extends ActionController
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
             'username' => $username,
             'site' => $currentSite,
-            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
         ]);
     }
 
@@ -129,7 +131,7 @@ class LoginController extends ActionController
     {
         $otp = TOTPService::generateNewTotp();
         $secret = $otp->getSecret();
-        $qrCode = $this->TOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
+        $qrCode = $this->tOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
 
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
@@ -140,7 +142,9 @@ class LoginController extends ActionController
             'site' => $currentSite,
             'secret' => $secret,
             'qrCode' => $qrCode,
-            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
         ]);
     }
 
@@ -157,7 +161,7 @@ class LoginController extends ActionController
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
-            $this->addFlashMessage('Submitted OTP was not correct', '', Message::SEVERITY_WARNING);
+            $this->addFlashMessage('Submitted OTP was not correct.', '', Message::SEVERITY_WARNING);
             $this->redirect('setupSecondFactor');
         }
 
@@ -165,7 +169,7 @@ class LoginController extends ActionController
 
         $this->secondFactorRepository->createSecondFactorForAccount($secret, $account);
 
-        $this->addFlashMessage('Successfully created otp');
+        $this->addFlashMessage('Successfully created otp.');
 
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 

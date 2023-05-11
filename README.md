@@ -29,13 +29,64 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 * Authy ✅
 
 ## How we did it
-> TODO: Reflect re-implementation in docs!
-* We extended the `PersistedUsernamePasswordProvider` to implement the second factor logic.
-* The second factor is part of the `UsernameAndPasswordWithSecondFactor`-token, which extends the `UsernameAndPassword`-token.
-* Whenever the `PersistentUsernameAndPasswordWithSecondFactorProvider` detects that the second factor is missing, it will throw a `SecondFactorRequiredException`.
-* This Exception is caught by our custom http-middleware `SecondFactorMiddleware`
-* The middleware triggers a redirect to show the second factor prompt.
-* The `Neos.Neos:Backend` gets overridden in this package to allow second factors.
+* We introduced a new middleware `SecondFactorMiddleware` which handles 2FA on a Neos `Session` basis.
+  * This is an overview of the checks the `SecondFactorMiddleware` does for any request:
+    ```
+                            ┌─────────────────────────────┐
+                            │           Request           │
+                            └─────────────────────────────┘
+                                           ▼
+                                ... middleware chain ...
+                                           ▼
+                            ┌─────────────────────────────┐
+                            │  SecurityEndpointMiddleware │
+                            └─────────────────────────────┘
+                                           ▼
+            ┌───────────────────────────────────────────────────────────────────┐
+            │                     SecondFactorMiddleware                        │
+            │                                                                   │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 1. Skip, if no authentication tokens are present, because   │  │
+            │  │    we're not on a secured route.                            │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 2. Skip, if 'Neos.Backend:Backend' authentication token not │  │
+            │  │    present, because we only support second factors for Neos │  │
+            │  │    backend.                                                 │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 3. Skip, if 'Neos.Backend:Backend' authentication token is  │  │
+            │  │    not authenticated, because we need to be authenticated   │  │
+            │  │    with the authentication provider of                      │  │
+            │  │    'Neos.Backend:Backend' first.                            │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 4. Skip, if second factor is not set up for account and not │  │
+            │  │    enforced via settings.                                   │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 5. Skip, if second factor is already authenticated.         │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 6. Redirect to 2FA login, if second factor is set up for    │  │
+            │  │    account but not authenticated.                           │  │
+            │  │    Skip, if already on 2FA login route.                     │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ 7. Redirect to 2FA setup, if second factor is not set up for│  │
+            │  │    account but is enforced by system.                       │  │
+            │  │    Skip, if already on 2FA setup route.                     │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            │  ┌─────────────────────────────────────────────────────────────┐  │
+            │  │ X. Throw an error, because any check before should have     │  │
+            │  │    succeeded.                                               │  │
+            │  └─────────────────────────────────────────────────────────────┘  │
+            └───────────────────────────────────────────────────────────────────┘
+                                              ▼
+                                     ... middlewares ...
+     
+    ```
+  
 
 ## When updating Neos, those part will likely crash:
 
@@ -46,7 +97,20 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 
 ## Why not ...?
 
-### set the authenticationStrategy to `allTokens`
+### Enhance the `UsernamePassword` authentication token
+
+> This actually has been the approach up until version 1.0.5.
+
+One issue with this is the fact, that we _want_ the user to be logged in with that token via the 
+`PersistedUsernamePasswordProvider`, but at the same time to _not be logged in_ with that token as long as 2FA is
+not authenticated as well.
+We found it hard to find a secure way to model the 2FA setup solution when 2FA is enforced, but the user does not have a
+second factor enabled, yet.
+
+The middleware approach makes a clear distinction between "Logging in" and "Second Factor Authentication", while still
+being session based and unable to bypass.
+
+### Set the authenticationStrategy to `allTokens`
 
 The AuthenticationProviderManager requires to authorize all tokens at the same time otherwise, it will throw
 an Exception (see AuthenticationProviderManager Line 181

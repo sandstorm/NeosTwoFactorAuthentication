@@ -59,7 +59,7 @@ class BackendController extends AbstractModuleController
      * @Flow\Inject
      * @var TOTPService
      */
-    protected $TOTPService;
+    protected $tOTPService;
 
     protected $defaultViewObjectName = FusionView::class;
 
@@ -94,23 +94,27 @@ class BackendController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'factorsAndPerson' => $factorsAndPerson,
-            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
         ]);
     }
 
     /**
      * show the form to register a new second factor
      */
-    public function newAction()
+    public function newAction(): void
     {
         $otp = TOTPService::generateNewTotp();
         $secret = $otp->getSecret();
-        $qrCode = $this->TOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
+        $qrCode = $this->tOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
 
         $this->view->assignMultiple([
             'secret' => $secret,
             'qrCode' => $qrCode,
-            'flashMessages' => $this->flashMessageService->getFlashMessageContainerForRequest($this->request)->getMessagesAndFlush(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
         ]);
     }
 

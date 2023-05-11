@@ -128,20 +128,16 @@ class SecondFactorMiddleware implements MiddlewareInterface
 
         // 1. Skip, if no authentication tokens are present, because we're not on a secured route.
         if (empty($authenticationTokens)) {
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'No authentication tokens found, skipping second factor.'
-            );
+            $this->log('No authentication tokens found, skipping second factor.');
+
             return $handler->handle($request);
         }
 
         // 2. Skip, if 'Neos.Backend:Backend' authentication token not present, because we only support second factors
         //    for Neos backend.
         if (!array_key_exists('Neos.Neos:Backend', $authenticationTokens)) {
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'No authentication token for "Neos.Neos:Backend" found, skipping second factor.'
-            );
+            $this->log('No authentication token for "Neos.Neos:Backend" found, skipping second factor.');
+
             return $handler->handle($request);
         }
 
@@ -150,10 +146,8 @@ class SecondFactorMiddleware implements MiddlewareInterface
         // 3. Skip, if 'Neos.Backend:Backend' authentication token is not authenticated, because we need to be
         //    authenticated with the authentication provider of 'Neos.Backend:Backend' first.
         if (!$isAuthenticated) {
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'Not authenticated on "Neos.Neos:Backend" authentication provider, skipping second factor.'
-            );
+            $this->log('Not authenticated on "Neos.Neos:Backend" authentication provider, skipping second factor.');
+
             return $handler->handle($request);
         }
 
@@ -164,10 +158,8 @@ class SecondFactorMiddleware implements MiddlewareInterface
             !$this->secondFactorRepository->isEnabledForAccount($account)
             && !$this->enforceTwoFactorAuthentication
         ) {
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'Second factor not enabled for account and not enforced by system, skipping second factor.'
-            );
+            $this->log('Second factor not enabled for account and not enforced by system, skipping second factor.');
+
             return $handler->handle($request);
         }
 
@@ -177,10 +169,8 @@ class SecondFactorMiddleware implements MiddlewareInterface
 
         // 5. Skip, if second factor is already authenticated.
         if ($authenticationStatus === AuthenticationStatus::AUTHENTICATED) {
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'Second factor already authenticated.'
-            );
+            $this->log('Second factor already authenticated.');
+
             return $handler->handle($request);
         }
 
@@ -196,11 +186,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
                 return $handler->handle($request);
             }
 
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'Second factor enabled and not authenticated, redirecting to 2FA login.',
-                [$authenticationStatus]
-            );
+            $this->log('Second factor enabled and not authenticated, redirecting to 2FA login.');
 
             // WHY: Set intercepted request to be able to redirect after 2FA login.
             //      See Sandstorm/NeosTwoFactorAuthentication/LoginController
@@ -221,10 +207,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
                 return $handler->handle($request);
             }
 
-            $this->securityLogger->debug(
-                self::LOGGING_PREFIX .
-                'Second factor enforced and not enabled for account, redirecting to 2FA setup.'
-            );
+            $this->log('Second factor enforced and not enabled for account, redirecting to 2FA setup.');
 
             // WHY: Set intercepted request to be able to redirect after 2FA setup.
             //      See Sandstorm/NeosTwoFactorAuthentication/LoginController
@@ -245,5 +228,8 @@ class SecondFactorMiddleware implements MiddlewareInterface
         $this->securityContext->setInterceptedRequest($actionRequest);
     }
 
-
+    private function log(string|\Stringable $message, array $context = []): void
+    {
+        $this->securityLogger->debug(self::LOGGING_PREFIX . $message, $context);
+    }
 }

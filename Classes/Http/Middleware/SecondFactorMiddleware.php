@@ -228,7 +228,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
         $this->securityContext->setInterceptedRequest($actionRequest);
     }
 
-    private function log(string|\Stringable $message, array $context = []): void
+    private function log(string $message, array $context = []): void
     {
         $this->securityLogger->debug(self::LOGGING_PREFIX . $message, $context);
     }

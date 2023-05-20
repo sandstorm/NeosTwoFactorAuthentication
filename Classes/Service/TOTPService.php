@@ -35,7 +35,7 @@ class TOTPService
         return $otp->verify($submittedOtp);
     }
 
-    public function generateQRCodeForTokenAndAccount(TOTP $otp, Account $account): mixed
+    public function generateQRCodeForTokenAndAccount(TOTP $otp, Account $account): string
     {
         $secret = $otp->getSecret();
 

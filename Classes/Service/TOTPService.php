@@ -50,7 +50,7 @@ class TOTPService
         $urlEncodedSiteName = urlencode($currentSiteName);
         $userIdentifier = $account->getAccountIdentifier();
         // If the issuerName is set in the configuration, use that. Else fall back to the default.
-        $issuer = $this->issuerName != '' ? urlencode($this->issuerName) : $urlEncodedSiteName;
+        $issuer = !empty($this->issuerName) ? urlencode($this->issuerName) : $urlEncodedSiteName;
         $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&period=30&issuer=$issuer";
         $qrCode = (new QRCode(new QROptions([
             'outputType' => QRCode::OUTPUT_MARKUP_SVG

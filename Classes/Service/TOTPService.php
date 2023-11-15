@@ -26,7 +26,7 @@ class TOTPService
 
     /**
      * @Flow\InjectConfiguration(path="issuerName")
-     * @var string
+     * @var string | null
      */
     protected $issuerName;
 

@@ -24,6 +24,14 @@ Sandstorm:
 ```
 With this setting, no user can login into the CMS without setting up a second factor first.
 
+### Issuer Naming
+To override the default sitename as issuer label, you can define one via the configuration settings:
+```yml
+Sandstorm:
+    NeosTwoFactorAuthentication:
+        # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
+        issuerName: ''
+```
 
 ## Tested 2FA apps
 

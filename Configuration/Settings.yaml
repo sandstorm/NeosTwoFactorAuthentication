@@ -39,6 +39,8 @@ Neos:
                   controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(LoginController|BackendController)'
 
 Sandstorm:
-    NeosTwoFactorAuthentication:
-        # enforce 2FA for all users
-        enforceTwoFactorAuthentication: false
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for all users
+    enforceTwoFactorAuthentication: false
+    # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
+    issuerName: ''

@@ -24,6 +24,12 @@ class TOTPService
      */
     protected $siteRepository;
 
+    /**
+     * @Flow\InjectConfiguration(path="issuerName")
+     * @var string | null
+     */
+    protected $issuerName;
+
     public static function generateNewTotp(): TOTP
     {
         return TOTP::create();
@@ -38,14 +44,14 @@ class TOTPService
     public function generateQRCodeForTokenAndAccount(TOTP $otp, Account $account): string
     {
         $secret = $otp->getSecret();
-
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
         $currentSiteName = $currentSite->getName();
         $urlEncodedSiteName = urlencode($currentSiteName);
-
         $userIdentifier = $account->getAccountIdentifier();
-        $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&period=30&issuer=$urlEncodedSiteName";
+        // If the issuerName is set in the configuration, use that. Else fall back to the default.
+        $issuer = !empty($this->issuerName) ? urlencode($this->issuerName) : $urlEncodedSiteName;
+        $oauthData = "otpauth://totp/$userIdentifier?secret=$secret&period=30&issuer=$issuer";
         $qrCode = (new QRCode(new QROptions([
             'outputType' => QRCode::OUTPUT_MARKUP_SVG
         ])))->render($oauthData);

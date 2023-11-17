@@ -20,6 +20,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep)
                         attributes.class="neos-span12"
                         attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                         attributes.autocomplete="off"
+                        attributes.autofocus={true}
                     />
                 </div>
 

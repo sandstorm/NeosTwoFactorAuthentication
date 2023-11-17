@@ -23,6 +23,8 @@ class SecondFactor
     /**
      * @var Account
      * @ORM\ManyToOne
+     * If Account gets deleted also delete the second factors.
+     * @ORM\JoinColumn(onDelete="CASCADE")
      */
     protected Account $account;
 

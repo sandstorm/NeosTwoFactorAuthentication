@@ -1,44 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext">
-		<body>
-			<trans-unit id="module.label" xml:space="preserve">
-				<source>Two Factor Authentication</source>
+  <file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="module.label" xml:space="preserve">
+        <source>Two-Factor Authentication</source>
+      </trans-unit>
+      <trans-unit id="module.description" xml:space="preserve">
+        <source>This module allows registering and managing a second factor for the backend login.</source>
+      </trans-unit>
+
+      <trans-unit id="module.index.title" xml:space="preserve">
+        <source>List of all registered second factors</source>
+      </trans-unit>
+      <trans-unit id="module.index.list.header.name" xml:space="preserve">
+        <source>Name</source>
+      </trans-unit>
+      <trans-unit id="module.index.list.header.type" xml:space="preserve">
+        <source>Type</source>
+      </trans-unit>
+      <trans-unit id="module.index.list.action.delete" xml:space="preserve">
+        <source>Delete second factor</source>
+      </trans-unit>
+      <trans-unit id="module.index.create" xml:space="preserve">
+        <source>Create second factor</source>
+      </trans-unit>
+
+      <trans-unit id="module.index.delete.header" xml:space="preserve">
+        <source>Do you really want to delete the second factor?</source>
+      </trans-unit>
+      <trans-unit id="module.index.delete.text" xml:space="preserve">
+        <source>Deleting a second factor can not be undone.</source>
+      </trans-unit>
+      <trans-unit id="module.index.delete.cancel" xml:space="preserve">
+        <source>Cancel</source>
+      </trans-unit>
+      <trans-unit id="module.index.delete.confirm" xml:space="preserve">
+        <source>Delete second factor</source>
+      </trans-unit>
+      <trans-unit id="module.index.delete.flashMessage.errorHeader" xml:space="preserve">
+        <source>Error</source>
+      </trans-unit>
+      <trans-unit id="module.index.delete.flashMessage.secondFactorDeleted" xml:space="preserve">
+        <source>The second factor was deleted.</source>
+      </trans-unit>
+      <trans-unit id="module.index.delete.flashMessage.cannotRemoveLastSecondFactor" xml:space="preserve">
+        <source>Cannot remove the last second factor because the two-factor authentication is enforced.</source>
+      </trans-unit>
+
+      <trans-unit id="module.new.title" xml:space="preserve">
+        <source>Register new second factor</source>
+      </trans-unit>
+      <trans-unit id="module.new.description" xml:space="preserve">
+        <source>To register a new second factor, scan the QR code with any TOTP app (e.g. Google Authenticator, Microsoft Authenticator, Authy) and enter the code.</source>
+      </trans-unit>
+      <trans-unit id="module.new.submit-otp" xml:space="preserve">
+        <source>Register new OTP</source>
+      </trans-unit>
+      <trans-unit id="module.new.flashMessage.submittedOtpIncorrect" xml:space="preserve">
+				<source>Submitted OTP was incorrect.</source>
+      </trans-unit>
+      <trans-unit id="module.new.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
+				<source>OTP was registered successfully.</source>
 			</trans-unit>
-
-			<trans-unit id="module.description" xml:space="preserve">
-                <source>TODO: description</source>
-            </trans-unit>
-
-            <trans-unit id="module.index.title" xml:space="preserve">
-                <source>List of all registered second factors</source>
-            </trans-unit>
-            <trans-unit id="module.index.create" xml:space="preserve">
-                <source>Create Second Factor</source>
-            </trans-unit>
-
-            <trans-unit id="module.index.delete.header" xml:space="preserve">
-                <source>Do you really want to delete the second factor?</source>
-            </trans-unit>
-            <trans-unit id="module.index.delete.text" xml:space="preserve">
-                <source>Deleting a second factor can not be undone!</source>
-            </trans-unit>
-            <trans-unit id="module.index.delete.cancel" xml:space="preserve">
-                <source>Cancel</source>
-            </trans-unit>
-            <trans-unit id="module.index.delete.confirm" xml:space="preserve">
-                <source>Delete Second Factor</source>
-            </trans-unit>
-
-            <trans-unit id="module.new.title" xml:space="preserve">
-                <source>Register new second factor</source>
-            </trans-unit>
-            <trans-unit id="module.new.description" xml:space="preserve">
-                <source>To register a new second factor, scan the QR code with any TOTP app and enter the code</source>
-            </trans-unit>
-            <trans-unit id="module.new.submit-otp" xml:space="preserve">
-                <source>Register new OTP</source>
-            </trans-unit>
-		</body>
-	</file>
+    </body>
+  </file>
 </xliff>

@@ -18,6 +18,10 @@ Neos:
           'Sandstorm.NeosTwoFactorAuthentication':
             - '*'
 
+      backendLoginForm:
+        stylesheets:
+          'Sandstorm.NeosTwoFactorAuthentication:AdditionalStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
+
   Flow:
     http:
       middlewares:

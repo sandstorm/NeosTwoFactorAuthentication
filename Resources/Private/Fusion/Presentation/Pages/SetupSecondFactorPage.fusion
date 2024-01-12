@@ -75,10 +75,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                 </h1>
 
                                 <div class="neos-login-body neos">
-                                    <Sandstorm.NeosTwoFactorAuthentication:Component.FlashMessages flashMessages={props.flashMessages} />
+                                    <Sandstorm.NeosTwoFactorAuthentication:Component.LoginFlashMessages flashMessages={props.flashMessages} />
                                     <Neos.Fusion.Form:Form form.target.action="setupSecondFactor">
                                         <Neos.Fusion.Form:Hidden field.name="secret" field.value={secret}/>
-
                                         <div class="neos-control-group">
                                             <img src={qrCode} style="width: 100%; max-width: 400px"/>
                                         </div>

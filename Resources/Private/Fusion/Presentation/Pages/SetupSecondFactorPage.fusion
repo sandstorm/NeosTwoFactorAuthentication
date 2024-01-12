@@ -94,8 +94,8 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                             />
                                         </div>
 
-                                        <div class="neos-control-group">
-                                            <Neos.Fusion.Form:Button>
+                                        <div class="neos-control-group neos-actions">
+                                            <Neos.Fusion.Form:Button attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn">
                                                 {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                                             </Neos.Fusion.Form:Button>
                                         </div>

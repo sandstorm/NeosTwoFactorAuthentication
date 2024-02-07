@@ -5,8 +5,8 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList) < pr
         <table class="neos-table">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Type</th>
+                <th>{I18n.id('module.index.list.header.name').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</th>
+                <th>{I18n.id('module.index.list.header.type').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -44,7 +44,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry
             <td>{props.factorAndPerson.secondFactor.typeAsName}</td>
             <td>
                 <button class="neos-button neos-button-danger" data-toggle="modal"
-                        href={'#user-' + props.iterator.index} title="todo" data-neos-toggle="tooltip">
+                        href={'#user-' + props.iterator.index} title={I18n.id('module.index.list.action.delete').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()} data-neos-toggle="tooltip">
                     <i class="fas fa-trash-alt icon-white"></i>
                 </button>
 

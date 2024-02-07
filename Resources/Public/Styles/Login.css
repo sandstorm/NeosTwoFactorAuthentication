@@ -1,0 +1,16 @@
+.neos-two-factor-flashmessage {
+  font-size: 13px;
+  line-height: 1.4;
+  padding: 8px;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.neos-two-factor-flashmessage-warning {
+  background-color: #F89406;
+}
+
+.neos-two-factor-flashmessage-info {
+  background-color: #5bc0de;
+}

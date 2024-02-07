@@ -10,6 +10,7 @@ use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Controller\ActionController;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
@@ -76,6 +77,12 @@ class LoginController extends ActionController
     protected $tOTPService;
 
     /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
+
+    /**
      * This action decides which tokens are already authenticated
      * and decides which is next to authenticate
      *
@@ -109,8 +116,25 @@ class LoginController extends ActionController
         if ($isValidOtp) {
             $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
         } else {
-            // FIXME: not visible in View!
-            $this->addFlashMessage('Invalid OTP!', 'Error', Message::SEVERITY_ERROR);
+            $this->addFlashMessage(
+                $this->translator->translateById(
+                    'login.flashMessage.invalidOtp',
+                    [],
+                    null,
+                    null,
+                    'Main',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                ),
+                $this->translator->translateById(
+                    'login.flashMessage.errorHeader',
+                    [],
+                    null,
+                    null,
+                    'Main',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                ),
+                Message::SEVERITY_ERROR
+            );
         }
 
         $originalRequest = $this->securityContext->getInterceptedRequest();
@@ -161,7 +185,18 @@ class LoginController extends ActionController
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
-            $this->addFlashMessage('Submitted OTP was not correct.', '', Message::SEVERITY_WARNING);
+            $this->addFlashMessage(
+                $this->translator->translateById(
+                    'login.flashMessage.submittedOtpIncorrect',
+                    [],
+                    null,
+                    null,
+                    'Main',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                ),
+                '',
+                Message::SEVERITY_WARNING
+            );
             $this->redirect('setupSecondFactor');
         }
 
@@ -169,7 +204,16 @@ class LoginController extends ActionController
 
         $this->secondFactorRepository->createSecondFactorForAccount($secret, $account);
 
-        $this->addFlashMessage('Successfully created otp.');
+        $this->addFlashMessage(
+            $this->translator->translateById(
+                'login.flashMessage.successfullyRegisteredOtp',
+                [],
+                null,
+                null,
+                'Main',
+                'Sandstorm.NeosTwoFactorAuthentication'
+            ),
+        );
 
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 

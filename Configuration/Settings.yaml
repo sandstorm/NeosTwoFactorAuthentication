@@ -10,13 +10,17 @@ Neos:
             controller: 'Sandstorm\NeosTwoFactorAuthentication\Controller\BackendController'
             label: 'Sandstorm.NeosTwoFactorAuthentication:Backend:module.label'
             description: 'Sandstorm.NeosTwoFactorAuthentication:Backend:module.description'
-            icon: 'fas fa-lock'
+            icon: 'fas fa-qrcode'
 
     userInterface:
       translation:
         autoInclude:
           'Sandstorm.NeosTwoFactorAuthentication':
             - '*'
+
+      backendLoginForm:
+        stylesheets:
+          'Sandstorm.NeosTwoFactorAuthentication:AdditionalStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
 
   Flow:
     http:

@@ -1,21 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext">
+  <file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext" target-language="de">
     <body>
       <trans-unit id="otp-placeholder" xml:space="preserve">
-        <source>OTP from App</source>
-      </trans-unit>
+				<source>OTP from App</source>
+				<target>OTP aus App</target>
+			</trans-unit>
       <trans-unit id="login.flashMessage.errorHeader" xml:space="preserve">
 				<source>Error</source>
+				<target>Fehler</target>
 			</trans-unit>
       <trans-unit id="login.flashMessage.invalidOtp" xml:space="preserve">
 				<source>The provided OTP is invalid.</source>
+				<target>Das eingegebene OTP ist ungültig.</target>
 			</trans-unit>
       <trans-unit id="login.flashMessage.submittedOtpIncorrect" xml:space="preserve">
 				<source>Submitted OTP was incorrect.</source>
+				<target>Das eingegebene OTP ist nicht korrekt.</target>
 			</trans-unit>
       <trans-unit id="login.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
 				<source>OTP was registered successfully.</source>
+				<target>Das OTP wurde erfolgreich registriert.</target>
 			</trans-unit>
     </body>
   </file>

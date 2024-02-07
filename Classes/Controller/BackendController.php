@@ -4,6 +4,7 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
@@ -60,6 +61,12 @@ class BackendController extends AbstractModuleController
      * @var TOTPService
      */
     protected $tOTPService;
+
+    /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
 
     protected $defaultViewObjectName = FusionView::class;
 
@@ -130,7 +137,18 @@ class BackendController extends AbstractModuleController
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
-            $this->addFlashMessage('Submitted OTP was not correct', '', Message::SEVERITY_WARNING);
+            $this->addFlashMessage(
+                $this->translator->translateById(
+                    'module.new.flashMessage.submittedOtpIncorrect',
+                    [],
+                    null,
+                    null,
+                    'Backend',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                ),
+                '',
+                Message::SEVERITY_WARNING
+            );
             $this->redirect('new');
         }
 
@@ -138,7 +156,16 @@ class BackendController extends AbstractModuleController
 
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 
-        $this->addFlashMessage('Successfully created otp');
+        $this->addFlashMessage(
+            $this->translator->translateById(
+                'module.new.flashMessage.successfullyRegisteredOtp',
+                [],
+                null,
+                null,
+                'Backend',
+                'Sandstorm.NeosTwoFactorAuthentication'
+            )
+        );
         $this->redirect('index');
     }
 
@@ -159,14 +186,37 @@ class BackendController extends AbstractModuleController
                 && count($this->secondFactorRepository->findByAccount($account)) <= 1
             ) {
                 $this->addFlashMessage(
-                    'Can not remove last second factor! Second factor is enforced, you need at least one!',
-                    'Error',
+                    $this->translator->translateById(
+                        'module.index.delete.flashMessage.cannotRemoveLastSecondFactor',
+                        [],
+                        null,
+                        null,
+                        'Backend',
+                        'Sandstorm.NeosTwoFactorAuthentication'
+                    ),
+                    $this->translator->translateById(
+                        'module.index.delete.flashMessage.errorHeader',
+                        [],
+                        null,
+                        null,
+                        'Backend',
+                        'Sandstorm.NeosTwoFactorAuthentication'
+                    ),
                     Message::SEVERITY_ERROR
                 );
             } else {
                 $this->secondFactorRepository->remove($secondFactor);
                 $this->persistenceManager->persistAll();
-                $this->addFlashMessage('Second factor was deleted');
+                $this->addFlashMessage(
+                    $this->translator->translateById(
+                        'module.index.delete.flashMessage.secondFactorDeleted',
+                        [],
+                        null,
+                        null,
+                        'Backend',
+                        'Sandstorm.NeosTwoFactorAuthentication'
+                    )
+                );
             }
         }
 

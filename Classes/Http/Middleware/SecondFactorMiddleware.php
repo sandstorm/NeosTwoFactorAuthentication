@@ -55,10 +55,23 @@ class SecondFactorMiddleware implements MiddlewareInterface
     protected $secondFactorSessionStorageService;
 
     /**
-     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthentication")
+     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthenticationForAllUserAccounts")
      * @var bool
      */
-    protected $enforceTwoFactorAuthentication;
+    protected $enforceTwoFactorAuthenticationForAllUserAccounts;
+
+    /**
+     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthenticationForAuthenticationProviders")
+     * @var array
+     */
+    protected $enforceTwoFactorAuthenticationForAuthenticcationProviders;
+
+    /**
+     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthenticationForSpecificUserAccounts")
+     * @var array
+     */
+    protected $enforceTwoFactorAuthenticationForSpecificUserAccounts;
+
 
     /**
      * This middleware checks if the user is authenticated with a second factor "if necessary".
@@ -124,6 +137,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+
         $authenticationTokens = $this->securityContext->getAuthenticationTokens();
 
         // 1. Skip, if no authentication tokens are present, because we're not on a secured route.
@@ -151,12 +165,15 @@ class SecondFactorMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+
         $account = $this->securityContext->getAccount();
 
         // 4. Skip, if second factor is not set up for account and not enforced via settings.
         if (
             !$this->secondFactorRepository->isEnabledForAccount($account)
-            && !$this->enforceTwoFactorAuthentication
+            && !$this->enforceTwoFactorAuthenticationForAllUserAccounts
+            && !in_array($account->getAccountIdentifier(),$this->enforceTwoFactorAuthenticationForSpecificUserAccounts)
+            && !in_array($account->getAuthenticationProviderName(),$this->enforceTwoFactorAuthenticationForAuthenticcationProviders)
         ) {
             $this->log('Second factor not enabled for account and not enforced by system, skipping second factor.');
 
@@ -198,8 +215,11 @@ class SecondFactorMiddleware implements MiddlewareInterface
         // 7. Redirect to 2FA setup, if second factor is not set up for account but is enforced by system.
         //    Skip, if already on 2FA setup route.
         if (
-            $this->enforceTwoFactorAuthentication &&
-            !$this->secondFactorRepository->isEnabledForAccount($account)
+            ($this->enforceTwoFactorAuthenticationForAllUserAccounts
+             || in_array($account->getAccountIdentifier(),$this->enforceTwoFactorAuthenticationForSpecificUserAccounts)
+             || in_array($account->getAuthenticationProviderName(),$this->enforceTwoFactorAuthenticationForAuthenticcationProviders)
+            )
+            && !$this->secondFactorRepository->isEnabledForAccount($account)
         ) {
             // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop.
             $isSettingUp2FA = str_ends_with($request->getUri()->getPath(), self::SECOND_FACTOR_SETUP_URI);

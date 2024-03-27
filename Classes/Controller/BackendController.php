@@ -18,6 +18,7 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto\SecondFactorDto;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
@@ -71,10 +72,10 @@ class BackendController extends AbstractModuleController
     protected $defaultViewObjectName = FusionView::class;
 
     /**
-     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthentication")
-     * @var bool
+     * @Flow\Inject
+     * @var SecondFactorService
      */
-    protected $enforceTwoFactorAuthentication;
+    protected $secondFactorService;
 
     /**
      * used to list all second factors of the current user
@@ -177,14 +178,11 @@ class BackendController extends AbstractModuleController
     {
         $account = $this->securityContext->getAccount();
 
-        if (
-            $this->securityContext->hasRole('Neos.Neos:Administrator')
-            || $secondFactor->getAccount() === $account
-        ) {
-            if (
-                $this->enforceTwoFactorAuthentication
-                && count($this->secondFactorRepository->findByAccount($account)) <= 1
-            ) {
+        $isAdministrator = $this->securityContext->hasRole('Neos.Neos:Administrator');
+        $isOwner = $secondFactor->getAccount() === $account;
+
+        if ($isAdministrator || $isOwner) {
+            if (!$this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account)) {
                 $this->addFlashMessage(
                     $this->translator->translateById(
                         'module.index.delete.flashMessage.cannotRemoveLastSecondFactor',

@@ -15,7 +15,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Log\LoggerInterface;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
-use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 
 class SecondFactorMiddleware implements MiddlewareInterface
@@ -29,12 +29,6 @@ class SecondFactorMiddleware implements MiddlewareInterface
      * @var SecurityContext
      */
     protected $securityContext;
-
-    /**
-     * @Flow\Inject
-     * @var SecondFactorRepository
-     */
-    protected $secondFactorRepository;
 
     /**
      * @Flow\Inject
@@ -55,23 +49,10 @@ class SecondFactorMiddleware implements MiddlewareInterface
     protected $secondFactorSessionStorageService;
 
     /**
-     * @Flow\InjectConfiguration(path="enforceTwoFactorAuthentication")
-     * @var bool
+     * @Flow\Inject
+     * @var SecondFactorService
      */
-    protected $enforceTwoFactorAuthentication;
-
-    /**
-     * @Flow\InjectConfiguration(path="enforce2FAForAuthenticationProviders")
-     * @var array
-     */
-    protected $enforce2FAForAuthenticationProviders;
-
-    /**
-     * @Flow\InjectConfiguration(path="enforce2FAForRoles")
-     * @var array
-     */
-    protected $enforce2FAForRoles;
-
+    protected SecondFactorService $secondFactorService;
 
     /**
      * This middleware checks if the user is authenticated with a second factor "if necessary".
@@ -167,13 +148,11 @@ class SecondFactorMiddleware implements MiddlewareInterface
 
         $account = $this->securityContext->getAccount();
 
+        $isEnabledForAccount = $this->secondFactorService->isSecondFactorEnabledForAccount($account);
+        $isEnforcedForAccount = $this->secondFactorService->isSecondFactorEnforcedForAccount($account);
+
         // 4. Skip, if second factor is not set up for account and not enforced via settings.
-        if (
-            !$this->secondFactorRepository->isEnabledForAccount($account)
-            && !$this->enforceTwoFactorAuthentication
-            && !count(array_intersect(array_map(fn($item) => $item->getIdentifier(),$account->getRoles()),$this->enforce2FAForRoles))
-            && !in_array($account->getAuthenticationProviderName(),$this->enforce2FAForAuthenticationProviders)
-        ) {
+        if (!$isEnabledForAccount && !$isEnforcedForAccount) {
             $this->log('Second factor not enabled for account and not enforced by system, skipping second factor.');
 
             return $handler->handle($request);
@@ -193,7 +172,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
         // 6. Redirect to 2FA login, if second factor is set up for account but not authenticated.
         //    Skip, if already on 2FA login route.
         if (
-            $this->secondFactorRepository->isEnabledForAccount($account)
+            $isEnabledForAccount
             && $authenticationStatus === AuthenticationStatus::AUTHENTICATION_NEEDED
         ) {
             // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop.
@@ -213,13 +192,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
 
         // 7. Redirect to 2FA setup, if second factor is not set up for account but is enforced by system.
         //    Skip, if already on 2FA setup route.
-        if (
-            ($this->enforceTwoFactorAuthentication
-             || count(array_intersect(array_map(fn($item) => $item->getIdentifier(),$account->getRoles()),$this->enforce2FAForRoles))
-             || in_array($account->getAuthenticationProviderName(),$this->enforce2FAForAuthenticationProviders)
-            )
-            && !$this->secondFactorRepository->isEnabledForAccount($account)
-        ) {
+        if ($isEnforcedForAccount && !$isEnabledForAccount) {
             // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop.
             $isSettingUp2FA = str_ends_with($request->getUri()->getPath(), self::SECOND_FACTOR_SETUP_URI);
             if ($isSettingUp2FA) {

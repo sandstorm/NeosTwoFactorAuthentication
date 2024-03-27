@@ -24,6 +24,16 @@ Sandstorm:
 ```
 With this setting, no user can login into the CMS without setting up a second factor first.
 
+In addition, you can enforce 2FA for specific authentication providers and/or roles by adding following to your `Settings.yaml`
+```yml
+Sandstorm:
+    NeosTwoFactorAuthentication:
+      # enforce 2FA for specific authentication providers
+      enforce2FAForAuthenticationProviders : ['Neos.Neos:Backend']
+      # enforce 2FA for specific roles
+      enforce2FAForRoles: ['Neos.Neos:Administrator']  
+```
+
 ### Issuer Naming
 To override the default sitename as issuer label, you can define one via the configuration settings:
 ```yml

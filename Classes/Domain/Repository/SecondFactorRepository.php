@@ -16,12 +16,6 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
  */
 class SecondFactorRepository extends Repository
 {
-    public function isEnabledForAccount(Account $account): bool
-    {
-        $factors = $this->findByAccount($account);
-        return count($factors) > 0;
-    }
-
     /**
      * @throws IllegalObjectTypeException
      */

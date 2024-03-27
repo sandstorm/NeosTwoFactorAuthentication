@@ -46,5 +46,9 @@ Sandstorm:
   NeosTwoFactorAuthentication:
     # enforce 2FA for all users
     enforceTwoFactorAuthentication: false
+    # enforce 2FA for specific authentication providers
+    enforce2FAForAuthenticationProviders : []
+    # enforce 2FA for specific roles
+    enforce2FAForRoles: []
     # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
     issuerName: ''

@@ -7,6 +7,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList) < pr
             <tr>
                 <th>{I18n.id('module.index.list.header.name').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</th>
                 <th>{I18n.id('module.index.list.header.type').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</th>
+                <th>{I18n.id('module.index.list.header.creationDate').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</th>
                 <th>&nbsp;</th>
             </tr>
             </thead>
@@ -42,6 +43,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry
         <tr>
             <td>{props.factorAndPerson.user.name.fullName} ({props.factorAndPerson.secondFactor.account.accountIdentifier})</td>
             <td>{props.factorAndPerson.secondFactor.typeAsName}</td>
+            <td>{Date.format(props.factorAndPerson.secondFactor.creationDate, 'U') < 0 ? '-' : Date.format(props.factorAndPerson.secondFactor.creationDate, 'Y-m-d H:i')}</td>
             <td>
                 <button class="neos-button neos-button-danger" data-toggle="modal"
                         href={'#user-' + props.iterator.index} title={I18n.id('module.index.list.action.delete').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()} data-neos-toggle="tooltip">

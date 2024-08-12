@@ -39,6 +39,12 @@ class SecondFactor
     protected string $secret;
 
     /**
+     * @var \DateTime
+     * @ORM\Column(type="datetime", nullable=false)
+     */
+    protected \DateTime $creationDate;
+
+    /**
      * @return Account
      */
     public function getAccount(): Account
@@ -92,6 +98,16 @@ class SecondFactor
     public function setSecret(string $secret): void
     {
         $this->secret = $secret;
+    }
+
+    public function getCreationDate(): \DateTime
+    {
+        return $this->creationDate;
+    }
+
+    public function setCreationDate(\DateTime $creationDate): void
+    {
+        $this->creationDate = $creationDate;
     }
 
     public function __toString(): string

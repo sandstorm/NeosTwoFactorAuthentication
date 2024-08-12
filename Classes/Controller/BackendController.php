@@ -182,7 +182,7 @@ class BackendController extends AbstractModuleController
         $isOwner = $secondFactor->getAccount() === $account;
 
         if ($isAdministrator || $isOwner) {
-            if (!$this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account)) {
+            if (!$isAdministrator && !$this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account)) {
                 $this->addFlashMessage(
                     $this->translator->translateById(
                         'module.index.delete.flashMessage.cannotRemoveLastSecondFactor',

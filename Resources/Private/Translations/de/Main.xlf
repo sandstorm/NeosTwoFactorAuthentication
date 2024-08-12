@@ -22,6 +22,18 @@
 				<source>OTP was registered successfully.</source>
 				<target>Das OTP wurde erfolgreich registriert.</target>
 			</trans-unit>
+      <trans-unit id="form.secret.show" xml:space="preserve">
+        <source>Show Code</source>
+        <target>Code Anzeigen</target>
+      </trans-unit>
+      <trans-unit id="form.secret.copy" xml:space="preserve">
+        <source>Copy</source>
+        <target>Kopieren</target>
+      </trans-unit>
+      <trans-unit id="form.secret.close" xml:space="preserve">
+        <source>Close</source>
+        <target>Schließen</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

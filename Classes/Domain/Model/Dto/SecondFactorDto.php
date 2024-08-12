@@ -3,34 +3,14 @@
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto;
 
 use Neos\Neos\Domain\Model\User;
-use Neos\Party\Domain\Model\Person;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 
-class SecondFactorDto
+final class SecondFactorDto
 {
-    protected SecondFactor $secondFactor;
-
-    protected User $user;
-
-    public function __construct(SecondFactor $secondFactor, User $user = null)
+    public function __construct(
+        readonly public SecondFactor $secondFactor,
+        readonly public ?User        $user = null
+    )
     {
-        $this->user = $user;
-        $this->secondFactor = $secondFactor;
-    }
-
-    /**
-     * @return SecondFactor|string
-     */
-    public function getSecondFactor(): SecondFactor
-    {
-        return $this->secondFactor;
-    }
-
-    /**
-     * @return User
-     */
-    public function getUser(): User
-    {
-        return $this->user;
     }
 }

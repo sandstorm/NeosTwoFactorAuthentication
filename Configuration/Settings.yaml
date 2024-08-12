@@ -11,6 +11,11 @@ Neos:
             label: 'Sandstorm.NeosTwoFactorAuthentication:Backend:module.label'
             description: 'Sandstorm.NeosTwoFactorAuthentication:Backend:module.description'
             icon: 'fas fa-qrcode'
+            additionalResources:
+              styleSheets:
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
+              javaScripts:
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
 
     userInterface:
       translation:
@@ -21,6 +26,8 @@ Neos:
       backendLoginForm:
         stylesheets:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
+        scripts:
+          'Sandstorm.NeosTwoFactorAuthentication:AdditionalScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
 
   Flow:
     http:

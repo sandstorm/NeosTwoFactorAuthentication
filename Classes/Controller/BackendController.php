@@ -4,6 +4,8 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Configuration\Exception\InvalidConfigurationTypeException;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
@@ -118,6 +120,8 @@ class BackendController extends AbstractModuleController
         $qrCode = $this->tOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
 
         $this->view->assignMultiple([
+            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
+            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'secret' => $secret,
             'qrCode' => $qrCode,
             'flashMessages' => $this->flashMessageService
@@ -219,5 +223,18 @@ class BackendController extends AbstractModuleController
         }
 
         $this->redirect('index');
+    }
+
+    /**
+     * @return array
+     * @throws InvalidConfigurationTypeException
+     */
+    protected function getNeosSettings(): array
+    {
+        $configurationManager = $this->objectManager->get(ConfigurationManager::class);
+        return $configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Neos'
+        );
     }
 }

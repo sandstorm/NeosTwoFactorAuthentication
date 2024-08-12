@@ -17,6 +17,15 @@
       <trans-unit id="login.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
 				<source>OTP was registered successfully.</source>
 			</trans-unit>
+      <trans-unit id="form.secret.show" xml:space="preserve">
+        <source>Show Code</source>
+      </trans-unit>
+      <trans-unit id="form.secret.copy" xml:space="preserve">
+        <source>Copy</source>
+      </trans-unit>
+      <trans-unit id="form.secret.close" xml:space="preserve">
+        <source>Close</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -17,7 +17,7 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 class SecondFactorRepository extends Repository
 {
     protected $defaultOrderings = [
-        'account' => 'DESC',
+        'account' => 'ASC',
         'creationDate' => 'DESC'
     ];
 

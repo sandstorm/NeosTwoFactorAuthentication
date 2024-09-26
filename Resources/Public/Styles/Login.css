@@ -16,6 +16,7 @@
 }
 
 .neos-two-factor__secret-wrapper {
+  /* specificity hack */
   display: flex !important;
 }
 
@@ -46,10 +47,17 @@
 }
 
 .neos-two-factor__secret__copy__button {
+  /* specificity hack */
   display: flex !important;
   gap: 8px;
   align-items: center;
   justify-content: center;
+}
+
+.neos-two-factor__secret__copy__button span,
+.neos-two-factor__secret__copy__button span i {
+  display: flex;
+  align-items: center;
 }
 
 .neos-two-factor__secret__copy__button svg {
@@ -61,6 +69,7 @@
 }
 
 .neos-two-factor__hidden {
+  /* specificity hack */
   display: none !important;
 }
 
@@ -69,6 +78,17 @@
   display: block;
   width: 100%;
   overflow: hidden;
+
+  font-size: 14px;
+  line-height: 1.6em;
+}
+
+.neos-two-factor__secret div,
+.neos-two-factor__secret p,
+.neos-two-factor__secret svg {
+  box-sizing: content-box;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .neos-two-factor__secret p {
@@ -76,7 +96,10 @@
 
   color: #0f0f0f;
   font-family: monospace;
-  letter-spacing: 2px;
+}
+
+.neos-two-factor__secret span:nth-child(3n) {
+  margin-right: 4px;
 }
 
 .neos-two-factor__secret .neos-two-factor__secret__number {
@@ -88,7 +111,7 @@
   position: absolute;
   top: 0;
   width: 10em;
-  height: 100%;
+  height: 1.6em;
 
   display: flex;
   align-items: center;
@@ -98,9 +121,9 @@
 
 .neos-two-factor__secret__overflow-indicator--left svg,
 .neos-two-factor__secret__overflow-indicator--right svg {
-  height: 18px;
+  height: 1.2em;
 
-  fill: #1a1a1a;
+  fill: #3f3f3f;
 }
 
 .neos-two-factor__secret__overflow-indicator--left {

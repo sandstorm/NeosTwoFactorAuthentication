@@ -23,6 +23,10 @@
         <source>Type</source>
         <target>Typ</target>
       </trans-unit>
+      <trans-unit id="module.index.list.header.creationDate" xml:space="preserve">
+        <source>Creation Date</source>
+        <target>Erstellungsdatum</target>
+      </trans-unit>
       <trans-unit id="module.index.list.action.delete" xml:space="preserve">
         <source>Delete second factor</source>
         <target>Zweiten Faktor löschen</target>

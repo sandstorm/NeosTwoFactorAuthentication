@@ -16,6 +16,11 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
  */
 class SecondFactorRepository extends Repository
 {
+    protected $defaultOrderings = [
+        'account' => 'ASC',
+        'creationDate' => 'DESC'
+    ];
+
     /**
      * @throws IllegalObjectTypeException
      */
@@ -25,6 +30,7 @@ class SecondFactorRepository extends Repository
         $secondFactor->setAccount($account);
         $secondFactor->setSecret($secret);
         $secondFactor->setType(SecondFactor::TYPE_TOTP);
+        $secondFactor->setCreationDate(new \DateTime());
         $this->add($secondFactor);
         $this->persistenceManager->persistAll();
     }

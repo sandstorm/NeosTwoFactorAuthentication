@@ -10,13 +10,13 @@ use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
 use Neos\Flow\Security\Context;
 use Neos\Flow\Session\Exception\SessionNotStartedException;
-use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Fusion\View\FusionView;
+use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Neos\Domain\Model\User;
 use Neos\Party\Domain\Service\PartyService;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
-use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto\SecondFactorDto;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
@@ -181,41 +181,42 @@ class BackendController extends AbstractModuleController
         $isAdministrator = $this->securityContext->hasRole('Neos.Neos:Administrator');
         $isOwner = $secondFactor->getAccount() === $account;
 
-        if ($isAdministrator || $isOwner) {
-            if (!$this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account)) {
-                $this->addFlashMessage(
-                    $this->translator->translateById(
-                        'module.index.delete.flashMessage.cannotRemoveLastSecondFactor',
-                        [],
-                        null,
-                        null,
-                        'Backend',
-                        'Sandstorm.NeosTwoFactorAuthentication'
-                    ),
-                    $this->translator->translateById(
-                        'module.index.delete.flashMessage.errorHeader',
-                        [],
-                        null,
-                        null,
-                        'Backend',
-                        'Sandstorm.NeosTwoFactorAuthentication'
-                    ),
-                    Message::SEVERITY_ERROR
-                );
-            } else {
-                $this->secondFactorRepository->remove($secondFactor);
-                $this->persistenceManager->persistAll();
-                $this->addFlashMessage(
-                    $this->translator->translateById(
-                        'module.index.delete.flashMessage.secondFactorDeleted',
-                        [],
-                        null,
-                        null,
-                        'Backend',
-                        'Sandstorm.NeosTwoFactorAuthentication'
-                    )
-                );
-            }
+        // Check, if user is allowed to remove second factor
+        if ($isAdministrator || ($isOwner && $this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account))) {
+            // User is admin or has more than one second factor
+            $this->secondFactorRepository->remove($secondFactor);
+            $this->persistenceManager->persistAll();
+            $this->addFlashMessage(
+                $this->translator->translateById(
+                    'module.index.delete.flashMessage.secondFactorDeleted',
+                    [],
+                    null,
+                    null,
+                    'Backend',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                )
+            );
+        } elseif ($isOwner) {
+            // User is owner (but not admin) and has only one second factor -> factor can not be deleted
+            $this->addFlashMessage(
+                $this->translator->translateById(
+                    'module.index.delete.flashMessage.cannotRemoveLastSecondFactor',
+                    [],
+                    null,
+                    null,
+                    'Backend',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                ),
+                $this->translator->translateById(
+                    'module.index.delete.flashMessage.errorHeader',
+                    [],
+                    null,
+                    null,
+                    'Backend',
+                    'Sandstorm.NeosTwoFactorAuthentication'
+                ),
+                Message::SEVERITY_ERROR
+            );
         }
 
         $this->redirect('index');

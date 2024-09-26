@@ -25,7 +25,7 @@ final class Version20240812091514 extends AbstractMigration
             "Migration can only be executed safely on '\Doctrine\DBAL\Platforms\MySqlPlatform,'."
         );
 
-        $this->addSql('ALTER TABLE sandstorm_neostwofactorauthentication_domain_model_secondfactor ADD creationdate DATETIME NOT NULL');
+        $this->addSql('ALTER TABLE sandstorm_neostwofactorauthentication_domain_model_secondfactor ADD creationdate DATETIME DEFAULT NULL');
     }
 
     public function down(Schema $schema): void

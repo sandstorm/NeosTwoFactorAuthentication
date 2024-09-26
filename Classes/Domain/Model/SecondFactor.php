@@ -2,6 +2,7 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain\Model;
 
+use DateTime;
 use Neos\Flow\Http\InvalidArgumentException;
 use Neos\Flow\Security\Account;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,10 +40,13 @@ class SecondFactor
     protected string $secret;
 
     /**
-     * @var \DateTime
-     * @ORM\Column(type="datetime", nullable=false)
+     * Introduced with version 1.4.0
+     * Nullable for backwards compatibility. Null values will be shown as '-' in backend module.
+     *
+     * @var DateTime|null
+     * @ORM\Column(type="datetime", nullable=true)
      */
-    protected \DateTime $creationDate;
+    protected DateTime|null $creationDate;
 
     /**
      * @return Account
@@ -100,12 +104,12 @@ class SecondFactor
         $this->secret = $secret;
     }
 
-    public function getCreationDate(): \DateTime
+    public function getCreationDate(): DateTime|null
     {
         return $this->creationDate;
     }
 
-    public function setCreationDate(\DateTime $creationDate): void
+    public function setCreationDate(DateTime $creationDate): void
     {
         $this->creationDate = $creationDate;
     }

@@ -3,7 +3,6 @@
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto;
 
 use Neos\Neos\Domain\Model\User;
-use Neos\Party\Domain\Model\Person;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 
 class SecondFactorDto

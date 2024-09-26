@@ -95,6 +95,7 @@ class LoginController extends ActionController
 
         $this->view->assignMultiple([
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
+            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'username' => $username,
             'site' => $currentSite,
             'flashMessages' => $this->flashMessageService
@@ -162,6 +163,7 @@ class LoginController extends ActionController
 
         $this->view->assignMultiple([
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
+            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'username' => $username,
             'site' => $currentSite,
             'secret' => $secret,

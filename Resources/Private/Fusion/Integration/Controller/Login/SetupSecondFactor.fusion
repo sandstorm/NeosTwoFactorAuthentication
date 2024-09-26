@@ -1,7 +1,9 @@
 Sandstorm.NeosTwoFactorAuthentication.LoginController.setupSecondFactor = Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage {
     site = ${site}
     styles = ${styles}
+    scripts = ${scripts}
     username = ${username}
     flashMessages = ${flashMessages}
     qrCode = ${qrCode}
+    secret = ${secret}
 }

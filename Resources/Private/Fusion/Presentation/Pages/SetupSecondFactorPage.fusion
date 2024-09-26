@@ -1,6 +1,7 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < prototype(Neos.Fusion:Component) {
     site = null
     styles = ${[]}
+    scripts = ${[]}
     username = ''
     flashMessages = ${[]}
 
@@ -77,9 +78,72 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                 <div class="neos-login-body neos">
                                     <Sandstorm.NeosTwoFactorAuthentication:Component.LoginFlashMessages flashMessages={props.flashMessages} />
                                     <Neos.Fusion.Form:Form form.target.action="setupSecondFactor">
-                                        <Neos.Fusion.Form:Hidden field.name="secret" field.value={secret}/>
                                         <div class="neos-control-group">
                                             <img src={qrCode} style="width: 100%; max-width: 400px"/>
+                                        </div>
+
+                                        <div class="neos-two-factor__secret-wrapper">
+                                            <Neos.Fusion.Form:Hidden attributes.id="secret" field.name="secret" field.value={secret}/>
+                                            <div class="neos-control-group neos-actions">
+                                                <button type="button" class="neos-span5 neos-pull-right neos-button neos-login-btn neos-two-factor__secret__show__button">
+                                                    {I18n.id('form.secret.show').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                                </button>
+                                            </div>
+
+                                            <dialog>
+                                                <div>
+                                                    <div class="neos-two-factor__secret">
+                                                        <p>
+                                                            {
+                                                                Array.join(
+                                                                    Array.map(
+                                                                        String.split(secret, ''),
+                                                                        char => Type.isNumeric(char) ? '<span class="neos-two-factor__secret__number">' + char + '</span>' : '<span>' + char + '</span>'
+                                                                    ),
+                                                                    ''
+                                                                )
+                                                            }
+                                                        </p>
+
+                                                        <div class="neos-two-factor__secret__overflow-indicator--left" aria-hidden="true">
+                                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                                                            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                            <path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256 246.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z"/>
+                                                          </svg>
+                                                        </div>
+                                                        <div class="neos-two-factor__secret__overflow-indicator--right" aria-hidden="true">
+                                                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                                                            <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                            <path d="M310.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L242.7 256 73.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z"/>
+                                                          </svg>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="neos-two-factor__dialog__actions neos-actions">
+                                                        <button type="button" class="neos-two-factor__secret__copy__button neos-button neos-login-btn">
+                                                            <span class="neos-two-factor__secret__copy__button__icon">
+                                                                <i>
+                                                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                                                    <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                                                                    <path d="M280 64l40 0c35.3 0 64 28.7 64 64l0 320c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 128C0 92.7 28.7 64 64 64l40 0 9.6 0C121 27.5 153.3 0 192 0s71 27.5 78.4 64l9.6 0zM64 112c-8.8 0-16 7.2-16 16l0 320c0 8.8 7.2 16 16 16l256 0c8.8 0 16-7.2 16-16l0-320c0-8.8-7.2-16-16-16l-16 0 0 24c0 13.3-10.7 24-24 24l-88 0-88 0c-13.3 0-24-10.7-24-24l0-24-16 0zm128-8a24 24 0 1 0 0-48 24 24 0 1 0 0 48z"/>
+                                                                  </svg>
+                                                                </i>
+                                                            </span>
+                                                            <span class="neos-two-factor__secret__copy__button__icon neos-two-factor__hidden">
+                                                                <i>
+                                                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+                                                                    <!--!Font Awesome Free 6.6.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M438.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L160 338.7 393.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/>
+                                                                  </svg>
+                                                                </i>
+                                                            </span>
+                                                            {I18n.id('form.secret.copy').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                                        </button>
+                                                        <button type="button" class="neos-two-factor__secret__close__button neos-button neos-login-btn">
+                                                            {I18n.id('form.secret.close').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </dialog>
                                         </div>
 
                                         <div class="neos-control-group">
@@ -113,16 +177,11 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                         </footer>
                     </div>
 
-                    <script>{"
-                        document.querySelector('form').addEventListener('submit', function() {
-                            document.querySelector('.neos-login-btn').classList.toggle('neos-hidden');
-                            document.querySelector('.neos-login-btn.neos-disabled').classList.toggle('neos-hidden');
-                        });
-                        try {
-                            document.querySelector('form[name=\"login\"] input[name=\"lastVisitedNode\"]').value = sessionStorage.getItem('Neos.Neos.lastVisitedNode');
-                        } catch(e) {}
-                    "}
-                    </script>
+                    <Neos.Fusion:Loop items={props.scripts}>
+                        <script @children="attributes.src">
+                          <Neos.Fusion:ResourceUri path={item}/>
+                        </script>
+                    </Neos.Fusion:Loop>
                 </body>
                 </html>
             `

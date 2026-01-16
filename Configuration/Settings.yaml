@@ -59,3 +59,6 @@ Sandstorm:
     enforce2FAForRoles: []
     # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
     issuerName: ''
+    # Time window for TOTP verification (number of adjacent 30-second periods to accept)
+    # 0 = strict (only current period, default), 1 = recommended (current + adjacent periods)
+    totpVerificationWindow: 0

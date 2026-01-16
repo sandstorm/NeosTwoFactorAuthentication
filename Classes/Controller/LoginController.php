@@ -83,6 +83,12 @@ class LoginController extends ActionController
     protected $translator;
 
     /**
+     * @Flow\InjectConfiguration(path="totpVerificationWindow", package="Sandstorm.NeosTwoFactorAuthentication")
+     * @var int|null
+     */
+    protected $totpVerificationWindow;
+
+    /**
      * This action decides which tokens are already authenticated
      * and decides which is next to authenticate
      *
@@ -184,7 +190,7 @@ class LoginController extends ActionController
      */
     public function createSecondFactorAction(string $secret, string $secondFactorFromApp): void
     {
-        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
+        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp, $this->totpVerificationWindow);
 
         if (!$isValid) {
             $this->addFlashMessage(
@@ -239,7 +245,7 @@ class LoginController extends ActionController
         /** @var SecondFactor[] $secondFactors */
         $secondFactors = $this->secondFactorRepository->findByAccount($account);
         foreach ($secondFactors as $secondFactor) {
-            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor);
+            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor, $this->totpVerificationWindow);
             if ($isValid) {
                 return true;
             }

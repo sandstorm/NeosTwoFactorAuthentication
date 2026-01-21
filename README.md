@@ -13,34 +13,47 @@ able to delete those token for the users again, in case they locked them self ou
 
 ![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
 
+## Versioning Scheme
+
+| Package Version | Neos / Flow Version | Released? | Supported | Remarks       |
+| --------------- | ------------------- | --------- | --------- | ------------- |
+| 1.x             | 9.x, 8.x, 7.x, 3.x  | ✅        | ✅        | `main` branch |
+
 ## Settings
+
 ### Enforce 2FA
+
 To enforce the setup and usage of 2FA you can add the following to your `Settings.yaml`.
+
 ```yml
 Sandstorm:
-    NeosTwoFactorAuthentication:
-        # enforce 2FA for all users
-        enforceTwoFactorAuthentication: true
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for all users
+    enforceTwoFactorAuthentication: true
 ```
+
 With this setting, no user can login into the CMS without setting up a second factor first.
 
 In addition, you can enforce 2FA for specific authentication providers and/or roles by adding following to your `Settings.yaml`
+
 ```yml
 Sandstorm:
-    NeosTwoFactorAuthentication:
-      # enforce 2FA for specific authentication providers
-      enforce2FAForAuthenticationProviders : ['Neos.Neos:Backend']
-      # enforce 2FA for specific roles
-      enforce2FAForRoles: ['Neos.Neos:Administrator']  
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for specific authentication providers
+    enforce2FAForAuthenticationProviders: ["Neos.Neos:Backend"]
+    # enforce 2FA for specific roles
+    enforce2FAForRoles: ["Neos.Neos:Administrator"]
 ```
 
 ### Issuer Naming
+
 To override the default sitename as issuer label, you can define one via the configuration settings:
+
 ```yml
 Sandstorm:
-    NeosTwoFactorAuthentication:
-        # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
-        issuerName: ''
+  NeosTwoFactorAuthentication:
+    # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
+    issuerName: ""
 ```
 
 ## Tested 2FA apps
@@ -48,19 +61,23 @@ Sandstorm:
 Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 
 **iOS**:
-* Google Authenticator (used for development) ✅
-* Authy ✅
-* Microsoft Authenticator ✅
-* 1Password ✅
+
+- Google Authenticator (used for development) ✅
+- Authy ✅
+- Microsoft Authenticator ✅
+- 1Password ✅
 
 **Android**:
-* Google Authenticator ✅
-* Microsoft Authenticator ✅
-* Authy ✅
+
+- Google Authenticator ✅
+- Microsoft Authenticator ✅
+- Authy ✅
 
 ## How we did it
-* We introduced a new middleware `SecondFactorMiddleware` which handles 2FA on a Neos `Session` basis.
-  * This is an overview of the checks the `SecondFactorMiddleware` does for any request:
+
+- We introduced a new middleware `SecondFactorMiddleware` which handles 2FA on a Neos `Session` basis.
+  - This is an overview of the checks the `SecondFactorMiddleware` does for any request:
+
     ```
                             ┌─────────────────────────────┐
                             │           Request           │
@@ -114,16 +131,15 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
             └───────────────────────────────────────────────────────────────────┘
                                               ▼
                                      ... middlewares ...
-     
+
     ```
-  
 
 ## When updating Neos, those part will likely crash:
 
-* the login screen for the second factor is a hard copy of the login screen from the `Neos.Neos` package
-  * just replaced the username/password form with the form for the second factor
-  * maybe has to be replaced when neos gets updated
-* hopefully the rest of this package is solid enough to survive the next mayor Neos versions ;)
+- the login screen for the second factor is a hard copy of the login screen from the `Neos.Neos` package
+  - just replaced the username/password form with the form for the second factor
+  - maybe has to be replaced when neos gets updated
+- hopefully the rest of this package is solid enough to survive the next mayor Neos versions ;)
 
 ## Why not ...?
 
@@ -131,7 +147,7 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 
 > This actually has been the approach up until version 1.0.5.
 
-One issue with this is the fact, that we _want_ the user to be logged in with that token via the 
+One issue with this is the fact, that we _want_ the user to be logged in with that token via the
 `PersistedUsernamePasswordProvider`, but at the same time to _not be logged in_ with that token as long as 2FA is
 not authenticated as well.
 We found it hard to find a secure way to model the 2FA setup solution when 2FA is enforced, but the user does not have a
@@ -150,6 +166,7 @@ if ($this->authenticationStrategy === Context::AUTHENTICATE_ALL_TOKENS) {
     throw new AuthenticationRequiredException('Could not authenticate all tokens, but authenticationStrategy was set to "all".', 1222203912);
 }
 ```
+
 )
 
 This leads to an error where the `AuthenticationProviderManager` throws exceptions before the user is able to enter any

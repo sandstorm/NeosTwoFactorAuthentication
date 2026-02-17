@@ -11,7 +11,7 @@
         "neos/fusion": "*",
         "neos/fusion-afx": "*",
         "neos/fusion-form": "*",
-        "spomky-labs/otphp": "^10.0",
+        "spomky-labs/otphp": "^11.0",
         "chillerlan/php-qrcode": "^4.3"
     },
     "autoload": {

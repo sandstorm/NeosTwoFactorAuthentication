@@ -35,10 +35,10 @@ class TOTPService
         return TOTP::create();
     }
 
-    public static function checkIfOtpIsValid(string $secret, string $submittedOtp): bool
+    public static function checkIfOtpIsValid(string $secret, string $submittedOtp, ?int $window = null): bool
     {
         $otp = TOTP::create($secret);
-        return $otp->verify($submittedOtp);
+        return $otp->verify($submittedOtp, null, $window);
     }
 
     public function generateQRCodeForTokenAndAccount(TOTP $otp, Account $account): string

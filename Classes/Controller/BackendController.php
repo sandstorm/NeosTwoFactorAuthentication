@@ -71,6 +71,12 @@ class BackendController extends AbstractModuleController
      */
     protected $translator;
 
+    /**
+     * @Flow\InjectConfiguration(path="totpVerificationWindow", package="Sandstorm.NeosTwoFactorAuthentication")
+     * @var int|null
+     */
+    protected $totpVerificationWindow;
+
     protected $defaultViewObjectName = FusionView::class;
 
     /**
@@ -139,7 +145,7 @@ class BackendController extends AbstractModuleController
      */
     public function createAction(string $secret, string $secondFactorFromApp): void
     {
-        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
+        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp, $this->totpVerificationWindow);
 
         if (!$isValid) {
             $this->addFlashMessage(

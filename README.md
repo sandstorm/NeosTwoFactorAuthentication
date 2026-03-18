@@ -56,6 +56,18 @@ Sandstorm:
     issuerName: ""
 ```
 
+### TOTP Verification Window
+To allow for clock drift and network latency, you can configure a time window for TOTP verification:
+```yml
+Sandstorm:
+    NeosTwoFactorAuthentication:
+        # Number of adjacent 30-second periods to accept
+        # 0 = strict (only current period, default)
+        # 1 = recommended (current + adjacent periods, ~90 second tolerance)
+        totpVerificationWindow: 1
+```
+Setting this to `1` is recommended as it prevents authentication failures caused by slight clock differences between the user's device and the server, or delays when entering the code.
+
 ## Tested 2FA apps
 
 Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!

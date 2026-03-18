@@ -16,8 +16,9 @@ able to delete those token for the users again, in case they locked them self ou
 ## Versioning Scheme
 
 | Package Version | Neos / Flow Version | Released? | Supported | Remarks       |
-| --------------- | ------------------- | --------- | --------- | ------------- |
-| 1.x             | 9.x, 8.x, 7.x, 3.x  | ✅        | ✅        | `main` branch |
+| --------------- | ------------------- | --------- | --------- |---------------|
+| 2.x             | 9.x, 8.x, 7.x       | ✅        | ✅        | `main` branch |
+| 1.x             | 9.x, 8.x, 7.x, 3.x  | ✅        |           |               |
 
 ## Settings
 

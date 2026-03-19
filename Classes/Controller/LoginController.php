@@ -228,6 +228,29 @@ class LoginController extends ActionController
     }
 
     /**
+     * @throws StopActionException
+     */
+    public function cancelLoginAction(): void
+    {
+        $this->secondFactorSessionStorageService->cancelLoginAttempt();
+
+        $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
+    }
+
+    /**
+     * @return array
+     * @throws InvalidConfigurationTypeException
+     */
+    protected function getNeosSettings(): array
+    {
+        $configurationManager = $this->objectManager->get(ConfigurationManager::class);
+        return $configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Neos'
+        );
+    }
+
+    /**
      * Check if the given token matches any registered second factor
      *
      * @param string $enteredSecondFactor
@@ -246,18 +269,5 @@ class LoginController extends ActionController
         }
 
         return false;
-    }
-
-    /**
-     * @return array
-     * @throws InvalidConfigurationTypeException
-     */
-    protected function getNeosSettings(): array
-    {
-        $configurationManager = $this->objectManager->get(ConfigurationManager::class);
-        return $configurationManager->getConfiguration(
-            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
-            'Neos.Neos'
-        );
     }
 }

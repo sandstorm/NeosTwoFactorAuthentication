@@ -36,3 +36,12 @@
       '@action': 'createSecondFactor'
       '@format': 'html'
   httpMethods: ['POST']
+
+- name: 'Sandstorm Two Factor Authentication - Cancel Login'
+  uriPattern: 'neos/second-factor-cancel-login'
+  defaults:
+      '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+      '@controller': 'Login'
+      '@action': 'cancelLogin'
+      '@format': 'html'
+  httpMethods: ['POST']

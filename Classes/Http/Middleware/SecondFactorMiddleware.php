@@ -20,7 +20,9 @@ use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageServ
 
 class SecondFactorMiddleware implements MiddlewareInterface
 {
+    // TODO: duplication of information - actually there is quite some duplicated information here (like Controller Action names, Route config etc)
     const LOGGING_PREFIX = 'Sandstorm/NeosTwoFactorAuthentication: ';
+    const SECOND_FACTOR_PACKAGE_KEY = 'Sandstorm.NeosTwoFactorAuthentication';
     const SECOND_FACTOR_LOGIN_URI = '/neos/second-factor-login';
     const SECOND_FACTOR_SETUP_URI = '/neos/second-factor-setup';
 
@@ -143,6 +145,15 @@ class SecondFactorMiddleware implements MiddlewareInterface
         if (!$isAuthenticated) {
             $this->log('Not authenticated on "Neos.Neos:Backend" authentication provider, skipping second factor.');
 
+            return $handler->handle($request);
+        }
+
+        $routingMatchResults = $request->getAttribute(ServerRequestAttributes::ROUTING_RESULTS) ?? [];
+        $requestAction = $routingMatchResults['@action'] ?? '';
+        $requestPackage = $routingMatchResults['@package'] ?? '';
+
+        // If login cancellation is requested - do it
+        if ($requestPackage === $this::SECOND_FACTOR_PACKAGE_KEY && $requestAction === 'cancelLogin') {
             return $handler->handle($request);
         }
 

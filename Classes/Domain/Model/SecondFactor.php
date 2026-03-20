@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Http\InvalidArgumentException;
 use Neos\Flow\Security\Account;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\SecondFactorType;
 
 /**
  * Store the secrets needed for two factor authentication
@@ -17,9 +18,6 @@ class SecondFactor
 {
     // For apps like the google authenticator
     const TYPE_TOTP = 1;
-
-    // using the webauthn standard supported by most modern browsers
-    const TYPE_PUBLIC_KEY = 2;
 
     /**
      * @var Account
@@ -50,14 +48,10 @@ class SecondFactor
 
     public static function typeToString(int $type): string
     {
-        switch ($type) {
-            case self::TYPE_TOTP:
-                return 'OTP';
-            case self::TYPE_PUBLIC_KEY:
-                return 'Public Key';
-            default:
-                throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
-        }
+        return match ($type) {
+            self::TYPE_TOTP => 'OTP',
+            default => throw new InvalidArgumentException('Unsupported second factor type with index ' . $type),
+        };
     }
 
     public function getAccount(): Account

@@ -2,10 +2,6 @@
 
 namespace Sandstorm\NeosTwoFactorAuthentication\Controller;
 
-/*
- * This file is part of the Sandstorm.NeosTwoFactorAuthentication package.
- */
-
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
@@ -15,15 +11,14 @@ use Neos\Flow\Mvc\Controller\ActionController;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
-use Neos\Flow\Security\Account;
 use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Flow\Session\Exception\SessionNotStartedException;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
-use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 
@@ -35,52 +30,49 @@ class LoginController extends ActionController
     protected $defaultViewObjectName = FusionView::class;
 
     /**
-     * @var SecurityContext
      * @Flow\Inject
      */
-    protected $securityContext;
-
-    /**
-     * @var DomainRepository
-     * @Flow\Inject
-     */
-    protected $domainRepository;
+    protected SecurityContext $securityContext;
 
     /**
      * @Flow\Inject
-     * @var SiteRepository
      */
-    protected $siteRepository;
+    protected DomainRepository $domainRepository;
 
     /**
      * @Flow\Inject
-     * @var FlashMessageService
      */
-    protected $flashMessageService;
-
-    /**
-     * @var SecondFactorRepository
-     * @Flow\Inject
-     */
-    protected $secondFactorRepository;
+    protected SiteRepository $siteRepository;
 
     /**
      * @Flow\Inject
-     * @var SecondFactorSessionStorageService
      */
-    protected $secondFactorSessionStorageService;
+    protected FlashMessageService $flashMessageService;
 
     /**
      * @Flow\Inject
-     * @var TOTPService
      */
-    protected $tOTPService;
+    protected SecondFactorRepository $secondFactorRepository;
 
     /**
      * @Flow\Inject
-     * @var Translator
      */
-    protected $translator;
+    protected SecondFactorSessionStorageService $secondFactorSessionStorageService;
+
+    /**
+     * @Flow\Inject
+     */
+    protected TOTPService $tOTPService;
+
+    /**
+     * @Flow\Inject
+     */
+    protected SecondFactorService $secondFactorService;
+
+    /**
+     * @Flow\Inject
+     */
+    protected Translator $translator;
 
     /**
      * This action decides which tokens are already authenticated
@@ -112,7 +104,7 @@ class LoginController extends ActionController
     {
         $account = $this->securityContext->getAccount();
 
-        $isValidOtp = $this->enteredTokenMatchesAnySecondFactor($otp, $account);
+        $isValidOtp = $this->secondFactorService->validateOtpForAccount($otp, $account);
 
         if ($isValidOtp) {
             $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
@@ -175,9 +167,6 @@ class LoginController extends ActionController
     }
 
     /**
-     * @param string $secret
-     * @param string $secondFactorFromApp
-     * @return void
      * @throws IllegalObjectTypeException
      * @throws SessionNotStartedException
      * @throws StopActionException
@@ -238,7 +227,6 @@ class LoginController extends ActionController
     }
 
     /**
-     * @return array
      * @throws InvalidConfigurationTypeException
      */
     protected function getNeosSettings(): array
@@ -250,24 +238,4 @@ class LoginController extends ActionController
         );
     }
 
-    /**
-     * Check if the given token matches any registered second factor
-     *
-     * @param string $enteredSecondFactor
-     * @param Account $account
-     * @return bool
-     */
-    private function enteredTokenMatchesAnySecondFactor(string $enteredSecondFactor, Account $account): bool
-    {
-        /** @var SecondFactor[] $secondFactors */
-        $secondFactors = $this->secondFactorRepository->findByAccount($account);
-        foreach ($secondFactors as $secondFactor) {
-            $isValid = TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor);
-            if ($isValid) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 }

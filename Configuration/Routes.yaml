@@ -1,3 +1,21 @@
+- name: 'Sandstorm Two Factor Authentication - API Status'
+  uriPattern: 'neos/api/second-factor-status'
+  httpMethods: ['GET']
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@controller': 'ReloginApi'
+    '@action': 'secondFactorStatus'
+    '@format': 'json'
+
+- name: 'Sandstorm Two Factor Authentication - API Verify'
+  uriPattern: 'neos/api/second-factor-verify'
+  httpMethods: ['POST']
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@controller': 'ReloginApi'
+    '@action': 'verifySecondFactor'
+    '@format': 'json'
+
 - name: 'Sandstorm Two Factor Authentication'
   uriPattern: 'neos/second-factor-login'
   httpMethods: ['GET']

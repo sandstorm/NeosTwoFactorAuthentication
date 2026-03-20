@@ -7,16 +7,18 @@ use Neos\Flow\Session\Exception\SessionNotStartedException;
 use Neos\Flow\Session\SessionManagerInterface;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 
+/**
+ * @Flow\Scope("singleton")
+ */
 class SecondFactorSessionStorageService
 {
-    const SESSION_OBJECT_ID = 'Sandstorm/NeosTwoFactorAuthentication';
-    const SESSION_OBJECT_AUTH_STATUS = 'authenticationStatus';
+    const string SESSION_OBJECT_ID = 'Sandstorm/NeosTwoFactorAuthentication';
+    const string SESSION_OBJECT_AUTH_STATUS = 'authenticationStatus';
 
     /**
      * @Flow\Inject
-     * @var SessionManagerInterface
      */
-    protected $sessionManager;
+    protected SessionManagerInterface $sessionManager;
 
     /**
      * @throws SessionNotStartedException

@@ -30,59 +30,51 @@ use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 class BackendController extends AbstractModuleController
 {
     /**
-     * @var SecondFactorRepository
      * @Flow\Inject
      */
-    protected $secondFactorRepository;
-
-    /**
-     * @var Context
-     * @Flow\Inject
-     */
-    protected $securityContext;
-
-    /**
-     * @var PartyService
-     * @Flow\Inject
-     */
-    protected $partyService;
+    protected SecondFactorRepository $secondFactorRepository;
 
     /**
      * @Flow\Inject
-     * @var FlashMessageService
      */
-    protected $flashMessageService;
+    protected Context $securityContext;
 
     /**
      * @Flow\Inject
-     * @var SecondFactorSessionStorageService
      */
-    protected $secondFactorSessionStorageService;
+    protected PartyService $partyService;
 
     /**
      * @Flow\Inject
-     * @var TOTPService
      */
-    protected $tOTPService;
+    protected FlashMessageService $flashMessageService;
 
     /**
      * @Flow\Inject
-     * @var Translator
      */
-    protected $translator;
+    protected SecondFactorSessionStorageService $secondFactorSessionStorageService;
+
+    /**
+     * @Flow\Inject
+     */
+    protected TOTPService $tOTPService;
+
+    /**
+     * @Flow\Inject
+     */
+    protected Translator $translator;
 
     protected $defaultViewObjectName = FusionView::class;
 
     /**
      * @Flow\Inject
-     * @var SecondFactorService
      */
-    protected $secondFactorService;
+    protected SecondFactorService $secondFactorService;
 
     /**
      * used to list all second factors of the current user
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $account = $this->securityContext->getAccount();
 
@@ -174,10 +166,6 @@ class BackendController extends AbstractModuleController
         $this->redirect('index');
     }
 
-    /**
-     * @param SecondFactor $secondFactor
-     * @return void
-     */
     public function deleteAction(SecondFactor $secondFactor): void
     {
         $account = $this->securityContext->getAccount();
@@ -227,7 +215,6 @@ class BackendController extends AbstractModuleController
     }
 
     /**
-     * @return array
      * @throws InvalidConfigurationTypeException
      */
     protected function getNeosSettings(): array

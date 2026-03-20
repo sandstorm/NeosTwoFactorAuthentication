@@ -90,9 +90,22 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                 </div>
 
                 <script>{"
-                                    document.querySelector('form').addEventListener('submit', function() {
-                                        document.querySelector('.neos-login-btn').classList.toggle('neos-hidden');
-                                        document.querySelector('.neos-login-btn.neos-disabled').classList.toggle('neos-hidden');
+                                    document.querySelector('form').addEventListener('submit', function(event) {
+                                        if (event.submitter && event.submitter.id === 'cancelLogin') {
+                                            event.target.querySelector('#submitLogin').disabled = 'disabled';
+                                            event.target.querySelector('#cancelLogin').disabled = 'disabled';
+
+                                            event.target.querySelector('#submitLogin').classList.add('neos-disabled');
+                                            event.target.querySelector('#cancelLogin').classList.add('neos-hidden');
+                                            event.target.querySelector('#cancelLoginIndicator').classList.remove('neos-hidden');
+                                        } else {
+                                            event.target.querySelector('#submitLogin').disabled = 'disabled';
+                                            event.target.querySelector('#cancelLogin').disabled = 'disabled';
+
+                                            event.target.querySelector('#submitLogin').classList.add('neos-hidden');
+                                            event.target.querySelector('#cancelLogin').classList.add('neos-disabled');
+                                            event.target.querySelector('#submitLoginIndicator').classList.remove('neos-hidden');
+                                        }
                                     });
                                     try {
                                         document.querySelector('form[name=\"login\"] input[name=\"lastVisitedNode\"]').value = sessionStorage.getItem('Neos.Neos.lastVisitedNode');

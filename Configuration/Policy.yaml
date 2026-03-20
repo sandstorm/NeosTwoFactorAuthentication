@@ -8,6 +8,9 @@ privilegeTargets:
     'Sandstorm.NeosTwoFactorAuthentication:BackendModule':
       matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\BackendController->(.*)Action())'
 
+    'Sandstorm.NeosTwoFactorAuthentication:ReloginApi':
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\ReloginApiController->(.*)Action())'
+
 roles:
   'Neos.Neos:AbstractEditor':
     privileges:
@@ -16,6 +19,9 @@ roles:
         permission: GRANT
       -
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
+        permission: GRANT
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:ReloginApi'
         permission: GRANT
 
   'Neos.Neos:Administrator':

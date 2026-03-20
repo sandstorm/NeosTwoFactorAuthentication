@@ -159,3 +159,18 @@
 .neos-two-factor__secret-wrapper ::-webkit-scrollbar-track {
   background-color: initial;
 }
+
+.neos-two-factor__authentication-form .neos-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.neos-two-factor__authentication-form .neos-actions button {
+    margin-left: 0;
+}
+
+.neos-two-factor__authentication-form .neos-actions button.neos-login-btn.neos-button-warning {
+    background-color: #F89406;
+    color: #fff;
+}

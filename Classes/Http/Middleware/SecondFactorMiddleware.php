@@ -20,37 +20,35 @@ use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageServ
 
 class SecondFactorMiddleware implements MiddlewareInterface
 {
+    // TODO: duplication of information - actually there is quite some duplicated information here (like Controller Action names, Route config etc)
     const LOGGING_PREFIX = 'Sandstorm/NeosTwoFactorAuthentication: ';
+    const SECOND_FACTOR_PACKAGE_KEY = 'Sandstorm.NeosTwoFactorAuthentication';
     const SECOND_FACTOR_LOGIN_URI = '/neos/second-factor-login';
     const SECOND_FACTOR_SETUP_URI = '/neos/second-factor-setup';
+    const SECOND_FACTOR_API_PREFIX = '/neos/api/second-factor-';
 
     /**
      * @Flow\Inject
-     * @var SecurityContext
      */
-    protected $securityContext;
+    protected SecurityContext $securityContext;
 
     /**
      * @Flow\Inject
-     * @var ActionRequestFactory
      */
-    protected $actionRequestFactory;
+    protected ActionRequestFactory $actionRequestFactory;
 
     /**
-     * @Flow\Inject(name="Neos.Flow:SecurityLogger")
-     * @var LoggerInterface
+     * @Flow\Inject(name="Neos.Flow:SecurityLogger", lazy=false)
      */
-    protected $securityLogger;
-
-    /**
-     * @Flow\Inject
-     * @var SecondFactorSessionStorageService
-     */
-    protected $secondFactorSessionStorageService;
+    protected LoggerInterface $securityLogger;
 
     /**
      * @Flow\Inject
-     * @var SecondFactorService
+     */
+    protected SecondFactorSessionStorageService $secondFactorSessionStorageService;
+
+    /**
+     * @Flow\Inject
      */
     protected SecondFactorService $secondFactorService;
 
@@ -118,7 +116,6 @@ class SecondFactorMiddleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-
         $authenticationTokens = $this->securityContext->getAuthenticationTokens();
 
         // 1. Skip, if no authentication tokens are present, because we're not on a secured route.
@@ -146,6 +143,15 @@ class SecondFactorMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
+        $routingMatchResults = $request->getAttribute(ServerRequestAttributes::ROUTING_RESULTS) ?? [];
+        $requestAction = $routingMatchResults['@action'] ?? '';
+        $requestPackage = $routingMatchResults['@package'] ?? '';
+
+        // If login cancellation is requested - do it
+        if ($requestPackage === $this::SECOND_FACTOR_PACKAGE_KEY && $requestAction === 'cancelLogin') {
+            return $handler->handle($request);
+        }
+
         $account = $this->securityContext->getAccount();
 
         $isEnabledForAccount = $this->secondFactorService->isSecondFactorEnabledForAccount($account);
@@ -161,6 +167,13 @@ class SecondFactorMiddleware implements MiddlewareInterface
         $this->secondFactorSessionStorageService->initializeTwoFactorSessionObject();
 
         $authenticationStatus = $this->secondFactorSessionStorageService->getAuthenticationStatus();
+
+        // Allow 2FA API routes through (used by the Neos UI relogin plugin)
+        $requestPath = $request->getUri()->getPath();
+        if (str_starts_with($requestPath, self::SECOND_FACTOR_API_PREFIX)) {
+            // Request will be handled by ReloginApiController
+            return $handler->handle($request);
+        }
 
         // 5. Skip, if second factor is already authenticated.
         if ($authenticationStatus === AuthenticationStatus::AUTHENTICATED) {

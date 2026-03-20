@@ -9,7 +9,11 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep)
     }
 
     renderer = afx`
-        <Neos.Fusion.Form:Form form.target.action="checkSecondFactor" form.target.controller="Login">
+        <Neos.Fusion.Form:Form
+            attributes.class="neos-two-factor__authentication-form"
+            form.target.action="checkSecondFactor"
+            form.target.controller="Login"
+        >
             <fieldset>
                 <div class="neos-controls">
                     <Neos.Fusion.Form:Input
@@ -25,11 +29,31 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep)
                 </div>
 
                 <div class="neos-actions">
-                    <Neos.Fusion.Form:Button attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn">
+                    <Neos.Fusion.Form:Button
+                        attributes.id="submitLogin"
+                        attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn"
+                    >
                         {I18n.id('login').value('Login').package('Neos.Neos').source('Main').translate()}
                     </Neos.Fusion.Form:Button>
-                    <Neos.Fusion.Form:Button attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn neos-disabled neos-hidden">
+                    <Neos.Fusion.Form:Button
+                        attributes.id="submitLoginIndicator"
+                        attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn neos-disabled neos-hidden"
+                    >
                         {I18n.id('authenticating').value('Authenticating').package('Neos.Neos').source('Main').translate()} <span class="neos-ellipsis"></span>
+                    </Neos.Fusion.Form:Button>
+                    <Neos.Fusion.Form:Button
+                        attributes.id="cancelLogin"
+                        attributes.formaction="/neos/second-factor-cancel-login"
+                        attributes.formnovalidate="true"
+                        attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn neos-button-warning"
+                    >
+                        {I18n.id('cancel').value('Cancel').package('Neos.Neos').source('Main').translate()}
+                    </Neos.Fusion.Form:Button>
+                    <Neos.Fusion.Form:Button
+                        attributes.id="cancelLoginIndicator"
+                        attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn neos-disabled neos-hidden neos-button-warning"
+                    >
+                        {I18n.id('cancel').value('Cancel').package('Neos.Neos').source('Main').translate()} <span class="neos-ellipsis"></span>
                     </Neos.Fusion.Form:Button>
                 </div>
 

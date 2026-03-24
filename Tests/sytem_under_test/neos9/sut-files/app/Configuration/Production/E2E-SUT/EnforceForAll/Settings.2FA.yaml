@@ -1,0 +1,4 @@
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for all users
+    enforceTwoFactorAuthentication: true

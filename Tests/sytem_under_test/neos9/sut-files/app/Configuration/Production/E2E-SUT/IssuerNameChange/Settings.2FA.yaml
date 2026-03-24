@@ -1,0 +1,4 @@
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
+    issuerName: 'Test Issuer'

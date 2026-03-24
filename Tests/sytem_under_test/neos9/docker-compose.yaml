@@ -2,10 +2,10 @@ services:
   neos:
     user: www-data:www-data
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../../../
+      dockerfile: Tests/sytem_under_test/neos9/Dockerfile
     environment:
-      FLOW_CONTEXT: 'Production/E2E-SUT'
+      FLOW_CONTEXT: '${FLOW_CONTEXT:-Production/E2E-SUT}'
       # DB connection
       DB_NEOS_HOST: 'db'
       DB_NEOS_PORT: 3306

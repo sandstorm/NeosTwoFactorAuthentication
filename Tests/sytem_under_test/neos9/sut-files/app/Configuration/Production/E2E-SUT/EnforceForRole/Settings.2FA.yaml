@@ -1,0 +1,4 @@
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for specific roles (e.g. Neos.Neos:Administrator)
+    enforce2FAForRoles: ['Neos.Neos:Administrator']

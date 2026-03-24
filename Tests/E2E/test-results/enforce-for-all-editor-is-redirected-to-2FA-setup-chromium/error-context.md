@@ -1,0 +1,327 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e4]:
+  - generic [ref=e5]:
+    - generic [ref=e6]:
+      - button "Menu" [ref=e7] [cursor=pointer]
+      - img [ref=e11]
+    - generic [ref=e16]:
+      - button "In-Place" [ref=e19] [cursor=pointer]:
+        - img
+        - generic [ref=e20]: In-Place
+        - img
+      - button "English (US)" [ref=e23] [cursor=pointer]:
+        - button "English (US)" [ref=e26]:
+          - generic [ref=e27]:
+            - img
+          - link "English (US)" [ref=e28]:
+            - /url: http://localhost:8081/neos/content?node=%2Fsites%2Fneosdemo%3Blanguage%3Den_US
+        - img
+      - button "E2E Editor" [ref=e31] [cursor=pointer]:
+        - img
+        - text: E2E Editor
+        - img
+      - generic [ref=e32]:
+        - button "Published - live" [disabled] [ref=e33]
+        - button [ref=e34] [cursor=pointer]:
+          - img
+  - generic [ref=e36]:
+    - button "Display Keyboard Shortcuts" [ref=e37] [cursor=pointer]:
+      - img [ref=e38]
+    - link "Show preview" [ref=e40] [cursor=pointer]:
+      - /url: http://localhost:8081/neos/preview?node%5B__contextNodePath%5D=%2Fsites%2Fneosdemo%40user-e2eeditor%3Blanguage%3Den_US
+      - img [ref=e41]
+    - button "Activate Fullscreen edit mode" [ref=e43] [cursor=pointer]:
+      - img [ref=e44]
+  - iframe [ref=e48]:
+    - generic [active] [ref=f1e1]:
+      - banner [ref=f1e2]:
+        - generic [ref=f1e3]:
+          - link [ref=f1e4] [cursor=pointer]:
+            - /url: /neos/preview?node%5B__contextNodePath%5D=%2Fsites%2Fneosdemo%40user-e2eeditor%3Blanguage%3Den_US
+            - img [ref=f1e5]
+          - navigation
+          - button "Open menu" [ref=f1e11] [cursor=pointer]:
+            - generic [ref=f1e12]: Open menu
+            - img [ref=f1e13]
+          - navigation [ref=f1e15]:
+            - button "English (US)" [ref=f1e16] [cursor=pointer]:
+              - text: English (US)
+              - img [ref=f1e17]
+      - heading "Welcome to the Neos CMS demo" [level=1] [ref=f1e22]:
+        - textbox "Rich Text Editor, main" [ref=f1e23]
+      - main [ref=f1e24]:
+        - generic [ref=f1e25]:
+          - generic [ref=f1e26]:
+            - generic [ref=f1e27]:
+              - heading "Imagine this..." [level=2] [ref=f1e28]:
+                - textbox "Rich Text Editor, main" [ref=f1e29]
+              - textbox "Rich Text Editor, main" [ref=f1e31]:
+                - paragraph [ref=f1e32]: In only a few years from now, the world will have entirely new cities. Cities where development has not even started. Cities that can draw from all we know about liveability and functionality.
+                - paragraph [ref=f1e33]: "The same goes for websites. Major websites will be built with the tools we’re constructing today. But we don't know how they will be like. Just think of how different sites were 3 years ago. For both cities and websites, one basic rule counts: Things are constantly changing and can never be fully anticipated."
+                - paragraph [ref=f1e34]: The inspiration from urban planning permeates our UX master plan, giving us crucial guidelines for structuring everything we know - and making room for all the future change we don’t know.
+            - generic [ref=f1e35]:
+              - heading "Power when you need it" [level=2] [ref=f1e36]:
+                - textbox "Rich Text Editor, main" [ref=f1e37]
+              - textbox "Rich Text Editor, main" [ref=f1e39]:
+                - paragraph [ref=f1e40]: The distribution of power in a city makes sure that everyone gets what they need. You don’t power a shed in the way you power a nuclear plant. The ultra-simple editing makes editors center their attention on content. If you need to add SEO data next to the content, Neos has an inspector that opens up for that kind of functionality. Just a bit more power, one step at a time...
+                - paragraph [ref=f1e41]: If you need more, the inspector will be expandable to the full backend screen providing the user with all the options. That’s not enough? Create custom backend modules. And if even that's not enough, underlying Neos, we have Flow - a first-class web framework that enables you to build web applications that integrate with your other systems.
+          - generic [ref=f1e42]:
+            - generic [ref=f1e43]:
+              - heading "Create an account and access the backend" [level=2] [ref=f1e44]:
+                - textbox "Rich Text Editor, main" [ref=f1e45]:
+                  - generic [ref=f1e46]: Create an account and access the backend
+              - textbox "Rich Text Editor, main" [ref=f1e48]:
+                - paragraph [ref=f1e49]: Try out our latest development of the Neos user interface. Get a first impression of CKEditor, the content editor, and try out the simple publishing mechanism based on workspaces.
+                - paragraph [ref=f1e50]: The registration form is also an example of a "Plugin"-element.
+            - generic [ref=f1e53]:
+              - group [ref=f1e54]:
+                - generic [ref=f1e55]:
+                  - generic [ref=f1e56]: Username
+                  - textbox "Username" [ref=f1e57]
+                  - generic [ref=f1e58]: (lowercase letters and numbers only)
+                - generic [ref=f1e59]:
+                  - generic [ref=f1e60]: Password
+                  - textbox "Password" [ref=f1e61]
+              - button "Submit" [ref=f1e62] [cursor=pointer]
+      - contentinfo [ref=f1e64]:
+        - navigation [ref=f1e65]:
+          - link "Contribute" [ref=f1e66] [cursor=pointer]:
+            - /url: /neos/preview?node%5B__contextNodePath%5D=%2Fsites%2Fneosdemo%2Fcontribute%40user-e2eeditor%3Blanguage%3Den_US
+          - link "Documentation & Support" [ref=f1e67] [cursor=pointer]:
+            - /url: /neos/preview?node%5B__contextNodePath%5D=%2Fsites%2Fneosdemo%2Fdocumentation%40user-e2eeditor%3Blanguage%3Den_US
+          - link "Download" [ref=f1e68] [cursor=pointer]:
+            - /url: /neos/preview?node%5B__contextNodePath%5D=%2Fsites%2Fneosdemo%2Fdownload%40user-e2eeditor%3Blanguage%3Den_US
+        - textbox "Rich Text Editor, main" [ref=f1e72]:
+          - paragraph [ref=f1e73]: Powered by Neos & Flow
+  - generic [ref=e53]: "UI version: 8.4.3"
+  - button "Document Tree" [ref=e54] [cursor=pointer]:
+    - button "Navigate" [ref=e55]:
+      - img [ref=e56]
+    - text: Document Tree
+  - generic [ref=e58]:
+    - generic [ref=e59]:
+      - generic [ref=e62]:
+        - button "Create new" [ref=e63] [cursor=pointer]:
+          - img [ref=e64]
+        - button "Hide / Unhide" [disabled] [ref=e66]:
+          - img [ref=e67]
+        - button "Copy" [ref=e69] [cursor=pointer]:
+          - img [ref=e70]
+        - button "Cut" [disabled] [ref=e72]:
+          - img [ref=e73]
+        - button "Paste" [disabled] [ref=e75]:
+          - img [ref=e76]
+        - button "Delete" [disabled] [ref=e78]:
+          - img [ref=e79]
+        - button "Refresh" [ref=e81] [cursor=pointer]:
+          - img [ref=e82]
+      - button [ref=e84] [cursor=pointer]:
+        - img [ref=e85]
+      - tree [ref=e87]:
+        - treeitem "Home" [ref=e88]:
+          - button "Collapse All" [ref=e89] [cursor=pointer]:
+            - img [ref=e90]
+          - treeitem "Home" [expanded] [ref=e92]:
+            - generic [ref=e94]:
+              - button "Home" [ref=e96] [cursor=pointer]:
+                - generic [ref=e97]:
+                  - img [ref=e99]
+                  - treeitem "Home" [ref=e101]
+              - button [ref=e102] [cursor=pointer]:
+                - img [ref=e103]
+            - generic [ref=e105]:
+              - treeitem "Home" [expanded] [ref=e106]:
+                - button "Home" [ref=e110] [cursor=pointer]:
+                  - generic [ref=e111]:
+                    - img [ref=e113]
+                    - treeitem "Home" [ref=e115]
+              - treeitem "Features" [expanded] [ref=e116]:
+                - generic [ref=e118]:
+                  - button "Features" [ref=e120] [cursor=pointer]:
+                    - generic [ref=e121]:
+                      - img [ref=e123]
+                      - treeitem "Features" [ref=e125]
+                  - button [ref=e126] [cursor=pointer]:
+                    - img [ref=e127]
+                - generic [ref=e129]:
+                  - treeitem "Multiple columns" [ref=e130]:
+                    - button "Multiple columns" [ref=e134] [cursor=pointer]:
+                      - generic [ref=e135]:
+                        - img [ref=e137]
+                        - treeitem "Multiple columns" [ref=e139]
+                  - treeitem "Text & images" [ref=e140]:
+                    - button "Text & images" [ref=e144] [cursor=pointer]:
+                      - generic [ref=e145]:
+                        - img [ref=e147]
+                        - treeitem "Text & images" [ref=e149]
+                  - treeitem "Navigation elements" [ref=e150]:
+                    - generic [ref=e152]:
+                      - button "Navigation elements" [ref=e154] [cursor=pointer]:
+                        - generic [ref=e155]:
+                          - img [ref=e157]
+                          - treeitem "Navigation elements" [ref=e159]
+                      - button [ref=e160] [cursor=pointer]:
+                        - img [ref=e161]
+                  - treeitem "Custom elements" [ref=e163]:
+                    - button "Custom elements" [ref=e167] [cursor=pointer]:
+                      - generic [ref=e168]:
+                        - img [ref=e170]
+                        - treeitem "Custom elements" [ref=e172]
+                  - treeitem "Other elements" [ref=e173]:
+                    - button "Other elements" [ref=e177] [cursor=pointer]:
+                      - generic [ref=e178]:
+                        - img [ref=e180]
+                        - treeitem "Other elements" [ref=e182]
+                  - treeitem "Forms" [ref=e183]:
+                    - button "Forms" [ref=e187] [cursor=pointer]:
+                      - generic [ref=e188]:
+                        - img [ref=e190]
+                        - treeitem "Forms" [ref=e192]
+              - treeitem "Blog" [expanded] [ref=e194]:
+                - generic [ref=e196]:
+                  - button "Blog" [ref=e198] [cursor=pointer]:
+                    - generic [ref=e199]:
+                      - img [ref=e201]
+                      - treeitem "Blog" [ref=e203]
+                  - button [ref=e204] [cursor=pointer]:
+                    - img [ref=e205]
+                - generic [ref=e207]:
+                  - treeitem "Neos 8.0 \"Mad Hatter\" released" [ref=e208]:
+                    - button "Neos 8.0 \"Mad Hatter\" released" [ref=e212] [cursor=pointer]:
+                      - generic [ref=e213]:
+                        - img [ref=e215]
+                        - treeitem "Neos 8.0 \"Mad Hatter\" released" [ref=e217]
+                  - treeitem "Neos 8.1 \"Frog–Footman\" released" [ref=e218]:
+                    - button "Neos 8.1 \"Frog–Footman\" released" [ref=e222] [cursor=pointer]:
+                      - generic [ref=e223]:
+                        - img [ref=e225]
+                        - treeitem "Neos 8.1 \"Frog–Footman\" released" [ref=e227]
+                  - treeitem "Neos 8.2 released" [ref=e228]:
+                    - button "Neos 8.2 released" [ref=e232] [cursor=pointer]:
+                      - generic [ref=e233]:
+                        - img [ref=e235]
+                        - treeitem "Neos 8.2 released" [ref=e237]
+                  - treeitem "Neos 8.3 released" [ref=e238]:
+                    - button "Neos 8.3 released" [ref=e242] [cursor=pointer]:
+                      - generic [ref=e243]:
+                        - img [ref=e245]
+                        - treeitem "Neos 8.3 released" [ref=e247]
+                  - treeitem "Neos 8.4 released" [ref=e248]:
+                    - button "Neos 8.4 released" [ref=e252] [cursor=pointer]:
+                      - generic [ref=e253]:
+                        - img [ref=e255]
+                        - treeitem "Neos 8.4 released" [ref=e257]
+              - treeitem "Download" [expanded] [ref=e259]:
+                - button "Download" [ref=e263] [cursor=pointer]:
+                  - generic [ref=e264]:
+                    - img [ref=e266]
+                    - treeitem "Download" [ref=e268]
+              - treeitem "Contribute" [expanded] [ref=e269]:
+                - button "Contribute" [ref=e273] [cursor=pointer]:
+                  - generic [ref=e274]:
+                    - img [ref=e276]
+                    - treeitem "Contribute" [ref=e278]
+              - treeitem "Documentation & Support" [expanded] [ref=e279]:
+                - button "Documentation & Support" [ref=e283] [cursor=pointer]:
+                  - generic [ref=e284]:
+                    - img [ref=e286]
+                    - treeitem "Documentation & Support" [ref=e288]
+              - treeitem "Not Found" [expanded] [ref=e289]:
+                - button "Not Found" [ref=e293] [cursor=pointer]:
+                  - generic [ref=e294]:
+                    - img [ref=e296]
+                    - treeitem "Not Found" [ref=e298]
+    - generic [ref=e301]:
+      - button "Toggle content tree Content Tree" [ref=e303] [cursor=pointer]:
+        - button "Toggle content tree" [ref=e304]:
+          - img [ref=e305]
+        - text: Content Tree
+      - generic [ref=e308]:
+        - button "Create new" [ref=e309] [cursor=pointer]:
+          - img [ref=e310]
+        - button "Hide / Unhide" [ref=e312] [cursor=pointer]:
+          - img [ref=e313]
+        - button "Copy" [ref=e315] [cursor=pointer]:
+          - img [ref=e316]
+        - button "Cut" [ref=e318] [cursor=pointer]:
+          - img [ref=e319]
+        - button "Paste" [disabled] [ref=e321]:
+          - img [ref=e322]
+        - button "Delete" [ref=e324] [cursor=pointer]:
+          - img [ref=e325]
+        - button "Refresh" [ref=e327] [cursor=pointer]:
+          - img [ref=e328]
+  - form [ref=e330]:
+    - button "Toggle inspector" [ref=e331] [cursor=pointer]:
+      - img [ref=e332]
+    - generic [ref=e335]:
+      - generic [ref=e336]:
+        - heading "Selected element" [level=1] [ref=e337]:
+          - generic [ref=e339]: Selected element
+        - button "Home" [ref=e342] [cursor=pointer]:
+          - button "Home" [ref=e345]:
+            - generic [ref=e346]:
+              - img
+            - text: Home
+          - img
+      - tablist [ref=e347]:
+        - list [ref=e348]:
+          - tab "General" [selected] [ref=e349] [cursor=pointer]:
+            - img [ref=e350]
+          - tab "Site configuration" [ref=e352] [cursor=pointer]:
+            - img [ref=e353]
+          - tab "Metadata" [ref=e355] [cursor=pointer]:
+            - img [ref=e356]
+          - tab "SEO" [ref=e358] [cursor=pointer]:
+            - img [ref=e359]
+        - tabpanel [ref=e362]:
+          - generic [ref=e363]:
+            - generic [ref=e364]:
+              - button "Document" [expanded] [ref=e365]:
+                - heading "Document" [level=2] [ref=e366] [cursor=pointer]:
+                  - img [ref=e368]
+                  - text: Document
+                - button [ref=e370] [cursor=pointer]:
+                  - img [ref=e371]
+              - generic [ref=e375]:
+                - generic [ref=e376]:
+                  - generic [ref=e379] [cursor=pointer]: Title
+                  - textbox "Title" [ref=e381]: Home
+                - generic [ref=e382]:
+                  - generic [ref=e385] [cursor=pointer]: URL path segment
+                  - generic [ref=e386]:
+                    - textbox "URL path segment" [ref=e389]: home
+                    - button "Syncronize with the title property" [ref=e391] [cursor=pointer]:
+                      - img [ref=e392]
+                - generic [ref=e394]:
+                  - generic [ref=e397] [cursor=pointer]: Title Override
+                  - textbox "Title Override" [ref=e398]:
+                    - /placeholder: Used in <title> tag, max. 60 chars
+            - generic [ref=e399]:
+              - button "Teaser image" [expanded] [ref=e400]:
+                - heading "Teaser image" [level=2] [ref=e401] [cursor=pointer]:
+                  - img [ref=e403]
+                  - text: Teaser image
+                - button [ref=e405] [cursor=pointer]:
+                  - img [ref=e406]
+              - generic [ref=e411]:
+                - generic [ref=e414] [cursor=pointer]: Image
+                - generic [ref=e415]:
+                  - button "image" [ref=e418] [cursor=pointer]:
+                    - img "image" [ref=e420]
+                  - generic [ref=e421]:
+                    - generic [ref=e422]:
+                      - button "Media" [ref=e423] [cursor=pointer]:
+                        - img [ref=e424]
+                      - button "Choose file" [ref=e426] [cursor=pointer]:
+                        - img [ref=e427]
+                      - button "Remove" [ref=e429] [cursor=pointer]:
+                        - img [ref=e430]
+                    - button "Crop" [ref=e432] [cursor=pointer]:
+                      - img [ref=e433]
+      - generic [ref=e435]:
+        - button "Discard" [disabled] [ref=e436]
+        - button "Apply" [disabled] [ref=e437]
+```

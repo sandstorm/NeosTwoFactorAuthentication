@@ -1,0 +1,23 @@
+{
+  "name": "sandstorm-neostwofactorauthentication-e2e",
+  "private": true,
+  "scripts": {
+    "test:neos8": "SUT=neos8 npx playwright test --headed",
+    "test:neos8:enforce-all": "SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/EnforceForAll npx playwright test tests/enforce-for-all.spec.ts",
+    "test:neos8:enforce-role": "SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/EnforceForRole npx playwright test tests/enforce-for-role.spec.ts",
+    "test:neos8:enforce-provider": "SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/EnforceForProvider npx playwright test tests/enforce-for-provider.spec.ts",
+    "test:neos8:issuer-name": "SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/IssuerNameChange npx playwright test tests/issuer-name-change.spec.ts",
+    "test:neos9": "SUT=neos9 npx playwright test",
+    "test:neos9:enforce-all": "SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForAll npx playwright test tests/enforce-for-all.spec.ts",
+    "test:neos9:enforce-role": "SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForRole npx playwright test tests/enforce-for-role.spec.ts",
+    "test:neos9:enforce-provider": "SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForProvider npx playwright test tests/enforce-for-provider.spec.ts",
+    "test:neos9:issuer-name": "SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/IssuerNameChange npx playwright test tests/issuer-name-change.spec.ts",
+    "test": "npm run test:neos8 && npm run test:neos8:enforce-all && npm run test:neos8:enforce-role && npm run test:neos8:enforce-provider && npm run test:neos8:issuer-name && npm run test:neos9 && npm run test:neos9:enforce-all && npm run test:neos9:enforce-role && npm run test:neos9:enforce-provider && npm run test:neos9:issuer-name"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/node": "^25.5.0",
+    "otplib": "^13.4.0",
+    "typescript": "^6.0.2"
+  }
+}

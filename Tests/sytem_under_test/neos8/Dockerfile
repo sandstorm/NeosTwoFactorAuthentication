@@ -14,7 +14,8 @@ RUN install-php-extensions \
     vips \
     redis
 
-RUN apt update && apt install -y git unzip mariadb \
+RUN apt update \
+    && apt install -y git unzip mariadb-client \
     && apt clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -42,8 +43,17 @@ RUN --mount=type=cache,target=/root/.composer rm -rf /app \
 
 RUN --mount=type=cache,target=/root/.composer composer require rokka/imagine-vips:0.*
 
+# Copy local 2FA package source (Tests/ excluded via .dockerignore)
+COPY . /tmp/sandstorm-2fa/
+
+# Register local path repository and require local package
+RUN --mount=type=cache,target=/root/.composer \
+    composer config repositories.sandstorm-2fa \
+      '{"type":"path","url":"/tmp/sandstorm-2fa","options":{"symlink":false}}' \
+    && composer require sandstorm/neostwofactorauthentication:@dev
+
 # Add config files
-ADD sut-files/ /
+COPY Tests/sytem_under_test/neos8/sut-files/ /
 
 # chown for neos data folder and Resources ONLY
 RUN mkdir -p /app/Data  /app/Web/_Resources \

@@ -1,5 +1,5 @@
-import { authenticator } from 'otplib';
+import { generateSync } from 'otplib';
 
 export function generateOtp(secret: string): string {
-  return authenticator.generate(secret);
+  return generateSync({ secret, strategy: 'totp' });
 }

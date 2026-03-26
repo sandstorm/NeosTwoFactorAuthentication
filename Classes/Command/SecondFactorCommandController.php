@@ -39,4 +39,20 @@ class SecondFactorCommandController extends CommandController
 
         $this->outputLine('Deleted %d second factor(s) for account "%s".', [$count, $username]);
     }
+
+    /**
+     * Delete all second factors for all accounts
+     */
+    public function deleteAllCommand(): void
+    {
+        $factors = $this->secondFactorRepository->findAll();
+        $count = 0;
+        foreach ($factors as $factor) {
+            $this->secondFactorRepository->remove($factor);
+            $count++;
+        }
+        $this->persistenceManager->persistAll();
+
+        $this->outputLine('Deleted %d second factor(s).', [$count]);
+    }
 }

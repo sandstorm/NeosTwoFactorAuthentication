@@ -24,12 +24,13 @@ class SecondFactorRepository extends Repository
     /**
      * @throws IllegalObjectTypeException
      */
-    public function createSecondFactorForAccount(string $secret, Account $account): void
+    public function createSecondFactorForAccount(string $secret, Account $account, string $name): void
     {
         $secondFactor = new SecondFactor();
         $secondFactor->setAccount($account);
         $secondFactor->setSecret($secret);
         $secondFactor->setType(SecondFactor::TYPE_TOTP);
+        $secondFactor->setName($name);
         $secondFactor->setCreationDate(new \DateTime());
         $this->add($secondFactor);
         $this->persistenceManager->persistAll();

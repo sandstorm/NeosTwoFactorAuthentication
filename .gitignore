@@ -1,7 +1,6 @@
 # 3rd party sources
 Packages/
 vendor/
-node_modules/
 
 # composer
 composer.lock

@@ -17,7 +17,7 @@
 }
 
 :8081 {
-	log
+	# log
 
 	root /app/Web
 	encode zstd br gzip

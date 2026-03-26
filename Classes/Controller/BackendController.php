@@ -189,7 +189,9 @@ class BackendController extends AbstractModuleController
         if ($isAdministrator || ($isOwner && $this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account))) {
             // User is admin or has more than one second factor
             $this->secondFactorRepository->remove($secondFactor);
-            $this->persistenceManager->persistAll();
+            // neos8 backwards compatibility
+            $this->persistenceManager?->persistAll();
+
             $this->addFlashMessage(
                 $this->translator->translateById(
                     'module.index.delete.flashMessage.secondFactorDeleted',

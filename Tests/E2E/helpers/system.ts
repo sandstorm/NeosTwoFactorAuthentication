@@ -18,12 +18,6 @@ export function removeAllUsers() {
   )
 }
 
-export function removeAllSecondFactors() {
-  execSync(
-    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow secondFactor:deleteAll"`,
-    { stdio: 'inherit', cwd: dirname('.') })
-}
-
 export async function logout(page: Page) {
   await page.context().request.post('/neos/logout');
 }

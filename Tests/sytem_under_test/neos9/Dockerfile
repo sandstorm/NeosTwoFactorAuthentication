@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:1-php8.3-trixie
+FROM dunglas/frankenphp:1-php8.5-trixie
 
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
@@ -23,9 +23,9 @@ ARG USER=www-data
 
 # Give write access to /config/caddy and /data/caddy
 RUN \
-	useradd ${USER}; \
-	chown -R ${USER}:${USER} /config/caddy /data/caddy \
-    && touch /var/run/caretakerd.key && chown ${USER}:${USER} /var/run/caretakerd.key
+  useradd ${USER}; \
+  chown -R ${USER}:${USER} /config/caddy /data/caddy \
+  && touch /var/run/caretakerd.key && chown ${USER}:${USER} /var/run/caretakerd.key
 
 # Add Caretaker (Startup manager)
 ARG TARGETARCH
@@ -39,7 +39,7 @@ RUN echo '. /etc/bash.vips-arm64-hotfix.sh' >>  /etc/bash.bashrc
 
 # Install Neos base distribution
 RUN --mount=type=cache,target=/root/.composer rm -rf /app \
-  && composer create-project neos/neos-base-distribution:^9 /app
+  && composer create-project neos/neos-base-distribution:^9 /app --no-dev
 
 RUN --mount=type=cache,target=/root/.composer composer require rokka/imagine-vips:0.*
 
@@ -53,7 +53,7 @@ RUN --mount=type=cache,target=/root/.composer \
     && composer require sandstorm/neostwofactorauthentication:@dev
 
 # Add config files
-ADD Tests/sytem_under_test/neos9/sut-files/ /
+COPY Tests/sytem_under_test/neos9/sut-files/ /
 
 # chown for neos data folder and Resources ONLY
 RUN mkdir -p /app/Data  /app/Web/_Resources \

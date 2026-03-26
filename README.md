@@ -192,6 +192,11 @@ Tests require Docker and Node.js. Install dependencies once (if [nvm](https://gi
 make setup-test
 ```
 
+Re-generate Playwright spec files whenever a `.feature` file changes:
+```bash
+make generate-bdd-files
+```
+
 Use the Makefile targets from the repository root:
 
 ```bash
@@ -211,19 +216,12 @@ make down                   # tear down all docker compose environments and remo
 
 Each `npm run test:*` script calls `bddgen` first (to regenerate Playwright specs from the `.feature` files) and then runs Playwright with the appropriate `--grep` tag.
 
-**Useful environment variables:**
-
-| Variable | Default | Description |
-|---|---|---|
-| `REUSE_SUT` | `true` | Skip rebuilding the docker compose SUT if it is already running. Set to `false` to force a rebuild. |
-| `HEADLESS` | `true` | Set to `false` to watch the browser while tests run. |
-
 #### System under test (SUT)
 
 There are two docker compose environments in `Tests/sytem_under_test/`:
 
 - `neos8/` — Neos with PHP 8.2
-- `neos9/` — Neos with PHP 8.3
+- `neos9/` — Neos with PHP 8.5
 
 Both are built from the repository root as the Docker build context, so the local package source is copied into the container and installed via a Composer path repository. This means every test run tests the _current working tree_ of the package, not a published version.
 

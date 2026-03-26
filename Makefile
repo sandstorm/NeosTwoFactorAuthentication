@@ -32,10 +32,10 @@ generate-bdd-files:
 test: test-neos8 test-neos9
 
 ## Run all neos8 E2E tests
-test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role
+test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider
 
 ## Run all neos9 E2E tests
-test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role
+test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider
 
 test-neos8-defaults:
 	cd $(E2E_DIR) && npm run test:neos8:defaults

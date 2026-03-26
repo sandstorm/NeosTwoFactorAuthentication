@@ -14,7 +14,7 @@
     "test:neos9:enforce-role": "npm run generate-tests; SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForRole npx playwright test --grep @enforce-for-role",
     "test:neos9:enforce-provider": "npm run generate-tests; SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForProvider npx playwright test --grep @enforce-for-provider",
     "test:neos9:issuer-name": "npm run generate-tests; SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/IssuerNameChange npx playwright test --grep @issuer-name-change",
-    "test": "npm run generate-tests; npm run test:neos8 && npm run test:neos8:enforce-all && npm run test:neos8:enforce-role && npm run test:neos8:enforce-provider && npm run test:neos8:issuer-name && npm run test:neos9 && npm run test:neos9:enforce-all && npm run test:neos9:enforce-role && npm run test:neos9:enforce-provider && npm run test:neos9:issuer-name"
+    "test": "npm run generate-tests; npm run test:neos8:defaults && npm run test:neos8:enforce-all && npm run test:neos8:enforce-role && npm run test:neos8:enforce-provider && npm run test:neos8:issuer-name && npm run test:neos9:defaults && npm run test:neos9:enforce-all && npm run test:neos9:enforce-role && npm run test:neos9:enforce-provider && npm run test:neos9:issuer-name"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",

@@ -38,8 +38,9 @@ RUN curl -SL "https://caretakerd.echocat.org/latest/download/caretakerd-linux-${
 RUN echo '. /etc/bash.vips-arm64-hotfix.sh' >>  /etc/bash.bashrc
 
 # Install Neos base distribution
+# TODO: We can not specify `--no-dev` here, because the the package wants to run `./flow welcome` as `"post-create-project-cmd"` but that needs the dev dependencies to be installed.
 RUN --mount=type=cache,target=/root/.composer rm -rf /app \
-  && composer create-project neos/neos-base-distribution:^9 /app --no-dev
+  && composer create-project neos/neos-base-distribution:^9 /app
 
 RUN --mount=type=cache,target=/root/.composer composer require rokka/imagine-vips:0.*
 

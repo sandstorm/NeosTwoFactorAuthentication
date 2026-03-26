@@ -40,7 +40,7 @@ services:
       MARIADB_PASSWORD: 'neos'
       MARIADB_AUTO_UPGRADE: 1
     volumes:
-      - db:/var/lib/mysql
+      - db_neos8_data:/var/lib/mysql
     command: ['mysqld', '--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci']
 
   redis:
@@ -50,7 +50,7 @@ services:
       - neos8_SUT
 
 volumes:
-  db:
+  db_neos8_data:
 
 networks:
   neos8_SUT:

@@ -177,12 +177,13 @@ class LoginController extends ActionController
     /**
      * @param string $secret
      * @param string $secondFactorFromApp
+     * @param string $name
      * @return void
      * @throws IllegalObjectTypeException
      * @throws SessionNotStartedException
      * @throws StopActionException
      */
-    public function createSecondFactorAction(string $secret, string $secondFactorFromApp): void
+    public function createSecondFactorAction(string $secret, string $secondFactorFromApp, string $name = ''): void
     {
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
@@ -204,7 +205,7 @@ class LoginController extends ActionController
 
         $account = $this->securityContext->getAccount();
 
-        $this->secondFactorRepository->createSecondFactorForAccount($secret, $account);
+        $this->secondFactorRepository->createSecondFactorForAccount($secret, $account, $name);
 
         $this->addFlashMessage(
             $this->translator->translateById(

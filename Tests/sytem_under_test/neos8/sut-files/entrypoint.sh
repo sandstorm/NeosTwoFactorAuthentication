@@ -18,8 +18,5 @@ yes y | ./flow resource:clean || true
 
 ./flow resource:publish --collection static
 
-./flow user:create --roles Neos.Neos:Administrator e2eadmin password123 E2E Admin
-./flow user:create --roles Neos.Neos:Editor e2eeditor password123 E2E Editor
-
 # 2. We now can start caretakerd, which will run the remaining steps in parallel and restart the container if they fail.
 /usr/bin/caretakerd run

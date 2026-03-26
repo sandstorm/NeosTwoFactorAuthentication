@@ -7,14 +7,14 @@ const CONTAINER = `${process.env.SUT || 'neos8'}-neos-1`;
 export function createUser(name: string, password: string, roles: string[]) {
   execSync(
     `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow user:create ${name} ${password} Test${name} User${name} --roles ${roles.join(',')}"`,
-    { stdio: 'inherit', cwd: dirname('.') }
+    { stdio: 'ignore', cwd: dirname('.') }
   )
 }
 
 export function removeAllUsers() {
   execSync(
     `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow user:delete --assume-yes '*'"`,
-    { stdio: 'inherit', cwd: dirname('.') }
+    { stdio: 'ignore', cwd: dirname('.') }
   )
 }
 

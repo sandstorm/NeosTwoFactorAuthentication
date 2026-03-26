@@ -26,7 +26,7 @@ export default defineConfig({
   webServer: {
     command: `echo "starting SUT ${SUT} with context ${FLOW_CONTEXT}"; FLOW_CONTEXT=${FLOW_CONTEXT} docker compose -f ${sutDir}/docker-compose.yaml up --build`,
     url: 'http://localhost:8081/',
-    timeout: 120_000,
+    timeout: 600_000,
     stdout: 'pipe',
     stderr: 'pipe',
   },

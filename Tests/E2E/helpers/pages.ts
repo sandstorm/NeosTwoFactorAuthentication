@@ -104,6 +104,29 @@ export class BackendModulePage {
     await this.page.waitForLoadState('networkidle');
   }
 
+  /**
+   * Attempt to delete a device by name without assuming success.
+   * If the delete button is disabled or no confirmation modal appears, the step passes silently.
+   * Use this when the deletion may be blocked (e.g. last device with enforcement active).
+   */
+  async tryDeleteDeviceByName(name: string): Promise<void> {
+    const row = this.locatorForDeviceRow(name);
+    const deleteButton = row.locator('button[data-test-id="delete-second-factor-button"]');
+
+    if (await deleteButton.isDisabled()) {
+      return;
+    }
+
+    await deleteButton.click();
+
+    const confirmButton = this.page.locator('button[data-test-id="confirm-delete"]:visible');
+    if (await confirmButton.isVisible({ timeout: 1000 })) {
+      await confirmButton.click();
+    }
+
+    await this.page.waitForLoadState('networkidle');
+  }
+
   /** Locator for the table row matching a device name (for assertions). */
   locatorForDeviceRow(name: string) {
     return this.page.locator('.neos-table tbody tr').filter({ hasText: name });

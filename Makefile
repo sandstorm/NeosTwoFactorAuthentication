@@ -5,7 +5,7 @@ E2E_DIR = $(CURDIR)/Tests/E2E
 .PHONY: setup-test generate-bdd-files test test-neos8 test-neos9 \
 	test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-issuer-name \
 	test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-issuer-name \
-	down
+	enter-neos8 enter-neos9 down
 
 # COLORS
 GREEN  := $(shell tput -Txterm setaf 2)
@@ -32,10 +32,10 @@ generate-bdd-files:
 test: test-neos8 test-neos9
 
 ## Run all neos8 E2E tests
-test-neos8: test-neos8-defaults test-neos8-enforce-all
+test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role
 
 ## Run all neos9 E2E tests
-test-neos9: test-neos9-defaults test-neos9-enforce-all
+test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role
 
 test-neos8-defaults:
 	cd $(E2E_DIR) && npm run test:neos8:defaults
@@ -66,6 +66,13 @@ test-neos9-enforce-provider:
 
 test-neos9-issuer-name:
 	cd $(E2E_DIR) && npm run test:neos9:issuer-name
+
+## Enter SUT containers
+enter-neos8:
+	@docker compose -f $(NEOS8_COMPOSE) exec neos bash
+
+enter-neos9:
+	@docker compose -f $(NEOS9_COMPOSE) exec neos bash
 
 ## Tear down all docker compose environments and remove volumes
 down:

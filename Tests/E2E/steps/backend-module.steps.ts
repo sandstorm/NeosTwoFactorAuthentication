@@ -20,6 +20,14 @@ When('I add a new TOTP 2FA device with name {string}',
   },
 );
 
+When('I try to remove the 2FA device with the name {string}',
+  async ({ page }, name: string) => {
+    const modulePage = new BackendModulePage(page);
+    await page.pause();
+    await modulePage.tryDeleteDeviceByName(name);
+  },
+);
+
 // "with name" and "with the name" are both used in feature files
 When('I remove the 2FA device with the name {string}',
   async ({ page }, name: string) => {

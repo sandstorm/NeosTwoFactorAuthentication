@@ -159,3 +159,7 @@
 .neos-two-factor__secret-wrapper ::-webkit-scrollbar-track {
   background-color: initial;
 }
+
+.neos-control-group > * + * {
+  margin-top: 8px;
+}

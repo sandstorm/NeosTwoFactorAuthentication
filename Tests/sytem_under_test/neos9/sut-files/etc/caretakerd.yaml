@@ -1,0 +1,9 @@
+# DOCS: https://caretakerd.echocat.org/#configuration.structure
+
+rpc:
+  enabled: true
+
+services:
+  php-fpm:
+    type: master
+    command: ['frankenphp', 'run', '--config', '/etc/frankenphp/Caddyfile']

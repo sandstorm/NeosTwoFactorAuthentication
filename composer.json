@@ -42,5 +42,10 @@
             "Neos.Flow-20220318174300",
             "Neos.Fusion-20220326120900"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "neos/composer-plugin": true
+        }
     }
 }

@@ -1,0 +1,5 @@
+roles:
+  'Neos.Neos:SecondFactorUser':
+    label: 2FA Required User
+    description: Just for testing role based 2FA enforcement
+    parentRoles: ['Neos.Neos:Editor']

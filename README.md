@@ -215,16 +215,16 @@ make down                   # tear down all docker compose environments and remo
 ```
 
 #### Debugging tests
-To debug a test, run the test with flags like this:
+To debug a test, run the test from `Tests/E2E/` with flags like this:
 
-- `make test-neos8-enforce-all -- --debug` - to run the test in headed mode with Playwright Inspector
-- `make test-neos8-enforce-all -- --ui` - to run the test in headed mode with Playwright Test Runner UI
+- `npm run test:neos8:enforce-all -- --debug` - to run the test in headed mode with Playwright Inspector
+- `npm run test:neos8:enforce-all -- --ui` - to run the test in headed mode with Playwright Test Runner UI
 
-If you just want to see the test running in the browser just `make test-neos8-enforce-all -- --headed`.
+If you just want to see the test running in the browser just `npm run test:neos8:enforce-all -- --headed`.
 
 > While debugging you can also enter the SUT with `make enter-neos8` and `make enter-neos9` respectively.
 >
-> You can even the tests you want to debug with `make test-neos8-enforce-all -- --grep @debug` and adding the `@debug` tag to the scenario you want to debug. But using the --ui flag is usually more convenient for debugging.
+> You can even the tests you want to debug with `npm run test:neos8:enforce-all -- --grep @debug` and adding the `@debug` tag to the scenario you want to debug. But using the --ui flag is usually more convenient for debugging.
 
 #### System under test (SUT)
 

@@ -27,7 +27,7 @@ export default defineConfig({
   globalTeardown: './global-teardown.ts',
   webServer: {
     // TODO: try to build, start, and then only to restart neos container
-    command: `echo "starting SUT ${SUT} with context ${FLOW_CONTEXT}"; FLOW_CONTEXT=${FLOW_CONTEXT} docker compose -f ${sutDir}/docker-compose.yaml up --build`,
+    command: `echo "starting SUT ${SUT} with context ${FLOW_CONTEXT}"; FLOW_CONTEXT=${FLOW_CONTEXT} docker compose -f ${sutDir}/docker-compose.yaml up --build 1>/dev/null 2>/dev/null`,
     url: 'http://localhost:8081/',
     timeout: 600_000,
     stdout: 'pipe',

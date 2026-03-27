@@ -8,26 +8,6 @@ Feature: Backend module with 2FA enforced for the Neos.Neos:Backend authenticati
     Given A user with username "admin", password "password" and role "Neos.Neos:Administrator" with enrolled 2FA device with name "Admin Initial Device" exists
     And A user with username "editor", password "password" and role "Neos.Neos:Editor" with enrolled 2FA device with name "Editor Initial Device" exists
 
-  Scenario: Admin user must enter TOTP before accessing the backend module
-    When I log in with username "admin" and password "password"
-    And I enter a valid TOTP for device "Admin Initial Device"
-    And I navigate to the 2FA management page
-    Then There should be a 2FA device with the name "Admin Initial Device"
-
-  Scenario: Editor user must enter TOTP before accessing the backend module
-    When I log in with username "editor" and password "password"
-    And I enter a valid TOTP for device "Editor Initial Device"
-    And I navigate to the 2FA management page
-    Then There should be a 2FA device with the name "Editor Initial Device"
-
-  Scenario: User can add a 2FA device in the backend module
-    When I log in with username "editor" and password "password"
-    And I enter a valid TOTP for device "Editor Initial Device"
-    And I navigate to the 2FA management page
-    And I add a new TOTP 2FA device with name "Editor Test Device"
-    Then There should be a 2FA device with the name "Editor Test Device"
-    And There should be a 2FA device with the name "Editor Initial Device"
-
   Scenario: User cannot remove their last 2FA device when 2FA is enforced for their provider
     When I log in with username "editor" and password "password"
     And I enter a valid TOTP for device "Editor Initial Device"

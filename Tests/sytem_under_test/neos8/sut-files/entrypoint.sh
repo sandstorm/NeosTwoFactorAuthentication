@@ -3,9 +3,10 @@ set -eou pipefail
 
 # ping db until it is ready
 echo "Waiting for database..."
-until mariadb -h"${DB_NEOS_HOST}" -P"${DB_NEOS_PORT}" -u"${DB_NEOS_USER}" -p"${DB_NEOS_PASSWORD}" -D"${DB_NEOS_DATABASE}" --disable-ssl --silent -e "SELECT 1;" 2>/dev/null; do
+until mariadb -h"${DB_NEOS_HOST}" -P"${DB_NEOS_PORT}" -u"${DB_NEOS_USER}" -p"${DB_NEOS_PASSWORD}" -D"${DB_NEOS_DATABASE}" --disable-ssl --silent -e "SELECT 1;" 1>/dev/null 2>/dev/null; do
     sleep 2
 done
+echo "Database is ready."
 
 ./flow flow:cache:flush
 

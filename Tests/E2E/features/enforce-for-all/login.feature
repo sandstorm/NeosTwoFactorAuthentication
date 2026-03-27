@@ -5,12 +5,12 @@ Feature: Login flow with 2FA enforced for all users
     Given A user with username "admin", password "password" and role "Neos.Neos:Administrator" exists
     And A user with username "editor", password "password" and role "Neos.Neos:Editor" exists
 
-  Scenario: Admin has to enter 2FA code when 2FA is enforced for all users, even without a device
+  Scenario: Admin has to setup a 2FA when 2FA is enforced for all users, even without a device
     When I log in with username "admin" and password "password"
     Then I should see the 2FA setup page
     And I cannot access the Neos content page
 
-  Scenario: Editor has to enter 2FA code when 2FA is enforced for all users, even without a device
+  Scenario: Editor has to setup a 2FA when 2FA is enforced for all users, even without a device
     When I log in with username "editor" and password "password"
     Then I should see the 2FA setup page
     And I cannot access the Neos content page

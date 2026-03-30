@@ -1,5 +1,5 @@
-NEOS8_COMPOSE = $(CURDIR)/Tests/sytem_under_test/neos8/docker-compose.yaml
-NEOS9_COMPOSE = $(CURDIR)/Tests/sytem_under_test/neos9/docker-compose.yaml
+NEOS8_COMPOSE = $(CURDIR)/Tests/system_under_test/neos8/docker-compose.yaml
+NEOS9_COMPOSE = $(CURDIR)/Tests/system_under_test/neos9/docker-compose.yaml
 E2E_DIR = $(CURDIR)/Tests/E2E
 
 .SILENT:

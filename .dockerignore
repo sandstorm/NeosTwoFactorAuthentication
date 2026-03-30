@@ -1,3 +1,9 @@
 .git/
 .idea/
 node_modules/
+vendor/
+Packages
+.github
+.claude
+.idea
+composer.lock

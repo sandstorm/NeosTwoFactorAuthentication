@@ -228,7 +228,7 @@ If you just want to see the test running in the browser just `npm run test:neos8
 
 #### System under test (SUT)
 
-There are two docker compose environments in `Tests/sytem_under_test/`:
+There are two docker compose environments in `Tests/system_under_test/`:
 
 - `neos8/` — Neos with PHP 8.2
 - `neos9/` — Neos with PHP 8.5

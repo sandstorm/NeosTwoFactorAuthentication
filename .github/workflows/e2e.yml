@@ -33,7 +33,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Pre-build Docker image
-        run: docker compose -f Tests/sytem_under_test/${{ matrix.neos }}/docker-compose.yaml build --pull
+        run: docker compose -f Tests/system_under_test/${{ matrix.neos }}/docker-compose.yaml build --pull
 
       - name: Test - defaults
         working-directory: Tests/E2E

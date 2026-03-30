@@ -1,4 +1,0 @@
-Sandstorm:
-  NeosTwoFactorAuthentication:
-    # enforce 2FA for specific authentication providers (e.g. Neos.Neos:Backend)
-    enforce2FAForAuthenticationProviders : ['Neos.Neos:Backend']

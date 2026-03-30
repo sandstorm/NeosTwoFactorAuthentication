@@ -1,6 +1,6 @@
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
-import { BackendModulePage } from '../helpers/pages.js';
+import { BackendModulePage } from '../helpers/2fa-pages.ts';
 import { state } from '../helpers/state.js';
 
 const { When, Then } = createBdd();

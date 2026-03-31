@@ -16,9 +16,9 @@ jobs:
         neos: [neos8, neos9]
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version-file: Tests/E2E/.nvmrc
           cache: npm
@@ -53,7 +53,7 @@ jobs:
 
       - name: Upload Playwright report
         uses: actions/upload-artifact@v4
-        if: always()
+        if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.neos }}
           path: Tests/E2E/playwright-report/

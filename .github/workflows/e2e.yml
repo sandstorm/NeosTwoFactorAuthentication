@@ -9,7 +9,7 @@ on:
 jobs:
   e2e:
     name: E2E Tests (${{ matrix.neos }})
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:

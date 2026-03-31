@@ -38,4 +38,5 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
+  reporter: process.env.CI ? 'html' : 'list',
 });

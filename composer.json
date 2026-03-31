@@ -5,6 +5,12 @@
     "license": [
         "MIT"
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/sandstorm/Sandstorm.NeosInitE2ETestsPlugin.git"
+        }
+    ],
     "require": {
         "php": "^8.1",
         "neos/neos": "^7.0 | ^8.0 | ^9.0",
@@ -13,6 +19,9 @@
         "neos/fusion-form": "*",
         "spomky-labs/otphp": "^11.0",
         "chillerlan/php-qrcode": "^5.0"
+    },
+    "require-dev": {
+        "sandstorm/neos-init-e2e-tests-plugin": "@dev"
     },
     "autoload": {
         "psr-4": {
@@ -45,7 +54,8 @@
     },
     "config": {
         "allow-plugins": {
-            "neos/composer-plugin": true
+            "neos/composer-plugin": true,
+            "sandstorm/neos-init-e2e-tests-plugin": true
         }
     }
 }

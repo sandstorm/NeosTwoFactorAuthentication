@@ -1,6 +1,6 @@
-NEOS8_COMPOSE = $(CURDIR)/Tests/system_under_test/neos8/docker-compose.yaml
-NEOS9_COMPOSE = $(CURDIR)/Tests/system_under_test/neos9/docker-compose.yaml
-E2E_DIR = $(CURDIR)/Tests/E2E
+NEOS8_COMPOSE = $(CURDIR)/system_under_test/neos8/docker-compose.yaml
+NEOS9_COMPOSE = $(CURDIR)/system_under_test/neos9/docker-compose.yaml
+E2E_DIR = $(CURDIR)/E2E
 
 .SILENT:
 .PHONY: setup setup-sut setup-test generate-bdd-files test test-neos8 test-neos9 \

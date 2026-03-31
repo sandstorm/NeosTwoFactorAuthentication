@@ -8,6 +8,8 @@ use Neos\Flow\Security\Account;
 use Doctrine\ORM\Mapping as ORM;
 use Neos\Flow\Annotations as Flow;
 
+// TODO: refactor to PHP8 code
+
 /**
  * Store the secrets needed for two factor authentication
  *
@@ -38,6 +40,11 @@ class SecondFactor
      * @var string
      */
     protected string $secret;
+
+    /**
+     * @var string
+     */
+    protected string $name;
 
     /**
      * Introduced with version 1.4.0
@@ -73,6 +80,7 @@ class SecondFactor
     }
 
     /**
+     * Used in Fusion rendering
      * @return string
      */
     public function getTypeAsName(): string
@@ -104,6 +112,19 @@ class SecondFactor
         $this->secret = $secret;
     }
 
+    public function setName(string $name): void
+    {
+        $this->name = $name;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    /**
+     * Used in Fusion rendering
+     */
     public function getCreationDate(): DateTime|null
     {
         return $this->creationDate;

@@ -15,13 +15,17 @@
         <source>List of all registered second factors</source>
         <target>Liste aller registrierten zweiten Faktoren</target>
       </trans-unit>
-      <trans-unit id="module.index.list.header.name" xml:space="preserve">
-        <source>Name</source>
-        <target>Name</target>
+      <trans-unit id="module.index.list.header.username" xml:space="preserve">
+        <source>User</source>
+        <target>Nutzer</target>
       </trans-unit>
       <trans-unit id="module.index.list.header.type" xml:space="preserve">
         <source>Type</source>
         <target>Typ</target>
+      </trans-unit>
+      <trans-unit id="module.index.list.header.name" xml:space="preserve">
+        <source>Name</source>
+        <target>Name</target>
       </trans-unit>
       <trans-unit id="module.index.list.header.creationDate" xml:space="preserve">
         <source>Creation Date</source>

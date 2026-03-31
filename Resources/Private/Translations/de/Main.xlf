@@ -34,6 +34,10 @@
         <source>Close</source>
         <target>Schließen</target>
       </trans-unit>
+      <trans-unit id="form.name.label" xml:space="preserve">
+        <source>Name (optional)</source>
+        <target>Name (optional)</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

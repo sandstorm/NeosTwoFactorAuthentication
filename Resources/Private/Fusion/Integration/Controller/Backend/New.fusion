@@ -87,10 +87,18 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
                             attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                             attributes.autocomplete="off"
                         />
+                        <Neos.Fusion.Form:Input
+                            field.name="name"
+                            attributes.id="name"
+                            attributes.placeholder={I18n.id('form.name.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                            attributes.aria-label={I18n.id('form.name.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        />
                     </div>
 
                     <div class="neos-control-group">
-                        <Neos.Fusion.Form:Button>
+                        <Neos.Fusion.Form:Button
+                            attributes.data-test-id="create-second-factor-submit-button"
+                        >
                             {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                         </Neos.Fusion.Form:Button>
                     </div>

@@ -1,0 +1,27 @@
+{
+  "name": "sandstorm-neostwofactorauthentication-e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "generate-tests": "SUT=notRelevantForBddgen FLOW_CONTEXT=notRelevantForBddgen npx bddgen",
+
+    "test:neos8:defaults": "npm run generate-tests && SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT npx playwright test --grep @default-context",
+    "test:neos8:enforce-all": "npm run generate-tests && SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/EnforceForAll npx playwright test --grep @enforce-for-all",
+    "test:neos8:enforce-role": "npm run generate-tests && SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/EnforceForRole npx playwright test --grep @enforce-for-role",
+    "test:neos8:enforce-provider": "npm run generate-tests && SUT=neos8 FLOW_CONTEXT=Production/E2E-SUT/EnforceForProvider npx playwright test --grep @enforce-for-provider",
+
+    "test:neos9:defaults": "npm run generate-tests && SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT npx playwright test --grep @default-context",
+    "test:neos9:enforce-all": "npm run generate-tests && SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForAll npx playwright test --grep @enforce-for-all",
+    "test:neos9:enforce-role": "npm run generate-tests && SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForRole npx playwright test --grep @enforce-for-role",
+    "test:neos9:enforce-provider": "npm run generate-tests && SUT=neos9 FLOW_CONTEXT=Production/E2E-SUT/EnforceForProvider npx playwright test --grep @enforce-for-provider"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.58.2",
+    "playwright-bdd": "^8.0.0",
+    "otplib": "^13.4.0"
+  }
+}

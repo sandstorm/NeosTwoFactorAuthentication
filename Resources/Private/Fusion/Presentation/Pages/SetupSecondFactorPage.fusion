@@ -156,6 +156,13 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                                 attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                                                 attributes.autocomplete="off"
                                             />
+                                            <Neos.Fusion.Form:Input
+                                                field.name="name"
+                                                attributes.id="name"
+                                                attributes.placeholder={I18n.id('form.name.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                                attributes.class="neos-span5"
+                                                attributes.aria-label={I18n.id('form.name.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                            />
                                         </div>
 
                                         <div class="neos-control-group neos-actions">

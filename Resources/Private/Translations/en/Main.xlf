@@ -26,6 +26,9 @@
       <trans-unit id="form.secret.close" xml:space="preserve">
         <source>Close</source>
       </trans-unit>
+      <trans-unit id="form.name.label" xml:space="preserve">
+        <source>Name (optional)</source>
+      </trans-unit>
     </body>
   </file>
 </xliff>

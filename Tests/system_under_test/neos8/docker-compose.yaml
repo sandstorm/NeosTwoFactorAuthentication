@@ -1,0 +1,4 @@
+include:
+  - path:
+      - ../sut-base-docker-compose.yaml
+      - ./compose-overrides-neos8.yaml

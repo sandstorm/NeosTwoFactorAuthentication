@@ -17,17 +17,11 @@ class SecondFactorDto
         $this->secondFactor = $secondFactor;
     }
 
-    /**
-     * @return SecondFactor|string
-     */
     public function getSecondFactor(): SecondFactor
     {
         return $this->secondFactor;
     }
 
-    /**
-     * @return User
-     */
     public function getUser(): User
     {
         return $this->user;

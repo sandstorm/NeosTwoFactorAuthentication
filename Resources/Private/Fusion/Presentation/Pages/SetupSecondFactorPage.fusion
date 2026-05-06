@@ -77,7 +77,10 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
 
                                 <div class="neos-login-body neos">
                                     <Sandstorm.NeosTwoFactorAuthentication:Component.LoginFlashMessages flashMessages={props.flashMessages} />
-                                    <Neos.Fusion.Form:Form form.target.action="setupSecondFactor">
+                                    <Neos.Fusion.Form:Form
+                                        attributes.class="neos-two-factor__authentication-form"
+                                        form.target.action="setupSecondFactor"
+                                    >
                                         <div class="neos-control-group">
                                             <img src={qrCode} style="width: 100%; max-width: 400px"/>
                                         </div>
@@ -161,6 +164,13 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                         <div class="neos-control-group neos-actions">
                                             <Neos.Fusion.Form:Button attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn">
                                                 {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+                                            </Neos.Fusion.Form:Button>
+                                            <Neos.Fusion.Form:Button
+                                                attributes.formaction="/neos/second-factor-cancel-login"
+                                                attributes.formnovalidate="true"
+                                                attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn neos-button-warning"
+                                            >
+                                                {I18n.id('cancel').value('Cancel').package('Neos.Neos').source('Main').translate()}
                                             </Neos.Fusion.Form:Button>
                                         </div>
                                     </Neos.Fusion.Form:Form>

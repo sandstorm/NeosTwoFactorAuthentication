@@ -3,10 +3,10 @@
 namespace Sandstorm\NeosTwoFactorAuthentication\Domain\Model;
 
 use DateTime;
-use Neos\Flow\Http\InvalidArgumentException;
-use Neos\Flow\Security\Account;
 use Doctrine\ORM\Mapping as ORM;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Http\InvalidArgumentException;
+use Neos\Flow\Security\Account;
 
 /**
  * Store the secrets needed for two factor authentication
@@ -48,57 +48,48 @@ class SecondFactor
      */
     protected DateTime|null $creationDate;
 
-    /**
-     * @return Account
-     */
+    public static function typeToString(int $type): string
+    {
+        switch ($type) {
+            case self::TYPE_TOTP:
+                return 'OTP';
+            case self::TYPE_PUBLIC_KEY:
+                return 'Public Key';
+            default:
+                throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
+        }
+    }
+
     public function getAccount(): Account
     {
         return $this->account;
     }
 
-    /**
-     * @param Account $account
-     */
     public function setAccount(Account $account): void
     {
         $this->account = $account;
     }
 
-    /**
-     * @return int
-     */
     public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
-    public function getTypeAsName(): string
-    {
-        return self::typeToString($this->getType());
-    }
-
-    /**
-     * @param int $type
-     */
     public function setType(int $type): void
     {
         $this->type = $type;
     }
 
-    /**
-     * @return string
-     */
+    public function getTypeAsName(): string
+    {
+        return self::typeToString($this->getType());
+    }
+
     public function getSecret(): string
     {
         return $this->secret;
     }
 
-    /**
-     * @param string $secret
-     */
     public function setSecret(string $secret): void
     {
         $this->secret = $secret;
@@ -117,17 +108,5 @@ class SecondFactor
     public function __toString(): string
     {
         return $this->account->getAccountIdentifier() . " with " . self::typeToString($this->type);
-    }
-
-    public static function typeToString(int $type): string
-    {
-        switch ($type) {
-            case self::TYPE_TOTP:
-                return 'OTP';
-            case self::TYPE_PUBLIC_KEY:
-                return 'Public Key';
-            default:
-                throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
-        }
     }
 }

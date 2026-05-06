@@ -29,6 +29,7 @@ class SecondFactorRepository extends Repository
         $secondFactor = new SecondFactor();
         $secondFactor->setAccount($account);
         $secondFactor->setSecret($secret);
+        // Hard set for now, as we only support TOTP right now
         $secondFactor->setType(SecondFactor::TYPE_TOTP);
         $secondFactor->setCreationDate(new \DateTime());
         $this->add($secondFactor);

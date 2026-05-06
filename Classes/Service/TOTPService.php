@@ -4,31 +4,31 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Service;
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use Neos\Flow\Security\Account;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Security\Account;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use OTPHP\TOTP;
 
+/**
+ * @Flow\Scope("singleton")
+ */
 class TOTPService
 {
     /**
      * @Flow\Inject
-     * @var DomainRepository
      */
-    protected $domainRepository;
+    protected DomainRepository $domainRepository;
 
     /**
      * @Flow\Inject
-     * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     /**
      * @Flow\InjectConfiguration(path="issuerName")
-     * @var string | null
      */
-    protected $issuerName;
+    protected ?string $issuerName;
 
     public static function generateNewTotp(): TOTP
     {

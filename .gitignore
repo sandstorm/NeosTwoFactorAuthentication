@@ -5,5 +5,8 @@ vendor/
 # composer
 composer.lock
 
+# node
+node_modules/
+
 # IDEs
 .idea/

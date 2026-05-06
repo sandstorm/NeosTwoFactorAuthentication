@@ -1,0 +1,84 @@
+.neos-two-factor__form {
+    max-width: 800px;
+}
+
+.neos-two-factor__user-context {
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.neos-two-factor__step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px !important;
+    margin-bottom: 20px !important;
+}
+
+.neos-two-factor__step__number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: #00b5ff;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.neos-two-factor__step__label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.neos-two-factor__setup-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+@media (max-width: 600px) {
+    .neos-two-factor__setup-options {
+        flex-direction: column;
+    }
+}
+
+.neos-two-factor__setup-option {
+    flex: 1 1 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: space-between;
+}
+
+.neos-two-factor__setup-option .neos-two-factor__secret-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.neos-two-factor__setup-option__label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+img.neos-two-factor__qr-code {
+    width: 100%;
+    max-width: 300px;
+    padding: 20px;
+}
+
+.neos-two-factor__register-button {
+    background-color: #00b5ff !important;
+    padding: 10px 24px !important;
+    font-size: 16px !important;
+    height: unset !important;
+}

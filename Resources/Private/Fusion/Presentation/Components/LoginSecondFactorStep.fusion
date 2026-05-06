@@ -11,6 +11,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep)
     renderer = afx`
         <Neos.Fusion.Form:Form form.target.action="checkSecondFactor" form.target.controller="Login">
             <fieldset>
+                <label for="secondFactor" class="neos-two-factor__login-label">
+                    {I18n.id('login.otp.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                </label>
                 <div class="neos-controls">
                     <Neos.Fusion.Form:Input
                         field.name="otp"

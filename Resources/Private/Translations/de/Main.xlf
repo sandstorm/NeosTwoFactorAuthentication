@@ -2,10 +2,26 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext" target-language="de">
     <body>
+      <trans-unit id="login.otp.label" xml:space="preserve">
+        <source>Enter the verification code from your authenticator app to complete login.</source>
+        <target>Geben Sie den Bestätigungscode aus Ihrer Authenticator-App ein, um die Anmeldung abzuschließen.</target>
+      </trans-unit>
       <trans-unit id="otp-placeholder" xml:space="preserve">
-				<source>OTP from App</source>
-				<target>OTP aus App</target>
-			</trans-unit>
+        <source>Verification code from your app</source>
+        <target>Bestätigungscode aus der App</target>
+      </trans-unit>
+      <trans-unit id="form.step.setup" xml:space="preserve">
+        <source>Set up your authenticator</source>
+        <target>Authenticator einrichten</target>
+      </trans-unit>
+      <trans-unit id="form.step.verify" xml:space="preserve">
+        <source>Enter code from your app</source>
+        <target>Code aus der App eingeben</target>
+      </trans-unit>
+      <trans-unit id="form.step.register" xml:space="preserve">
+        <source>Register</source>
+        <target>Registrieren</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.errorHeader" xml:space="preserve">
 				<source>Error</source>
 				<target>Fehler</target>
@@ -22,9 +38,17 @@
 				<source>OTP was registered successfully.</source>
 				<target>Das OTP wurde erfolgreich registriert.</target>
 			</trans-unit>
+      <trans-unit id="form.setup.qrcode.label" xml:space="preserve">
+        <source>Scan QR code</source>
+        <target>QR-Code scannen</target>
+      </trans-unit>
+      <trans-unit id="form.setup.manual.label" xml:space="preserve">
+        <source>Can't scan? Enter key manually</source>
+        <target>Kein Scanner? Schlüssel manuell eingeben</target>
+      </trans-unit>
       <trans-unit id="form.secret.show" xml:space="preserve">
-        <source>Show Code</source>
-        <target>Code Anzeigen</target>
+        <source>Show Secret Key</source>
+        <target>Geheimschlüssel anzeigen</target>
       </trans-unit>
       <trans-unit id="form.secret.copy" xml:space="preserve">
         <source>Copy</source>

@@ -56,8 +56,11 @@
       <trans-unit id="module.new.description" xml:space="preserve">
         <source>To register a new second factor, scan the QR code with any TOTP app (e.g. Google Authenticator, Microsoft Authenticator, Authy) and enter the code.</source>
       </trans-unit>
+      <trans-unit id="module.new.user-context" xml:space="preserve">
+        <source>You are registering a second factor for account: {0}</source>
+      </trans-unit>
       <trans-unit id="module.new.submit-otp" xml:space="preserve">
-        <source>Register new OTP</source>
+        <source>Register second factor</source>
       </trans-unit>
       <trans-unit id="module.new.flashMessage.submittedOtpIncorrect" xml:space="preserve">
 				<source>Submitted OTP was incorrect.</source>

@@ -2,8 +2,20 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext">
     <body>
+      <trans-unit id="login.otp.label" xml:space="preserve">
+        <source>Enter the verification code from your authenticator app to complete login.</source>
+      </trans-unit>
       <trans-unit id="otp-placeholder" xml:space="preserve">
-        <source>OTP from App</source>
+        <source>Verification code from your app</source>
+      </trans-unit>
+      <trans-unit id="form.step.setup" xml:space="preserve">
+        <source>Set up your authenticator</source>
+      </trans-unit>
+      <trans-unit id="form.step.verify" xml:space="preserve">
+        <source>Enter code from your app</source>
+      </trans-unit>
+      <trans-unit id="form.step.register" xml:space="preserve">
+        <source>Register</source>
       </trans-unit>
       <trans-unit id="login.flashMessage.errorHeader" xml:space="preserve">
 				<source>Error</source>
@@ -17,8 +29,14 @@
       <trans-unit id="login.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
 				<source>OTP was registered successfully.</source>
 			</trans-unit>
+      <trans-unit id="form.setup.qrcode.label" xml:space="preserve">
+        <source>Scan QR code</source>
+      </trans-unit>
+      <trans-unit id="form.setup.manual.label" xml:space="preserve">
+        <source>Can't scan? Enter key manually</source>
+      </trans-unit>
       <trans-unit id="form.secret.show" xml:space="preserve">
-        <source>Show Code</source>
+        <source>Show Secret Key</source>
       </trans-unit>
       <trans-unit id="form.secret.copy" xml:space="preserve">
         <source>Copy</source>

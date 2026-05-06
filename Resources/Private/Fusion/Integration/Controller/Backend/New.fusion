@@ -7,19 +7,35 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
 
         content = Neos.Fusion:Component {
             renderer = afx`
-                <Neos.Fusion.Form:Form form.target.action="create">
-                    <div class="neos-control-group">
-                        <img src={qrCode} style="width: 100%; max-width: 400px"/>
+                <Neos.Fusion.Form:Form form.target.action="create" attributes.class="neos-two-factor__form">
+                    <hr />
+                    <p class="neos-two-factor__user-context">
+                        {I18n.id('module.new.user-context').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').arguments([currentUser ? currentUser.name.fullName : accountIdentifier]).translate()}
+                    </p>
+                    <div class="neos-two-factor__step">
+                        <span class="neos-two-factor__step__number">1</span>
+                        <span class="neos-two-factor__step__label">{I18n.id('form.step.setup').package('Sandstorm.NeosTwoFactorAuthentication')}</span>
                     </div>
-
-                    <div class="neos-control-group neos-two-factor__secret-wrapper">
-                        <Neos.Fusion.Form:Hidden attributes.id="secret" field.name="secret" field.value={secret}/>
-
-                        <div class="neos-actions">
-                            <button type="button" class="neos-button neos-login-btn neos-two-factor__secret__show__button">
-                                {I18n.id('form.secret.show').package('Sandstorm.NeosTwoFactorAuthentication')}
-                            </button>
+                    <div class="neos-two-factor__setup-options">
+                        <div class="neos-two-factor__setup-option">
+                            <p class="neos-two-factor__setup-option__label">
+                                {I18n.id('form.setup.qrcode.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                            </p>
+                            <img src={qrCode} class="neos-two-factor__qr-code" alt="" />
                         </div>
+
+                        <div class="neos-two-factor__setup-option">
+                            <p class="neos-two-factor__setup-option__label">
+                                {I18n.id('form.setup.manual.label').package('Sandstorm.NeosTwoFactorAuthentication')}
+                            </p>
+                            <div class="neos-two-factor__secret-wrapper">
+                            <Neos.Fusion.Form:Hidden attributes.id="secret" field.name="secret" field.value={secret}/>
+
+                            <div class="neos-actions">
+                                <button type="button" class="neos-button neos-login-btn neos-two-factor__secret__show__button">
+                                    {I18n.id('form.secret.show').package('Sandstorm.NeosTwoFactorAuthentication')}
+                                </button>
+                            </div>
 
                         <dialog>
                             <div>
@@ -76,8 +92,14 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
                                 </div>
                             </div>
                         </dialog>
+                            </div>
+                        </div>
                     </div>
 
+                    <div class="neos-two-factor__step">
+                        <span class="neos-two-factor__step__number">2</span>
+                        <span class="neos-two-factor__step__label">{I18n.id('form.step.verify').package('Sandstorm.NeosTwoFactorAuthentication')}</span>
+                    </div>
                     <div class="neos-control-group">
                         <Neos.Fusion.Form:Input
                             field.name="secondFactorFromApp"
@@ -86,11 +108,16 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
                             attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                             attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                             attributes.autocomplete="off"
+                            attributes.class="neos-span6"
                         />
                     </div>
 
+                    <div class="neos-two-factor__step">
+                        <span class="neos-two-factor__step__number">3</span>
+                        <span class="neos-two-factor__step__label">{I18n.id('form.step.register').package('Sandstorm.NeosTwoFactorAuthentication')}</span>
+                    </div>
                     <div class="neos-control-group">
-                        <Neos.Fusion.Form:Button>
+                        <Neos.Fusion.Form:Button attributes.class="neos-button neos-two-factor__register-button">
                             {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                         </Neos.Fusion.Form:Button>
                     </div>

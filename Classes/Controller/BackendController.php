@@ -10,6 +10,7 @@ use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\FlashMessage\FlashMessageService;
 use Neos\Flow\Persistence\Exception\IllegalObjectTypeException;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Context;
 use Neos\Flow\Session\Exception\SessionNotStartedException;
 use Neos\Fusion\View\FusionView;
@@ -80,6 +81,12 @@ class BackendController extends AbstractModuleController
     protected $secondFactorService;
 
     /**
+     * @Flow\Inject
+     * @var PersistenceManagerInterface
+     */
+    protected $persistenceManager;
+
+    /**
      * used to list all second factors of the current user
      */
     public function indexAction()
@@ -119,11 +126,16 @@ class BackendController extends AbstractModuleController
         $secret = $otp->getSecret();
         $qrCode = $this->tOTPService->generateQRCodeForTokenAndAccount($otp, $this->securityContext->getAccount());
 
+        $account = $this->securityContext->getAccount();
+        $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
+
         $this->view->assignMultiple([
             'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
             'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'secret' => $secret,
             'qrCode' => $qrCode,
+            'currentUser' => $currentUser instanceof User ? $currentUser : null,
+            'accountIdentifier' => $account->getAccountIdentifier(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),

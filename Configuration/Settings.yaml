@@ -14,6 +14,7 @@ Neos:
             additionalResources:
               styleSheets:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Backend.css'
               javaScripts:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
 

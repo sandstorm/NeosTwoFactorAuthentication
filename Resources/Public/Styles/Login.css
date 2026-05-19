@@ -173,6 +173,75 @@
     background-color: initial;
 }
 
-.neos-control-group > * + * {
-  margin-top: 8px;
+/* Method picker (2FA setup) */
+.neos-two-factor__method-picker__intro {
+    margin: 0 0 16px;
+    color: #fff;
+    opacity: .8;
+}
+
+.neos-two-factor__method-picker__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.neos-two-factor__method-picker__item .neos-two-factor__method-picker__link {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    padding: 14px 18px;
+    text-decoration: none;
+    line-height: 1.3;
+}
+
+.neos-two-factor__method-picker__label {
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+
+.neos-two-factor__method-picker__description {
+    font-size: .85rem;
+    opacity: .8;
+    font-weight: 400;
+}
+
+/* WebAuthn step (setup + login) */
+.neos-two-factor__webauthn-step fieldset {
+    padding: 12px 0;
+    border: 0;
+}
+
+.neos-two-factor__webauthn-prompt,
+.neos-two-factor__webauthn-intro {
+    margin: 0 0 16px;
+    color: #fff;
+    opacity: .9;
+}
+
+.neos-two-factor__webauthn-button[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.neos-two-factor__webauthn-error {
+    color: #c12136;
+    margin-top: 12px;
+    font-size: .9rem;
+}
+
+.neos-two-factor__webauthn-fallback {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.neos-two-factor__webauthn-fallback a {
+    color: #00adee;
+    text-decoration: underline;
+    font-size: .9rem;
 }

@@ -44,6 +44,48 @@
       <trans-unit id="form.secret.close" xml:space="preserve">
         <source>Close</source>
       </trans-unit>
+      <trans-unit id="method.picker.intro" xml:space="preserve">
+        <source>Choose how you'd like to set up your second factor.</source>
+      </trans-unit>
+      <trans-unit id="method.totp.label" xml:space="preserve">
+        <source>Authenticator app</source>
+      </trans-unit>
+      <trans-unit id="method.totp.description" xml:space="preserve">
+        <source>Use Google Authenticator, Authy, 1Password or any TOTP-compatible app on your phone.</source>
+      </trans-unit>
+      <trans-unit id="method.webauthn.label" xml:space="preserve">
+        <source>Security key (Yubikey / WebAuthn)</source>
+      </trans-unit>
+      <trans-unit id="method.webauthn.description" xml:space="preserve">
+        <source>Use a hardware security key such as a Yubikey, or another FIDO2 authenticator.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.intro" xml:space="preserve">
+        <source>Plug in your security key and press the button below. When prompted, tap your key and enter its PIN if requested.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button" xml:space="preserve">
+        <source>Register security key</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.success" xml:space="preserve">
+        <source>Security key registered successfully.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.unsupported" xml:space="preserve">
+        <source>Your browser does not support security keys.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.generic" xml:space="preserve">
+        <source>Could not register security key. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.login.prompt" xml:space="preserve">
+        <source>Touch your security key to continue.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.login.button" xml:space="preserve">
+        <source>Use security key</source>
+      </trans-unit>
+      <trans-unit id="webauthn.login.fallback-to-totp" xml:space="preserve">
+        <source>Use a code from your authenticator app instead</source>
+      </trans-unit>
+      <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
+        <source>Could not verify your security key. Please try again.</source>
+      </trans-unit>
       <trans-unit id="form.name.label" xml:space="preserve">
         <source>Name (optional)</source>
       </trans-unit>

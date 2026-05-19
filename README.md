@@ -1,15 +1,39 @@
 # Neos Backend 2FA
 
-Extend the Neos backend login to support second factors. At the moment we only support TOTP tokens.
-
-Support for WebAuthn is planed!
+Extend the Neos backend login to support second factors. We support TOTP tokens (Authenticator apps)
+and WebAuthn / FIDO2 hardware security keys (e.g. Yubikey).
 
 ## What this package does
 
 https://user-images.githubusercontent.com/12086990/153027757-ac715746-0575-4555-bce1-c44603747945.mov
 
-This package allows all users to register their personal TOTP token (Authenticator App). As an Administrator you are
-able to delete those token for the users again, in case they locked them self out.
+This package allows all users to register their personal second factor — either a TOTP token
+(Authenticator App) or a hardware security key (Yubikey / WebAuthn). Users can register one of each
+and pick which to use at login. As an Administrator you are able to delete factors for users again,
+in case they locked themselves out.
+
+### Security keys (WebAuthn / FIDO2)
+
+Browsers expose WebAuthn only over `https://` or on `localhost`. Make sure the Neos backend is served
+over HTTPS in production, otherwise the security-key flow will fail.
+
+Configure the relying party identifier when your backend hostname differs from the registered domain:
+
+```yml
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    webAuthn:
+      relyingPartyName: 'My CMS'
+      # null means: derive from the request hostname (works for same-origin deployments).
+      # Set to the registrable domain ('example.com') if you serve the backend from a subdomain
+      # and want credentials to be usable across subdomains.
+      relyingPartyId: null
+      # 'required' forces a PIN or biometric on the authenticator (recommended).
+      userVerification: 'required'
+      # Attestation verification is disabled by default — accepts any FIDO2 authenticator.
+      attestation: 'none'
+      timeout: 60000
+```
 
 ![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
 

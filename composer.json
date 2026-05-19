@@ -18,7 +18,8 @@
         "neos/fusion-afx": "*",
         "neos/fusion-form": "*",
         "spomky-labs/otphp": "^11.0",
-        "chillerlan/php-qrcode": "^5.0"
+        "chillerlan/php-qrcode": "^5.0",
+        "web-auth/webauthn-lib": "^4.8"
     },
     "require-dev": {
         "sandstorm/neos-init-e2e-tests-plugin": "@dev"

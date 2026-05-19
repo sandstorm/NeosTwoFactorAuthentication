@@ -1,6 +1,30 @@
 Sandstorm.NeosTwoFactorAuthentication.LoginController.askForSecondFactor = Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage {
     site = ${site}
     styles = ${styles}
+    scripts = ${scripts}
     username = ${username}
     flashMessages = ${flashMessages}
+
+    body = Neos.Fusion:Case {
+        # If user has WebAuthn registered and didn't request the TOTP fallback, show the WebAuthn step.
+        webAuthn {
+            condition = ${hasWebAuthn && (request.arguments.useTotp != '1')}
+            renderer = Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep {
+                flashMessages = ${flashMessages}
+                fallbackToTotp = ${hasTotp}
+            }
+        }
+        totp {
+            condition = ${hasTotp}
+            renderer = Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep {
+                flashMessages = ${flashMessages}
+            }
+        }
+        default {
+            condition = true
+            renderer = Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep {
+                flashMessages = ${flashMessages}
+            }
+        }
+    }
 }

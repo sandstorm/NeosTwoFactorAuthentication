@@ -1,0 +1,47 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep) < prototype(Neos.Fusion:Component) {
+    flashMessages = ${[]}
+    # offer fallback link if user also has a TOTP factor
+    fallbackToTotp = false
+
+    severityMapping = Neos.Fusion:DataStructure {
+        OK = 'success'
+        Notice = 'notice'
+        Warning = 'warning'
+        Error = 'error'
+    }
+
+    renderer = afx`
+        <div
+            class="neos-two-factor__webauthn-step"
+            data-webauthn-login
+            data-options-url="/neos/second-factor-webauthn/authenticate-options"
+            data-verify-url="/neos/second-factor-webauthn/authenticate-verify"
+        >
+            <fieldset>
+                <p class="neos-two-factor__webauthn-prompt">
+                    {I18n.id('webauthn.login.prompt').package('Sandstorm.NeosTwoFactorAuthentication')}
+                </p>
+                <div class="neos-actions">
+                    <button type="button"
+                        class="neos-span12 neos-button neos-login-btn neos-two-factor__webauthn-button"
+                        data-webauthn-trigger
+                    >
+                        {I18n.id('webauthn.login.button').package('Sandstorm.NeosTwoFactorAuthentication')}
+                    </button>
+                </div>
+                <p class="neos-two-factor__webauthn-error" data-webauthn-error hidden></p>
+                <p class="neos-two-factor__webauthn-fallback" @if.set={props.fallbackToTotp}>
+                    <a href="?useTotp=1" data-webauthn-fallback>
+                        {I18n.id('webauthn.login.fallback-to-totp').package('Sandstorm.NeosTwoFactorAuthentication')}
+                    </a>
+                </p>
+                <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
+                    <div class={'neos-tooltip neos-bottom neos-in neos-tooltip-' + props.severityMapping[flashMessage.severity]}>
+                        <div class="neos-tooltip-arrow"></div>
+                        <div class="neos-tooltip-inner" role="alert">{flashMessage}</div>
+                    </div>
+                </Neos.Fusion:Loop>
+            </fieldset>
+        </div>
+    `
+}

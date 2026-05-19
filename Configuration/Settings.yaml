@@ -17,6 +17,7 @@ Neos:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Backend.css'
               javaScripts:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/JavaScript/webauthn.js'
 
     userInterface:
       translation:
@@ -29,6 +30,7 @@ Neos:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
         scripts:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
+          'Sandstorm.NeosTwoFactorAuthentication:WebAuthnScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/JavaScript/webauthn.js'
 
   Flow:
     http:
@@ -49,3 +51,27 @@ Neos:
                 pattern: 'ControllerObjectName'
                 patternOptions:
                   controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(LoginController|BackendController)'
+
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for all users
+    enforceTwoFactorAuthentication: false
+    # enforce 2FA for specific authentication providers
+    enforce2FAForAuthenticationProviders : []
+    # enforce 2FA for specific roles
+    enforce2FAForRoles: []
+    # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
+    issuerName: ''
+
+    webAuthn:
+      # Human-readable relying party name shown in the browser's WebAuthn prompt.
+      relyingPartyName: 'Neos Backend'
+      # Optional override for the relying party identifier. If null, the request's
+      # hostname is used (which works for localhost and same-origin production deployments).
+      relyingPartyId: null
+      # 'required', 'preferred' or 'discouraged'. Required forces PIN/biometric on the authenticator.
+      userVerification: 'required'
+      # 'none', 'indirect' or 'direct'. 'none' accepts any authenticator and skips attestation verification.
+      attestation: 'none'
+      # Browser ceremony timeout in milliseconds.
+      timeout: 60000

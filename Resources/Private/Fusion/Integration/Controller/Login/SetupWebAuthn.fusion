@@ -1,0 +1,12 @@
+Sandstorm.NeosTwoFactorAuthentication.LoginController.setupWebAuthn = Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage {
+    site = ${site}
+    styles = ${styles}
+    scripts = ${scripts}
+    username = ${username}
+    flashMessages = ${flashMessages}
+
+    body = Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep {
+        flashMessages = ${flashMessages}
+        redirectUrl = '/neos'
+    }
+}

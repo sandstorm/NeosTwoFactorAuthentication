@@ -58,6 +58,62 @@
         <source>Close</source>
         <target>Schließen</target>
       </trans-unit>
+      <trans-unit id="method.picker.intro" xml:space="preserve">
+        <source>Choose how you'd like to set up your second factor.</source>
+        <target>Wählen Sie, wie Sie Ihren zweiten Faktor einrichten möchten.</target>
+      </trans-unit>
+      <trans-unit id="method.totp.label" xml:space="preserve">
+        <source>Authenticator app</source>
+        <target>Authenticator-App</target>
+      </trans-unit>
+      <trans-unit id="method.totp.description" xml:space="preserve">
+        <source>Use Google Authenticator, Authy, 1Password or any TOTP-compatible app on your phone.</source>
+        <target>Verwenden Sie Google Authenticator, Authy, 1Password oder eine andere TOTP-kompatible App.</target>
+      </trans-unit>
+      <trans-unit id="method.webauthn.label" xml:space="preserve">
+        <source>Security key (Yubikey / WebAuthn)</source>
+        <target>Sicherheitsschlüssel (Yubikey / WebAuthn)</target>
+      </trans-unit>
+      <trans-unit id="method.webauthn.description" xml:space="preserve">
+        <source>Use a hardware security key such as a Yubikey, or another FIDO2 authenticator.</source>
+        <target>Verwenden Sie einen Hardware-Sicherheitsschlüssel wie einen Yubikey oder einen anderen FIDO2-Authenticator.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.intro" xml:space="preserve">
+        <source>Plug in your security key and press the button below. When prompted, tap your key and enter its PIN if requested.</source>
+        <target>Stecken Sie Ihren Sicherheitsschlüssel ein und drücken Sie unten auf die Schaltfläche. Tippen Sie bei Aufforderung auf den Schlüssel und geben Sie ggf. die PIN ein.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button" xml:space="preserve">
+        <source>Register security key</source>
+        <target>Sicherheitsschlüssel registrieren</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.success" xml:space="preserve">
+        <source>Security key registered successfully.</source>
+        <target>Sicherheitsschlüssel erfolgreich registriert.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.unsupported" xml:space="preserve">
+        <source>Your browser does not support security keys.</source>
+        <target>Ihr Browser unterstützt keine Sicherheitsschlüssel.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.generic" xml:space="preserve">
+        <source>Could not register security key. Please try again.</source>
+        <target>Der Sicherheitsschlüssel konnte nicht registriert werden. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.prompt" xml:space="preserve">
+        <source>Touch your security key to continue.</source>
+        <target>Berühren Sie Ihren Sicherheitsschlüssel, um fortzufahren.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.button" xml:space="preserve">
+        <source>Use security key</source>
+        <target>Sicherheitsschlüssel verwenden</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.fallback-to-totp" xml:space="preserve">
+        <source>Use a code from your authenticator app instead</source>
+        <target>Stattdessen einen Code aus der Authenticator-App verwenden</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
+        <source>Could not verify your security key. Please try again.</source>
+        <target>Der Sicherheitsschlüssel konnte nicht überprüft werden. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
       <trans-unit id="form.name.label" xml:space="preserve">
         <source>Name (optional)</source>
         <target>Name (optional)</target>

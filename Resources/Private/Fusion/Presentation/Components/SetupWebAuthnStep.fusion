@@ -1,0 +1,36 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < prototype(Neos.Fusion:Component) {
+    flashMessages = ${[]}
+    # where to redirect on successful registration
+    redirectUrl = '/neos'
+
+    renderer = afx`
+        <div
+            class="neos-two-factor__webauthn-step"
+            data-webauthn-register
+            data-options-url="/neos/second-factor-webauthn/register-options"
+            data-verify-url="/neos/second-factor-webauthn/register-verify"
+            data-redirect-url={props.redirectUrl}
+        >
+            <fieldset>
+                <p class="neos-two-factor__webauthn-intro">
+                    {I18n.id('webauthn.setup.intro').package('Sandstorm.NeosTwoFactorAuthentication')}
+                </p>
+                <div class="neos-actions">
+                    <button type="button"
+                        class="neos-span12 neos-button neos-login-btn neos-two-factor__webauthn-button"
+                        data-webauthn-trigger
+                    >
+                        {I18n.id('webauthn.setup.button').package('Sandstorm.NeosTwoFactorAuthentication')}
+                    </button>
+                </div>
+                <p class="neos-two-factor__webauthn-error" data-webauthn-error hidden></p>
+                <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
+                    <div class="neos-tooltip neos-bottom neos-in">
+                        <div class="neos-tooltip-arrow"></div>
+                        <div class="neos-tooltip-inner" role="alert">{flashMessage}</div>
+                    </div>
+                </Neos.Fusion:Loop>
+            </fieldset>
+        </div>
+    `
+}

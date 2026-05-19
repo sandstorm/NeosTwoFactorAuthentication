@@ -11,6 +11,8 @@ class SecondFactorSessionStorageService
 {
     const SESSION_OBJECT_ID = 'Sandstorm/NeosTwoFactorAuthentication';
     const SESSION_OBJECT_AUTH_STATUS = 'authenticationStatus';
+    const SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS = 'webAuthnRegistrationOptions';
+    const SESSION_OBJECT_WEBAUTHN_AUTHENTICATION_OPTIONS = 'webAuthnAuthenticationOptions';
 
     /**
      * @Flow\Inject
@@ -23,12 +25,10 @@ class SecondFactorSessionStorageService
      */
     public function setAuthenticationStatus(string $authenticationStatus): void
     {
-        $this->sessionManager->getCurrentSession()->putData(
-            self::SESSION_OBJECT_ID,
-            [
-                self::SESSION_OBJECT_AUTH_STATUS => $authenticationStatus,
-            ]
-        );
+        $session = $this->sessionManager->getCurrentSession();
+        $data = $session->getData(self::SESSION_OBJECT_ID) ?: [];
+        $data[self::SESSION_OBJECT_AUTH_STATUS] = $authenticationStatus;
+        $session->putData(self::SESSION_OBJECT_ID, $data);
     }
 
     /**
@@ -49,5 +49,40 @@ class SecondFactorSessionStorageService
         if (!$this->sessionManager->getCurrentSession()->hasKey(self::SESSION_OBJECT_ID)) {
             self::setAuthenticationStatus(AuthenticationStatus::AUTHENTICATION_NEEDED);
         }
+    }
+
+    /**
+     * Persist arbitrary data under a key inside the package's session object,
+     * preserving the existing authentication status entry.
+     *
+     * @throws SessionNotStartedException
+     */
+    public function putValue(string $key, mixed $value): void
+    {
+        $session = $this->sessionManager->getCurrentSession();
+        $data = $session->getData(self::SESSION_OBJECT_ID) ?: [];
+        $data[$key] = $value;
+        $session->putData(self::SESSION_OBJECT_ID, $data);
+    }
+
+    /**
+     * @throws SessionNotStartedException
+     */
+    public function getValue(string $key): mixed
+    {
+        $session = $this->sessionManager->getCurrentSession();
+        $data = $session->getData(self::SESSION_OBJECT_ID) ?: [];
+        return $data[$key] ?? null;
+    }
+
+    /**
+     * @throws SessionNotStartedException
+     */
+    public function removeValue(string $key): void
+    {
+        $session = $this->sessionManager->getCurrentSession();
+        $data = $session->getData(self::SESSION_OBJECT_ID) ?: [];
+        unset($data[$key]);
+        $session->putData(self::SESSION_OBJECT_ID, $data);
     }
 }

@@ -24,15 +24,45 @@ class SecondFactorRepository extends Repository
     /**
      * @throws IllegalObjectTypeException
      */
-    public function createSecondFactorForAccount(string $secret, Account $account, string $name): void
+    public function createSecondFactorForAccount(string $secret, Account $account, int $type = SecondFactor::TYPE_TOTP, string $name): SecondFactor
     {
         $secondFactor = new SecondFactor();
         $secondFactor->setAccount($account);
         $secondFactor->setSecret($secret);
-        $secondFactor->setType(SecondFactor::TYPE_TOTP);
+        $secondFactor->setType($type);
         $secondFactor->setName($name);
         $secondFactor->setCreationDate(new \DateTime());
         $this->add($secondFactor);
         $this->persistenceManager->persistAll();
+        return $secondFactor;
+    }
+
+    /**
+     * @return SecondFactor[]
+     */
+    public function findByAccountAndType(Account $account, int $type): array
+    {
+        $query = $this->createQuery();
+        return $query
+            ->matching(
+                $query->logicalAnd(
+                    $query->equals('account', $account),
+                    $query->equals('type', $type)
+                )
+            )
+            ->execute()
+            ->toArray();
+    }
+
+    /**
+     * @return SecondFactor[]
+     */
+    public function findAllByType(int $type): array
+    {
+        $query = $this->createQuery();
+        return $query
+            ->matching($query->equals('type', $type))
+            ->execute()
+            ->toArray();
     }
 }

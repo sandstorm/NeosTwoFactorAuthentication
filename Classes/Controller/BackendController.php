@@ -21,6 +21,7 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto\SecondFactorDto;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\Domain\SecondFactorMethod\SecondFactorMethodRegistry;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
@@ -82,6 +83,12 @@ class BackendController extends AbstractModuleController
 
     /**
      * @Flow\Inject
+     * @var SecondFactorMethodRegistry
+     */
+    protected $methodRegistry;
+
+    /**
+     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
     protected $persistenceManager;
@@ -118,9 +125,29 @@ class BackendController extends AbstractModuleController
     }
 
     /**
-     * show the form to register a new second factor
+     * Method picker shown when the user clicks "Add second factor" inside the backend module.
      */
     public function newAction(): void
+    {
+        $account = $this->securityContext->getAccount();
+        $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
+
+        $this->view->assignMultiple([
+            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
+            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
+            'currentUser' => $currentUser instanceof User ? $currentUser : null,
+            'accountIdentifier' => $account->getAccountIdentifier(),
+            'methods' => $this->methodRegistry->getAll(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
+        ]);
+    }
+
+    /**
+     * TOTP wizard (extracted from the previous newAction).
+     */
+    public function newTotpAction(): void
     {
         $otp = TOTPService::generateNewTotp();
         $secret = $otp->getSecret();
@@ -143,7 +170,27 @@ class BackendController extends AbstractModuleController
     }
 
     /**
-     * save the registered second factor
+     * WebAuthn setup wizard. The JS on the page talks to LoginController's
+     * webAuthnRegister(Options|Verify)Action XHR endpoints.
+     */
+    public function newWebAuthnAction(): void
+    {
+        $account = $this->securityContext->getAccount();
+        $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
+
+        $this->view->assignMultiple([
+            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
+            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
+            'currentUser' => $currentUser instanceof User ? $currentUser : null,
+            'accountIdentifier' => $account->getAccountIdentifier(),
+            'flashMessages' => $this->flashMessageService
+                ->getFlashMessageContainerForRequest($this->request)
+                ->getMessagesAndFlush(),
+        ]);
+    }
+
+    /**
+     * save the registered second factor (TOTP)
      *
      * @throws SessionNotStartedException
      * @throws IllegalObjectTypeException
@@ -166,10 +213,15 @@ class BackendController extends AbstractModuleController
                 '',
                 Message::SEVERITY_WARNING
             );
-            $this->redirect('new');
+            $this->redirect('newTotp');
         }
 
-        $this->secondFactorRepository->createSecondFactorForAccount($secret, $this->securityContext->getAccount(), $name);
+        $this->secondFactorRepository->createSecondFactorForAccount(
+            $secret,
+            $this->securityContext->getAccount(),
+            SecondFactor::TYPE_TOTP,
+            $name,
+        );
 
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 

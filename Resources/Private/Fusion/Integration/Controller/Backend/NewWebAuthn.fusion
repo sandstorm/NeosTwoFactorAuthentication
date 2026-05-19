@@ -1,0 +1,30 @@
+Sandstorm.NeosTwoFactorAuthentication.BackendController.newWebAuthn = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
+    body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
+        flashMessages = ${flashMessages}
+
+        teaserTitle = ${I18n.id('module.newWebAuthn.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+        teaserText = ${I18n.id('module.newWebAuthn.description').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+
+        content = Neos.Fusion:Component {
+            redirectUrl = Neos.Fusion:UriBuilder {
+                package = 'Sandstorm.NeosTwoFactorAuthentication'
+                controller = 'Backend'
+                action = 'index'
+            }
+            renderer = afx`
+                <p class="neos-two-factor__user-context">
+                    {I18n.id('module.new.user-context').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').arguments([currentUser ? currentUser.name.fullName : accountIdentifier]).translate()}
+                </p>
+                <Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep
+                    flashMessages={flashMessages}
+                    redirectUrl={props.redirectUrl}
+                />
+                <Neos.Fusion:Loop items={scripts}>
+                    <script @children="attributes.src">
+                        <Neos.Fusion:ResourceUri path={item}/>
+                    </script>
+                </Neos.Fusion:Loop>
+            `
+        }
+    }
+}

@@ -69,9 +69,17 @@ Sandstorm:
       # Optional override for the relying party identifier. If null, the request's
       # hostname is used (which works for localhost and same-origin production deployments).
       relyingPartyId: null
-      # 'required', 'preferred' or 'discouraged'. Required forces PIN/biometric on the authenticator.
-      userVerification: 'required'
+      # 'required', 'preferred' or 'discouraged'.
+      # 'discouraged' is the most permissive — works with FIDO U2F-only keys (e.g. YubiKey 4)
+      # via the browser's U2F-compat fallback. Set to 'preferred' or 'required' to demand
+      # PIN/biometric on the authenticator; note that 'required' excludes U2F-only keys.
+      userVerification: 'discouraged'
       # 'none', 'indirect' or 'direct'. 'none' accepts any authenticator and skips attestation verification.
       attestation: 'none'
       # Browser ceremony timeout in milliseconds.
       timeout: 60000
+      # Relying-party hostnames for which the server-side library should accept non-HTTPS
+      # requests. The browser already treats *.localhost as a secure context (RFC 6761),
+      # but the PHP validator only special-cases the literal 'localhost' — list any
+      # additional dev hostnames here. Leave empty in production.
+      securedRelyingPartyIds: []

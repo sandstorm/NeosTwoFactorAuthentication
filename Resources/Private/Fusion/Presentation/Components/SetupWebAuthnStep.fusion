@@ -15,9 +15,10 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                 <p class="neos-two-factor__webauthn-intro">
                     {I18n.id('webauthn.setup.intro').package('Sandstorm.NeosTwoFactorAuthentication')}
                 </p>
+                <br />
                 <div class="neos-actions">
                     <button type="button"
-                        class="neos-span12 neos-button neos-login-btn neos-two-factor__webauthn-button"
+                        class="neos-button neos-login-btn neos-two-factor__webauthn-button"
                         data-webauthn-trigger
                     >
                         {I18n.id('webauthn.setup.button').package('Sandstorm.NeosTwoFactorAuthentication')}

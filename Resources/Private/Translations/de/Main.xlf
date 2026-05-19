@@ -106,9 +106,9 @@
         <source>Use security key</source>
         <target>Sicherheitsschlüssel verwenden</target>
       </trans-unit>
-      <trans-unit id="webauthn.login.fallback-to-totp" xml:space="preserve">
-        <source>Use a code from your authenticator app instead</source>
-        <target>Stattdessen einen Code aus der Authenticator-App verwenden</target>
+      <trans-unit id="login.or" xml:space="preserve">
+        <source>or</source>
+        <target>oder</target>
       </trans-unit>
       <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
         <source>Could not verify your security key. Please try again.</source>

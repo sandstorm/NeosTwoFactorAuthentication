@@ -5,26 +5,23 @@ Sandstorm.NeosTwoFactorAuthentication.LoginController.askForSecondFactor = Sands
     username = ${username}
     flashMessages = ${flashMessages}
 
-    body = Neos.Fusion:Case {
-        # If user has WebAuthn registered and didn't request the TOTP fallback, show the WebAuthn step.
-        webAuthn {
-            condition = ${hasWebAuthn && (request.arguments.useTotp != '1')}
-            renderer = Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep {
-                flashMessages = ${flashMessages}
-                fallbackToTotp = ${hasTotp}
-            }
-        }
-        totp {
-            condition = ${hasTotp}
-            renderer = Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep {
-                flashMessages = ${flashMessages}
-            }
-        }
-        default {
-            condition = true
-            renderer = Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep {
-                flashMessages = ${flashMessages}
-            }
-        }
+    body = Neos.Fusion:Component {
+        hasWebAuthn = ${hasWebAuthn}
+        hasTotp = ${hasTotp}
+        flashMessages = ${flashMessages}
+
+        renderer = afx`
+            <Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep
+                @if.show={props.hasWebAuthn}
+                flashMessages={props.flashMessages}
+            />
+            <div class="neos-two-factor__or-separator" @if.show={props.hasWebAuthn && props.hasTotp}>
+                <span>{I18n.id('login.or').package('Sandstorm.NeosTwoFactorAuthentication')}</span>
+            </div>
+            <Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep
+                @if.show={props.hasTotp}
+                flashMessages={props.flashMessages}
+            />
+        `
     }
 }

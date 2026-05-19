@@ -3,7 +3,7 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
         flashMessages = ${flashMessages}
 
         teaserTitle = ${I18n.id('module.new.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
-        teaserText = ${I18n.id('module.new.description').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+        teaserText = ${I18n.id('module.new.description.picker').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
         content = Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker {
             items = Neos.Fusion:DataStructure {

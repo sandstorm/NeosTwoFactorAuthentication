@@ -22,13 +22,16 @@ class SecondFactorMethodRegistry
     private array $methodsByIdentifier = [];
 
     /**
-     * @Flow\Inject
+     * `lazy=false` forces eager injection — without it Flow would inject a DependencyProxy,
+     * which fails the SecondFactorMethodInterface type check below.
+     *
+     * @Flow\Inject(lazy=false)
      * @var TotpMethod
      */
     protected $totpMethod;
 
     /**
-     * @Flow\Inject
+     * @Flow\Inject(lazy=false)
      * @var WebAuthnMethod
      */
     protected $webAuthnMethod;

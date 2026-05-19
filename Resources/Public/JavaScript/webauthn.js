@@ -157,7 +157,8 @@
             var trigger = container.querySelector('[data-webauthn-trigger]');
             if (trigger) {
                 trigger.addEventListener('click', function () { runAuthentication(container); });
-                // Auto-trigger after a tick so the user only has to press the key
+                // Always auto-trigger so users with a security key get instant tap-and-go.
+                // Users who prefer TOTP just dismiss the browser prompt and type their code.
                 setTimeout(function () { runAuthentication(container); }, 200);
             }
         });

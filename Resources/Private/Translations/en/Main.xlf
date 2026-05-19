@@ -80,8 +80,8 @@
       <trans-unit id="webauthn.login.button" xml:space="preserve">
         <source>Use security key</source>
       </trans-unit>
-      <trans-unit id="webauthn.login.fallback-to-totp" xml:space="preserve">
-        <source>Use a code from your authenticator app instead</source>
+      <trans-unit id="login.or" xml:space="preserve">
+        <source>or</source>
       </trans-unit>
       <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
         <source>Could not verify your security key. Please try again.</source>

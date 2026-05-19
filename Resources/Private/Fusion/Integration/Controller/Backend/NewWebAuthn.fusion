@@ -3,7 +3,6 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newWebAuthn = Sandstorm.
         flashMessages = ${flashMessages}
 
         teaserTitle = ${I18n.id('module.newWebAuthn.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
-        teaserText = ${I18n.id('module.newWebAuthn.description').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
         content = Neos.Fusion:Component {
             redirectUrl = Neos.Fusion:UriBuilder {

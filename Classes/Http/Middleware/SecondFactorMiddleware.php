@@ -25,6 +25,27 @@ class SecondFactorMiddleware implements MiddlewareInterface
     const SECOND_FACTOR_SETUP_URI = '/neos/second-factor-setup';
 
     /**
+     * URIs that must remain reachable while the user is still on the 2FA challenge step,
+     * so the WebAuthn JS can complete the ceremony via XHR without being redirected back
+     * to the HTML challenge page.
+     */
+    const SECOND_FACTOR_CHALLENGE_ALLOWED_URI_PREFIXES = [
+        '/neos/second-factor-login',
+        '/neos/second-factor-webauthn/authenticate-options',
+        '/neos/second-factor-webauthn/authenticate-verify',
+    ];
+
+    /**
+     * URIs that must remain reachable while the user is still on the enforced-setup step
+     * (method picker, TOTP wizard, WebAuthn wizard, plus the WebAuthn registration XHRs).
+     */
+    const SECOND_FACTOR_SETUP_ALLOWED_URI_PREFIXES = [
+        '/neos/second-factor-setup',
+        '/neos/second-factor-webauthn/register-options',
+        '/neos/second-factor-webauthn/register-verify',
+    ];
+
+    /**
      * @Flow\Inject
      * @var SecurityContext
      */
@@ -175,9 +196,9 @@ class SecondFactorMiddleware implements MiddlewareInterface
             $isEnabledForAccount
             && $authenticationStatus === AuthenticationStatus::AUTHENTICATION_NEEDED
         ) {
-            // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop.
-            $isAskingForOTP = str_ends_with($request->getUri()->getPath(), self::SECOND_FACTOR_LOGIN_URI);
-            if ($isAskingForOTP) {
+            // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop,
+            //      and to let the WebAuthn JS reach its XHR endpoints during the challenge.
+            if ($this->pathMatchesAnyPrefix($request->getUri()->getPath(), self::SECOND_FACTOR_CHALLENGE_ALLOWED_URI_PREFIXES)) {
                 return $handler->handle($request);
             }
 
@@ -193,9 +214,9 @@ class SecondFactorMiddleware implements MiddlewareInterface
         // 7. Redirect to 2FA setup, if second factor is not set up for account but is enforced by system.
         //    Skip, if already on 2FA setup route.
         if ($isEnforcedForAccount && !$isEnabledForAccount) {
-            // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop.
-            $isSettingUp2FA = str_ends_with($request->getUri()->getPath(), self::SECOND_FACTOR_SETUP_URI);
-            if ($isSettingUp2FA) {
+            // WHY: We use the request URI as state here to keep the middleware from entering a redirect loop,
+            //      and to let the WebAuthn JS reach its registration XHR endpoints during enforced setup.
+            if ($this->pathMatchesAnyPrefix($request->getUri()->getPath(), self::SECOND_FACTOR_SETUP_ALLOWED_URI_PREFIXES)) {
                 return $handler->handle($request);
             }
 
@@ -223,5 +244,18 @@ class SecondFactorMiddleware implements MiddlewareInterface
     private function log(string $message, array $context = []): void
     {
         $this->securityLogger->debug(self::LOGGING_PREFIX . $message, $context);
+    }
+
+    /**
+     * @param string[] $prefixes
+     */
+    private function pathMatchesAnyPrefix(string $path, array $prefixes): bool
+    {
+        foreach ($prefixes as $prefix) {
+            if (str_starts_with($path, $prefix) || str_ends_with($path, $prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

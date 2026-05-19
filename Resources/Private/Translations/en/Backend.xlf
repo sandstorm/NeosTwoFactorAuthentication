@@ -72,13 +72,10 @@
 				<source>OTP was registered successfully.</source>
 			</trans-unit>
       <trans-unit id="module.new.description.picker" xml:space="preserve">
-        <source>Choose how you'd like to set up your second factor.</source>
+        <source>Choose which second factor you would like to set up:</source>
       </trans-unit>
       <trans-unit id="module.newWebAuthn.title" xml:space="preserve">
         <source>Register a security key</source>
-      </trans-unit>
-      <trans-unit id="module.newWebAuthn.description" xml:space="preserve">
-        <source>Plug in your hardware security key (e.g. a Yubikey) and follow the browser prompt to register it as a second factor.</source>
       </trans-unit>
     </body>
   </file>

@@ -14,6 +14,7 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
+use Webauthn\AttestationStatement\FidoU2FAttestationStatementSupport;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
 use Webauthn\AuthenticatorAssertionResponse;
@@ -63,7 +64,16 @@ class WebAuthnService
     protected $timeoutMs;
 
     /**
-     * @Flow\Inject
+     * @Flow\InjectConfiguration(path="webAuthn.securedRelyingPartyIds")
+     * @var array<string>
+     */
+    protected $securedRelyingPartyIds = [];
+
+    /**
+     * `lazy=false` so the real adapter (not a DependencyProxy) is passed into the
+     * web-auth validator constructors, which strict-type-hint the interface.
+     *
+     * @Flow\Inject(lazy=false)
      * @var PublicKeyCredentialSourceRepositoryAdapter
      */
     protected $credentialSourceRepository;
@@ -144,7 +154,7 @@ class WebAuthnService
         }
 
         $validator = $this->buildAttestationValidator();
-        $credentialSource = $validator->check($authenticatorResponse, $options, $request);
+        $credentialSource = $validator->check($authenticatorResponse, $options, $request, $this->securedRelyingPartyIds);
 
         return $this->secondFactorRepository->createSecondFactorForAccount(
             json_encode($credentialSource->jsonSerialize(), JSON_THROW_ON_ERROR),
@@ -199,7 +209,8 @@ class WebAuthnService
             $authenticatorResponse,
             $options,
             $request,
-            $userHandle
+            $userHandle,
+            $this->securedRelyingPartyIds
         );
     }
 
@@ -225,23 +236,30 @@ class WebAuthnService
 
     private function buildCredentialLoader(): PublicKeyCredentialLoader
     {
-        $attestationManager = new AttestationStatementSupportManager();
-        $attestationManager->add(new NoneAttestationStatementSupport());
+        $attestationManager = $this->buildAttestationStatementSupportManager();
         $attestationObjectLoader = new AttestationObjectLoader($attestationManager);
         return new PublicKeyCredentialLoader($attestationObjectLoader);
     }
 
     private function buildAttestationValidator(): AuthenticatorAttestationResponseValidator
     {
-        $attestationManager = new AttestationStatementSupportManager();
-        $attestationManager->add(new NoneAttestationStatementSupport());
-
         return new AuthenticatorAttestationResponseValidator(
-            $attestationManager,
+            $this->buildAttestationStatementSupportManager(),
             $this->credentialSourceRepository,
             null,
             new ExtensionOutputCheckerHandler()
         );
+    }
+
+    private function buildAttestationStatementSupportManager(): AttestationStatementSupportManager
+    {
+        $manager = new AttestationStatementSupportManager();
+        $manager->add(new NoneAttestationStatementSupport());
+        // FidoU2F is needed for U2F-only authenticators (e.g. YubiKey 4) registered via
+        // the browser's U2F-compat fallback — they return `fido-u2f` attestation regardless
+        // of the requested `attestation: none` conveyance preference.
+        $manager->add(new FidoU2FAttestationStatementSupport());
+        return $manager;
     }
 
     private function buildAssertionValidator(): AuthenticatorAssertionResponseValidator

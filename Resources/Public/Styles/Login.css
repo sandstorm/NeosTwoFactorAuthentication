@@ -173,42 +173,37 @@
     background-color: initial;
 }
 
-/* Method picker (2FA setup) */
-.neos-two-factor__method-picker__intro {
-    margin: 0 0 16px;
-    color: #fff;
-    opacity: .8;
-}
-
-.neos-two-factor__method-picker__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* Method picker (2FA setup) — compact button on the left, description to its right */
+.neos-two-factor__method-picker {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+    margin-top: 16px;
 }
 
-.neos-two-factor__method-picker__item .neos-two-factor__method-picker__link {
+.neos-two-factor__method-picker__row {
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    padding: 14px 18px;
+    align-items: center;
+    gap: 16px;
+}
+
+.neos-two-factor__method-picker__button {
+    flex: 0 0 auto;
+    background-color: #00b5ff !important;
     text-decoration: none;
-    line-height: 1.3;
+    white-space: nowrap;
 }
 
-.neos-two-factor__method-picker__label {
-    font-weight: 600;
-    font-size: 1rem;
-    margin-bottom: 4px;
+.neos-two-factor__method-picker__button:hover,
+.neos-two-factor__method-picker__button:focus {
+    text-decoration: none;
 }
 
 .neos-two-factor__method-picker__description {
-    font-size: .85rem;
-    opacity: .8;
-    font-weight: 400;
+    flex: 1 1 auto;
+    font-size: .9rem;
+    opacity: .85;
+    line-height: 1.4;
 }
 
 /* WebAuthn step (setup + login) */
@@ -222,6 +217,10 @@
     margin: 0 0 16px;
     color: #fff;
     opacity: .9;
+}
+
+.neos-two-factor__webauthn-button {
+    background-color: #00b5ff !important;
 }
 
 .neos-two-factor__webauthn-button[disabled] {
@@ -244,4 +243,25 @@
     color: #00adee;
     text-decoration: underline;
     font-size: .9rem;
+}
+
+/* Separator between the two methods on the 2FA challenge screen */
+.neos-two-factor__or-separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: #fff;
+    opacity: .6;
+    text-transform: uppercase;
+    font-size: .8rem;
+    letter-spacing: .1em;
+}
+
+.neos-two-factor__or-separator::before,
+.neos-two-factor__or-separator::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid currentColor;
+    opacity: .5;
 }

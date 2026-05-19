@@ -28,12 +28,22 @@ Sandstorm:
       # Set to the registrable domain ('example.com') if you serve the backend from a subdomain
       # and want credentials to be usable across subdomains.
       relyingPartyId: null
-      # 'required' forces a PIN or biometric on the authenticator (recommended).
-      userVerification: 'required'
-      # Attestation verification is disabled by default — accepts any FIDO2 authenticator.
+      # Default is 'discouraged' so FIDO U2F-only authenticators (e.g. YubiKey 4) work
+      # via the browser's U2F-compat fallback. Set to 'preferred' or 'required' to
+      # demand PIN/biometric — note that 'required' excludes U2F-only keys.
+      userVerification: 'discouraged'
+      # Attestation verification is disabled by default — accepts any FIDO2/U2F authenticator.
       attestation: 'none'
       timeout: 60000
 ```
+
+#### Authenticator compatibility
+
+| Authenticator                         | `userVerification: discouraged` | `userVerification: required` |
+| ------------------------------------- | ------------------------------- | ---------------------------- |
+| YubiKey 5 / FIDO2 keys                | ✅ touch                        | ✅ PIN + touch               |
+| YubiKey 4 / older U2F-only keys       | ✅ touch (U2F-compat)           | ❌ not supported             |
+| Platform authenticators (Touch ID, Windows Hello) | ✅ biometric              | ✅ biometric                 |
 
 ![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
 

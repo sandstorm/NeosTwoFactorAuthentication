@@ -1,13 +1,4 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep) < prototype(Neos.Fusion:Component) {
-    flashMessages = ${[]}
-
-    severityMapping = Neos.Fusion:DataStructure {
-        OK = 'success'
-        Notice = 'notice'
-        Warning = 'warning'
-        Error = 'error'
-    }
-
     # Localized error strings handed to webauthn.js. Keys match the
     # DOMException name thrown by the browser; "result" / "default" /
     # "unsupported" are the fixed fallbacks the script always needs.
@@ -48,12 +39,6 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep) < p
                     <div class="neos-tooltip-arrow"></div>
                     <div class="neos-tooltip-inner" role="alert" data-webauthn-error-message></div>
                 </div>
-                <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
-                    <div class={'neos-tooltip neos-bottom neos-in neos-tooltip-' + props.severityMapping[flashMessage.severity]}>
-                        <div class="neos-tooltip-arrow"></div>
-                        <div class="neos-tooltip-inner" role="alert">{flashMessage}</div>
-                    </div>
-                </Neos.Fusion:Loop>
             </fieldset>
         </div>
     `

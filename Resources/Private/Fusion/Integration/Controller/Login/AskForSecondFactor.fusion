@@ -13,7 +13,6 @@ Sandstorm.NeosTwoFactorAuthentication.LoginController.askForSecondFactor = Sands
         renderer = afx`
             <Sandstorm.NeosTwoFactorAuthentication:Component.LoginWebAuthnStep
                 @if.show={props.hasWebAuthn}
-                flashMessages={props.flashMessages}
             />
             <div class="neos-two-factor__or-separator" @if.show={props.hasWebAuthn && props.hasTotp}>
                 <span>{I18n.id('login.or').package('Sandstorm.NeosTwoFactorAuthentication')}</span>

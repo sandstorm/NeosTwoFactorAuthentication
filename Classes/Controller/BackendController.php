@@ -133,8 +133,6 @@ class BackendController extends AbstractModuleController
         $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
 
         $this->view->assignMultiple([
-            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
-            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'currentUser' => $currentUser instanceof User ? $currentUser : null,
             'accountIdentifier' => $account->getAccountIdentifier(),
             'methods' => $this->methodRegistry->getAll(),
@@ -157,8 +155,6 @@ class BackendController extends AbstractModuleController
         $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
 
         $this->view->assignMultiple([
-            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
-            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'secret' => $secret,
             'qrCode' => $qrCode,
             'currentUser' => $currentUser instanceof User ? $currentUser : null,
@@ -179,8 +175,6 @@ class BackendController extends AbstractModuleController
         $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
 
         $this->view->assignMultiple([
-            'styles' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['stylesheets']),
-            'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'currentUser' => $currentUser instanceof User ? $currentUser : null,
             'accountIdentifier' => $account->getAccountIdentifier(),
             'flashMessages' => $this->flashMessageService

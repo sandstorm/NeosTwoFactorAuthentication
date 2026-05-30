@@ -18,11 +18,6 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newWebAuthn = Sandstorm.
                     flashMessages={flashMessages}
                     redirectUrl={props.redirectUrl}
                 />
-                <Neos.Fusion:Loop items={scripts}>
-                    <script @children="attributes.src">
-                        <Neos.Fusion:ResourceUri path={item}/>
-                    </script>
-                </Neos.Fusion:Loop>
             `
         }
     }

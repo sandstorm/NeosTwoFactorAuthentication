@@ -122,12 +122,6 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newTotp = Sandstorm.Neos
                         </Neos.Fusion.Form:Button>
                     </div>
                 </Neos.Fusion.Form:Form>
-
-                <Neos.Fusion:Loop items={props.scripts}>
-                    <script @children="attributes.src">
-                        <Neos.Fusion:ResourceUri path={item}/>
-                    </script>
-                </Neos.Fusion:Loop>
             `
         }
     }

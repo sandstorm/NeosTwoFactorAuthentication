@@ -3,6 +3,22 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
     # where to redirect on successful registration
     redirectUrl = '/neos'
 
+    # Localized error strings handed to webauthn.js. Keys match the
+    # DOMException name thrown by the browser; "result" / "default" /
+    # "unsupported" are the fixed fallbacks the script always needs.
+    errorMessages = Neos.Fusion:DataStructure {
+        result = ${I18n.id('webauthn.setup.error.result').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        default = ${I18n.id('webauthn.setup.error.generic').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        unsupported = ${I18n.id('webauthn.error.unsupportedBrowser').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        NotAllowedError = ${I18n.id('webauthn.error.notAllowed').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        InvalidStateError = ${I18n.id('webauthn.error.invalidState').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        NotSupportedError = ${I18n.id('webauthn.error.notSupported').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        SecurityError = ${I18n.id('webauthn.error.security').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        AbortError = ${I18n.id('webauthn.error.abort').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        ConstraintError = ${I18n.id('webauthn.error.constraint').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+        UnknownError = ${I18n.id('webauthn.error.unknown').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+    }
+
     renderer = afx`
         <div
             class="neos-two-factor__webauthn-step"
@@ -10,6 +26,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
             data-options-url="/neos/second-factor-webauthn/register-options"
             data-verify-url="/neos/second-factor-webauthn/register-verify"
             data-redirect-url={props.redirectUrl}
+            data-webauthn-messages={Json.stringify(props.errorMessages)}
         >
             <fieldset>
                 <p class="neos-two-factor__webauthn-intro">
@@ -24,7 +41,10 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                         {I18n.id('webauthn.setup.button').package('Sandstorm.NeosTwoFactorAuthentication')}
                     </button>
                 </div>
-                <p class="neos-two-factor__webauthn-error" data-webauthn-error hidden></p>
+                <div class="neos-tooltip neos-bottom neos-in neos-tooltip-error" data-webauthn-error style="display: none">
+                    <div class="neos-tooltip-arrow"></div>
+                    <div class="neos-tooltip-inner" role="alert" data-webauthn-error-message></div>
+                </div>
                 <Neos.Fusion:Loop items={props.flashMessages} itemName="flashMessage">
                     <div class="neos-tooltip neos-bottom neos-in">
                         <div class="neos-tooltip-arrow"></div>

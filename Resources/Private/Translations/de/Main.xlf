@@ -114,6 +114,46 @@
         <source>Could not verify your security key. Please try again.</source>
         <target>Der Sicherheitsschlüssel konnte nicht überprüft werden. Bitte versuchen Sie es erneut.</target>
       </trans-unit>
+      <trans-unit id="webauthn.login.error.result" xml:space="preserve">
+        <source>Security key verification failed</source>
+        <target>Verifizierung des Sicherheitsschlüssels fehlgeschlagen</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.result" xml:space="preserve">
+        <source>Security key registration failed</source>
+        <target>Registrierung des Sicherheitsschlüssels fehlgeschlagen</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.unsupportedBrowser" xml:space="preserve">
+        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
+        <target>Ihr Browser oder Gerät unterstützt keine Sicherheitsschlüssel. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.notAllowed" xml:space="preserve">
+        <source>The request was cancelled or timed out. Connect your security key and tap it when the browser prompts you, then try again.</source>
+        <target>Die Anfrage wurde abgebrochen oder ist abgelaufen. Verbinden Sie Ihren Sicherheitsschlüssel und berühren Sie ihn, sobald der Browser Sie dazu auffordert, und versuchen Sie es dann erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.invalidState" xml:space="preserve">
+        <source>This security key is already registered. Use a different key, or sign in with this one instead.</source>
+        <target>Dieser Sicherheitsschlüssel ist bereits registriert. Verwenden Sie einen anderen Schlüssel oder melden Sie sich mit diesem an.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.notSupported" xml:space="preserve">
+        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
+        <target>Ihr Browser oder Gerät unterstützt keine Sicherheitsschlüssel. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.security" xml:space="preserve">
+        <source>The page origin is not allowed for security keys. Make sure you are on the correct, secure (https) address.</source>
+        <target>Die Herkunft der Seite ist für Sicherheitsschlüssel nicht zulässig. Stellen Sie sicher, dass Sie sich auf der korrekten, sicheren (https) Adresse befinden.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.abort" xml:space="preserve">
+        <source>The request was aborted before it could finish. Please try again.</source>
+        <target>Die Anfrage wurde abgebrochen, bevor sie abgeschlossen werden konnte. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.constraint" xml:space="preserve">
+        <source>Your authenticator could not meet the requirements for this login. Try a different security key.</source>
+        <target>Ihr Authentifikator konnte die Anforderungen für diese Anmeldung nicht erfüllen. Verwenden Sie einen anderen Sicherheitsschlüssel.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.unknown" xml:space="preserve">
+        <source>An unexpected error occurred while communicating with your security key. Please try again.</source>
+        <target>Bei der Kommunikation mit Ihrem Sicherheitsschlüssel ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
       <trans-unit id="form.name.label" xml:space="preserve">
         <source>Name (optional)</source>
         <target>Name (optional)</target>

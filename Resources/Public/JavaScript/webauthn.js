@@ -85,23 +85,45 @@
     function showError(container, message) {
         var errEl = container.querySelector('[data-webauthn-error]');
         if (!errEl) return;
-        errEl.textContent = message;
-        errEl.hidden = false;
+        var msgEl = errEl.querySelector('[data-webauthn-error-message]') || errEl;
+        msgEl.textContent = message;
+        errEl.style.display = '';
     }
 
     function clearError(container) {
         var errEl = container.querySelector('[data-webauthn-error]');
         if (errEl) {
-            errEl.textContent = '';
-            errEl.hidden = true;
+            var msgEl = errEl.querySelector('[data-webauthn-error-message]') || errEl;
+            msgEl.textContent = '';
+            errEl.style.display = 'none';
         }
+    }
+
+    // Localized error strings rendered by Fusion into the container's
+    // data-webauthn-messages attribute (keyed by DOMException name, plus
+    // the fixed "result" / "default" / "unsupported" fallbacks).
+    function getMessages(container) {
+        try {
+            return JSON.parse(container.dataset.webauthnMessages || '{}');
+        } catch (err) {
+            return {};
+        }
+    }
+
+    // Turn a raw browser exception into a friendly message:
+    // "<error name> - <result>: <possible reasons / what to do>".
+    function describeError(container, e) {
+        var messages = getMessages(container);
+        var name = (e && e.name) ? e.name : 'Error';
+        var hint = messages[name] || messages.default || (e && e.message) || '';
+        return name + ' - ' + messages.result + ': ' + hint;
     }
 
     function checkSupport(container) {
         if (typeof window.PublicKeyCredential === 'undefined') {
             var trigger = container.querySelector('[data-webauthn-trigger]');
             if (trigger) trigger.disabled = true;
-            showError(container, 'Your browser does not support security keys.');
+            showError(container, getMessages(container).unsupported);
             return false;
         }
         return true;
@@ -121,7 +143,7 @@
             await postJson(container.dataset.verifyUrl, { attestation: JSON.stringify(encoded) });
             window.location.href = container.dataset.redirectUrl || '/neos';
         } catch (e) {
-            showError(container, e.message || 'Could not register security key. Please try again.');
+            showError(container, describeError(container, e));
             if (trigger) trigger.disabled = false;
         }
     }
@@ -140,7 +162,7 @@
             var result = await postJson(container.dataset.verifyUrl, { assertion: JSON.stringify(encoded) });
             window.location.href = (result && result.redirect) ? result.redirect : '/neos';
         } catch (e) {
-            showError(container, e.message || 'Could not verify your security key. Please try again.');
+            showError(container, describeError(container, e));
             if (trigger) trigger.disabled = false;
         }
     }

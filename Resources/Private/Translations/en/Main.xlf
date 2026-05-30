@@ -86,6 +86,36 @@
       <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
         <source>Could not verify your security key. Please try again.</source>
       </trans-unit>
+      <trans-unit id="webauthn.login.error.result" xml:space="preserve">
+        <source>Security key verification failed</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.result" xml:space="preserve">
+        <source>Security key registration failed</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.unsupportedBrowser" xml:space="preserve">
+        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.notAllowed" xml:space="preserve">
+        <source>The request was cancelled or timed out. Connect your security key and tap it when the browser prompts you, then try again.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.invalidState" xml:space="preserve">
+        <source>This security key is already registered. Use a different key, or sign in with this one instead.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.notSupported" xml:space="preserve">
+        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.security" xml:space="preserve">
+        <source>The page origin is not allowed for security keys. Make sure you are on the correct, secure (https) address.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.abort" xml:space="preserve">
+        <source>The request was aborted before it could finish. Please try again.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.constraint" xml:space="preserve">
+        <source>Your authenticator could not meet the requirements for this login. Try a different security key.</source>
+      </trans-unit>
+      <trans-unit id="webauthn.error.unknown" xml:space="preserve">
+        <source>An unexpected error occurred while communicating with your security key. Please try again.</source>
+      </trans-unit>
       <trans-unit id="form.name.label" xml:space="preserve">
         <source>Name (optional)</source>
       </trans-unit>

@@ -103,8 +103,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                                     var loginForm = document.querySelector('form');
                                     if (loginForm) {
                                         loginForm.addEventListener('submit', function() {
-                                            var btn = document.querySelector('.neos-login-btn');
-                                            var disabledBtn = document.querySelector('.neos-login-btn.neos-disabled');
+                                            /* Scope to the submitted form: the WebAuthn step's button also carries .neos-login-btn but lives outside any form, so a global query would toggle the wrong button and duplicate the OTP button. Note: this script is rendered minified onto a single line, so only block comments are safe here. */
+                                            var btn = loginForm.querySelector('.neos-login-btn');
+                                            var disabledBtn = loginForm.querySelector('.neos-login-btn.neos-disabled');
                                             if (btn) btn.classList.toggle('neos-hidden');
                                             if (disabledBtn) disabledBtn.classList.toggle('neos-hidden');
                                         });

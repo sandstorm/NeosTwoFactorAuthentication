@@ -228,12 +228,6 @@
     cursor: not-allowed;
 }
 
-.neos-two-factor__webauthn-error {
-    color: #c12136;
-    margin-top: 12px;
-    font-size: .9rem;
-}
-
 .neos-two-factor__webauthn-fallback {
     margin-top: 16px;
     text-align: center;

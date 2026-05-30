@@ -173,9 +173,9 @@ class SecondFactor
     {
         switch ($type) {
             case self::TYPE_TOTP:
-                return 'OTP';
+                return 'OTP code';
             case self::TYPE_PUBLIC_KEY:
-                return 'Public Key';
+                return 'Security Key';
             default:
                 throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
         }

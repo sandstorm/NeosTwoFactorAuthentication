@@ -149,7 +149,7 @@ class BackendController extends AbstractModuleController
      * @throws IllegalObjectTypeException
      * @throws StopActionException
      */
-    public function createAction(string $secret, string $secondFactorFromApp): void
+    public function createAction(string $secret, string $secondFactorFromApp, string $name = ''): void
     {
         $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
 
@@ -169,7 +169,7 @@ class BackendController extends AbstractModuleController
             $this->redirect('new');
         }
 
-        $this->secondFactorRepository->createSecondFactorForAccount($secret, $this->securityContext->getAccount());
+        $this->secondFactorRepository->createSecondFactorForAccount($secret, $this->securityContext->getAccount(), $name);
 
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 
@@ -201,7 +201,9 @@ class BackendController extends AbstractModuleController
         if ($isAdministrator || ($isOwner && $this->secondFactorService->canOneSecondFactorBeDeletedForAccount($account))) {
             // User is admin or has more than one second factor
             $this->secondFactorRepository->remove($secondFactor);
-            $this->persistenceManager->persistAll();
+            // neos8 backwards compatibility
+            $this->persistenceManager?->persistAll();
+
             $this->addFlashMessage(
                 $this->translator->translateById(
                     'module.index.delete.flashMessage.secondFactorDeleted',

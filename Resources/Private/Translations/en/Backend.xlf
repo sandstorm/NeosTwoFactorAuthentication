@@ -66,11 +66,11 @@
         <source>Register second factor</source>
       </trans-unit>
       <trans-unit id="module.new.flashMessage.submittedOtpIncorrect" xml:space="preserve">
-				<source>Submitted OTP was incorrect.</source>
+        <source>Submitted OTP was incorrect.</source>
       </trans-unit>
       <trans-unit id="module.new.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
-				<source>OTP was registered successfully.</source>
-			</trans-unit>
+        <source>OTP was registered successfully.</source>
+      </trans-unit>
       <trans-unit id="module.new.description.picker" xml:space="preserve">
         <source>Choose which second factor you would like to set up:</source>
       </trans-unit>

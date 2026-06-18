@@ -8,6 +8,9 @@
       <trans-unit id="otp-placeholder" xml:space="preserve">
         <source>Verification code from your app</source>
       </trans-unit>
+      <trans-unit id="name-placeholder" xml:space="preserve">
+        <source>Name of the second factor (optional)</source>
+      </trans-unit>
       <trans-unit id="form.step.setup" xml:space="preserve">
         <source>Set up your authenticator</source>
       </trans-unit>
@@ -18,17 +21,17 @@
         <source>Register</source>
       </trans-unit>
       <trans-unit id="login.flashMessage.errorHeader" xml:space="preserve">
-				<source>Error</source>
-			</trans-unit>
+        <source>Error</source>
+      </trans-unit>
       <trans-unit id="login.flashMessage.invalidOtp" xml:space="preserve">
-				<source>The provided OTP is invalid.</source>
-			</trans-unit>
+        <source>The provided OTP is invalid.</source>
+      </trans-unit>
       <trans-unit id="login.flashMessage.submittedOtpIncorrect" xml:space="preserve">
-				<source>Submitted OTP was incorrect.</source>
-			</trans-unit>
+        <source>Submitted OTP was incorrect.</source>
+      </trans-unit>
       <trans-unit id="login.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
-				<source>OTP was registered successfully.</source>
-			</trans-unit>
+        <source>OTP was registered successfully.</source>
+      </trans-unit>
       <trans-unit id="form.setup.qrcode.label" xml:space="preserve">
         <source>Scan QR code</source>
       </trans-unit>
@@ -115,9 +118,6 @@
       </trans-unit>
       <trans-unit id="webauthn.error.unknown" xml:space="preserve">
         <source>An unexpected error occurred while communicating with your security key. Please try again.</source>
-      </trans-unit>
-      <trans-unit id="form.name.label" xml:space="preserve">
-        <source>Name (optional)</source>
       </trans-unit>
     </body>
   </file>

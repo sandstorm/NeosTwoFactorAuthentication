@@ -86,13 +86,13 @@
         <target>Zweiten Faktor registrieren</target>
       </trans-unit>
       <trans-unit id="module.new.flashMessage.submittedOtpIncorrect" xml:space="preserve">
-				<source>Submitted OTP was incorrect.</source>
+        <source>Submitted OTP was incorrect.</source>
         <target>Das eingegebene OTP ist nicht korrekt.</target>
       </trans-unit>
       <trans-unit id="module.new.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
-				<source>OTP was registered successfully.</source>
+        <source>OTP was registered successfully.</source>
         <target>Das OTP wurde erfolgreich registriert.</target>
-			</trans-unit>
+      </trans-unit>
       <trans-unit id="module.new.description.picker" xml:space="preserve">
         <source>Choose which second factor you would like to set up:</source>
         <target>Wählen Sie, welchen zweiten Faktor Sie einrichten möchten:</target>

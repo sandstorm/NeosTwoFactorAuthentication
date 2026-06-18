@@ -10,6 +10,10 @@
         <source>Verification code from your app</source>
         <target>Bestätigungscode aus der App</target>
       </trans-unit>
+      <trans-unit id="name-placeholder" xml:space="preserve">
+        <source>Name of the second factor (optional)</source>
+        <target>Name des zweiten Faktors (optional)</target>
+      </trans-unit>
       <trans-unit id="form.step.setup" xml:space="preserve">
         <source>Set up your authenticator</source>
         <target>Authenticator einrichten</target>
@@ -23,21 +27,21 @@
         <target>Registrieren</target>
       </trans-unit>
       <trans-unit id="login.flashMessage.errorHeader" xml:space="preserve">
-				<source>Error</source>
-				<target>Fehler</target>
-			</trans-unit>
+        <source>Error</source>
+        <target>Fehler</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.invalidOtp" xml:space="preserve">
-				<source>The provided OTP is invalid.</source>
-				<target>Das eingegebene OTP ist ungültig.</target>
-			</trans-unit>
+        <source>The provided OTP is invalid.</source>
+        <target>Das eingegebene OTP ist ungültig.</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.submittedOtpIncorrect" xml:space="preserve">
-				<source>Submitted OTP was incorrect.</source>
-				<target>Das eingegebene OTP ist nicht korrekt.</target>
-			</trans-unit>
+        <source>Submitted OTP was incorrect.</source>
+        <target>Das eingegebene OTP ist nicht korrekt.</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
-				<source>OTP was registered successfully.</source>
-				<target>Das OTP wurde erfolgreich registriert.</target>
-			</trans-unit>
+        <source>OTP was registered successfully.</source>
+        <target>Das OTP wurde erfolgreich registriert.</target>
+      </trans-unit>
       <trans-unit id="form.setup.qrcode.label" xml:space="preserve">
         <source>Scan QR code</source>
         <target>QR-Code scannen</target>
@@ -153,10 +157,6 @@
       <trans-unit id="webauthn.error.unknown" xml:space="preserve">
         <source>An unexpected error occurred while communicating with your security key. Please try again.</source>
         <target>Bei der Kommunikation mit Ihrem Sicherheitsschlüssel ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.</target>
-      </trans-unit>
-      <trans-unit id="form.name.label" xml:space="preserve">
-        <source>Name (optional)</source>
-        <target>Name (optional)</target>
       </trans-unit>
     </body>
   </file>

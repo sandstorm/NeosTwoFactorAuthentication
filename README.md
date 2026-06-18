@@ -186,10 +186,11 @@ The package ships with end-to-end tests built on [Playwright](https://playwright
 
 #### Running the tests
 
-Tests require Docker and Node.js. Install dependencies once (if [nvm](https://github.com/nvm-sh/nvm) is available it will automatically switch to the Node version from `.nvmrc`):
+Tests require Docker and Node.js. All Makefile targets are run from `Tests/E2E/`. Run the initial setup once — it builds the SUT images and installs the test dependencies (if [nvm](https://github.com/nvm-sh/nvm) is available it will automatically switch to the Node version from `.nvmrc`):
 
 ```bash
-make setup-test
+make setup          # build SUT images + install test dependencies
+make setup-test     # only install node dependencies, playwright and generate BDD files
 ```
 
 Re-generate Playwright spec files whenever a `.feature` file changes:
@@ -197,7 +198,7 @@ Re-generate Playwright spec files whenever a `.feature` file changes:
 make generate-bdd-files
 ```
 
-Use the Makefile targets from the repository root:
+Run the tests:
 
 ```bash
 make test                   # run all tests (neos8 + neos9, all configurations)
@@ -207,12 +208,13 @@ make test-neos8-defaults    # default configuration only
 make test-neos8-enforce-all # enforceTwoFactorAuthentication: true
 make test-neos8-enforce-role
 make test-neos8-enforce-provider
-make test-neos8-issuer-name
 
-make test-neos9             # same targets for neos9 / PHP 8.3
+make test-neos9             # same targets for neos9 / PHP 8.5
 
-make down                   # tear down all docker compose environments and remove volumes
+make sut-prune              # tear down all docker compose environments and remove volumes
 ```
+
+Run `make help` to see all available targets.
 
 #### Debugging tests
 To debug a test, run the test from `Tests/E2E/` with flags like this:
@@ -222,7 +224,7 @@ To debug a test, run the test from `Tests/E2E/` with flags like this:
 
 If you just want to see the test running in the browser just `npm run test:neos8:enforce-all -- --headed`.
 
-> While debugging you can also enter the SUT with `make enter-neos8` and `make enter-neos9` respectively.
+> While debugging you can also enter the SUT with `make enter-sut-neos8` and `make enter-sut-neos9` respectively.
 >
 > You can even the tests you want to debug with `npm run test:neos8:enforce-all -- --grep @debug` and adding the `@debug` tag to the scenario you want to debug. But using the --ui flag is usually more convenient for debugging.
 
@@ -245,7 +247,6 @@ The `FLOW_CONTEXT` environment variable is passed into the docker compose enviro
 | `@enforce-for-all` | `Production/E2E-SUT/EnforceForAll` | `enforceTwoFactorAuthentication: true` |
 | `@enforce-for-role` | `Production/E2E-SUT/EnforceForRole` | Enforcement scoped to `Neos.Neos:Administrator` |
 | `@enforce-for-provider` | `Production/E2E-SUT/EnforceForProvider` | Enforcement scoped to an authentication provider |
-| `@issuer-name-change` | `Production/E2E-SUT/IssuerNameChange` | Custom `issuerName` setting |
 
 #### Test isolation
 

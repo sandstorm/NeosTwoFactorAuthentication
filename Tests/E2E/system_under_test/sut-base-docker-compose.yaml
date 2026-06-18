@@ -2,8 +2,8 @@ services:
   neos:
     user: www-data:www-data
     build:
-      context: ../../
-      dockerfile: Tests/system_under_test/Dockerfile
+      context: ../../../
+      dockerfile: Tests/E2E/system_under_test/Dockerfile
       args:
         # minimum PHP version is '8.2' because that's the lowest version frankenPHP provides an image for
         PHP_VERSION: '8.2'
@@ -11,7 +11,7 @@ services:
         # which is a neos-base-distribution:^${NEOS_VERSION}
         NEOS_VERSION: '8'
         # docker will use this as entrypoint
-        ENTRY_POINT_FILE: 'Tests/system_under_test/neos8/entrypoint.sh'
+        ENTRY_POINT_FILE: 'Tests/E2E/system_under_test/neos8/entrypoint.sh'
     environment:
       FLOW_CONTEXT: "${FLOW_CONTEXT:-Production/E2E-SUT}"
       # DB connection
@@ -27,11 +27,11 @@ services:
       # This means that the neos container is ALWAYS accessed through the front facing Ingress
       FLOW_HTTP_TRUSTED_PROXIES: '*'
     volumes:
-      - ../../Classes:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Classes:cached
-      - ../../Configuration:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Configuration:cached
-      - ../../Migrations:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Migrations:cached
-      - ../../Resources:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Resources:cached
-      - ../../composer.json:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/composer.json:cached
+      - ../../../Classes:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Classes:cached
+      - ../../../Configuration:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Configuration:cached
+      - ../../../Migrations:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Migrations:cached
+      - ../../../Resources:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Resources:cached
+      - ../../../composer.json:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/composer.json:cached
     networks:
       - neos_SUT
     ports:
@@ -65,8 +65,8 @@ services:
 
 volumes:
   db_neos_data:
-    name: db_neos_data
+    name: neos-2fa-test-db_neos_data
 
 networks:
   neos_SUT:
-    name: neos_SUT
+    name: neos-2fa-test-neos_SUT

@@ -26,15 +26,15 @@
 		max_size 256MB
 	}
 
-  # Block direct access to PHP files except index.php
-  @blockPhp {
-    path *.php
-    not path /index.php
-  }
+	# Block direct access to PHP files except index.php
+	@blockPhp {
+		path *.php
+		not path /index.php
+	}
 
-  handle @blockPhp {
-    respond 404
-  }
+	handle @blockPhp {
+		respond 404
+	}
 
 
 	php_server

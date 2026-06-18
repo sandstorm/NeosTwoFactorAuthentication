@@ -4,13 +4,16 @@
     "noEmit": true,
     "module": "nodenext",
     "target": "ESNext",
-    "lib": ["esnext"],
-    "types": ["node"],
-
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": [
+      "node"
+    ],
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-
     // Recommended Options
     "strict": true,
     "verbatimModuleSyntax": false,

@@ -4,15 +4,15 @@ services:
       args:
         PHP_VERSION: '8.5'
         NEOS_VERSION: '9'
-        ENTRY_POINT_FILE: 'Tests/system_under_test/neos9/entrypoint.sh'
+        ENTRY_POINT_FILE: 'Tests/E2E/system_under_test/neos9/entrypoint.sh'
 
   db:
     image: mariadb:11.4
 
 volumes:
   db_neos_data:
-    name: db_neos9_data
+    name: neos_2fa_test_db_neos9_data
 
 networks:
   neos_SUT:
-    name: neos9_SUT
+    name: neos_2fa_test_neos9_SUT

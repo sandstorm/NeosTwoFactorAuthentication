@@ -4,15 +4,11 @@ FROM dunglas/frankenphp:1-php${PHP_VERSION}-trixie
 COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
 
 # reference: https://github.com/mlocati/docker-php-extension-installer
+# `gd` is required for the Imagine driver configured in Settings.yaml (driver: Gd).
 RUN install-php-extensions \
     intl \
-    bcmath \
-    opcache \
-    pdo \
     pdo_mysql \
-    xsl \
-    ffi \
-    vips \
+    gd \
     redis
 
 RUN apt update \
@@ -21,27 +17,20 @@ RUN apt update \
     && rm -rf /var/lib/apt/lists/*
 
 ARG USER=www-data
-
 # Give write access to /config/caddy and /data/caddy
 RUN \
   useradd ${USER}; \
-  chown -R ${USER}:${USER} /config/caddy /data/caddy \
-  && touch /var/run/caretakerd.key && chown ${USER}:${USER} /var/run/caretakerd.key
-
-# TODO: still needed?
-# HOTFIX for ARM64 Architectures and VIPS (see https://github.com/opencv/opencv/issues/14884#issuecomment-706725583 for details)
-# only needed for development on Apple Silicon Macs
-RUN echo '. /etc/bash.vips-arm64-hotfix.sh' >>  /etc/bash.bashrc
+  chown -R ${USER}:${USER} /config/caddy /data/caddy
 
 # Install Neos base distribution
 ARG NEOS_VERSION
 RUN rm -rf /app \
   && composer create-project neos/neos-base-distribution:^${NEOS_VERSION} /app
 
-RUN composer require rokka/imagine-vips:0.*
-
 # Add config files
-COPY Tests/system_under_test/sut_file_system_overrides/ /
+# NOTE: must run AFTER `create-project`, since that does `rm -rf /app` and would
+# otherwise wipe the /app/Configuration overrides copied in here.
+COPY Tests/E2E/system_under_test/sut_file_system_overrides/ /
 
 ARG ENTRY_POINT_FILE
 COPY ${ENTRY_POINT_FILE} /entrypoint.sh

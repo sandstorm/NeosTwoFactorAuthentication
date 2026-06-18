@@ -16,9 +16,9 @@ jobs:
         neos: [neos8, neos9]
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v5
+      - uses: actions/setup-node@v6
         with:
           node-version-file: Tests/E2E/.nvmrc
           cache: npm
@@ -33,7 +33,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Pre-build Docker image
-        run: docker compose -f Tests/system_under_test/${{ matrix.neos }}/docker-compose.yaml build --pull
+        run: docker compose -f Tests/E2E/system_under_test/${{ matrix.neos }}/docker-compose.yaml build --pull
 
       - name: Test - defaults
         working-directory: Tests/E2E
@@ -52,7 +52,7 @@ jobs:
         run: npm run test:${{ matrix.neos }}:enforce-provider
 
       - name: Upload Playwright report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}
         with:
           name: playwright-report-${{ matrix.neos }}

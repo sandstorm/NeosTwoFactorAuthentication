@@ -13,14 +13,4 @@ Neos:
       applicationIdentifier: 'app'
 
   Imagine:
-    driver: 'Vips'
-    enabledDrivers:
-      Vips: true
-      Gd: true
-      Imagick: true
-
-  Media:
-    image:
-      defaultOptions:
-        # The Vips driver does not support interlace
-        interlace: ~
+    driver: Gd

@@ -232,6 +232,7 @@ class LoginController extends ActionController
             'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'username' => $username,
             'site' => $currentSite,
+            'redirectUrl' => $this->interceptedRequestOrBackendUri(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),
@@ -295,6 +296,9 @@ class LoginController extends ActionController
     public function webAuthnRegisterOptionsAction(): string
     {
         $account = $this->securityContext->getAccount();
+        if ($account === null) {
+            return $this->jsonError('No authentication in progress', 401);
+        }
         $hostname = $this->request->getHttpRequest()->getUri()->getHost();
         $options = $this->webAuthnService->createRegistrationOptions($account, $hostname);
         $this->secondFactorSessionStorageService->putValue(
@@ -320,6 +324,9 @@ class LoginController extends ActionController
         }
         $options = PublicKeyCredentialCreationOptions::createFromString($serialized);
         $account = $this->securityContext->getAccount();
+        if ($account === null) {
+            return $this->jsonError('No authentication in progress', 401);
+        }
         try {
             $this->webAuthnService->verifyAndPersistRegistration(
                 $attestation,
@@ -351,6 +358,9 @@ class LoginController extends ActionController
     public function webAuthnAuthenticateOptionsAction(): string
     {
         $account = $this->securityContext->getAccount();
+        if ($account === null) {
+            return $this->jsonError('No authentication in progress', 401);
+        }
         $options = $this->webAuthnService->createAuthenticationOptions($account);
         $this->secondFactorSessionStorageService->putValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_AUTHENTICATION_OPTIONS,
@@ -373,6 +383,9 @@ class LoginController extends ActionController
         }
         $options = PublicKeyCredentialRequestOptions::createFromString($serialized);
         $account = $this->securityContext->getAccount();
+        if ($account === null) {
+            return $this->jsonError('No authentication in progress', 401);
+        }
 
         try {
             $this->webAuthnService->verifyAuthenticationResponse(
@@ -390,18 +403,11 @@ class LoginController extends ActionController
         );
         $this->secondFactorSessionStorageService->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATED);
 
-        $originalRequest = $this->securityContext->getInterceptedRequest();
-        $redirectUri = $originalRequest !== null
-            ? (string)$this->controllerContext->getUriBuilder()->uriFor(
-                $originalRequest->getControllerActionName(),
-                $originalRequest->getArguments(),
-                $originalRequest->getControllerName(),
-                $originalRequest->getControllerPackageKey()
-            )
-            : '/neos';
-
         $this->response->setContentType('application/json');
-        return json_encode(['status' => 'ok', 'redirect' => $redirectUri], JSON_THROW_ON_ERROR);
+        return json_encode([
+            'status' => 'ok',
+            'redirect' => $this->interceptedRequestOrBackendUri(),
+        ], JSON_THROW_ON_ERROR);
     }
 
     // ------------------------------------------------------------------
@@ -439,6 +445,28 @@ class LoginController extends ActionController
             $this->redirectToRequest($originalRequest);
         }
         $this->redirect('index', 'Backend\Backend', 'Neos.Neos');
+    }
+
+    /**
+     * Build the post-2FA redirect URI as a string: the originally intercepted
+     * request if there is one, otherwise the Neos backend index. Resolved through
+     * routing (never a hardcoded path) so it works regardless of where the backend
+     * is mounted. Used by the WebAuthn XHR flow, which returns the URI for the
+     * client to follow instead of issuing a server-side redirect.
+     */
+    private function interceptedRequestOrBackendUri(): string
+    {
+        $uriBuilder = $this->controllerContext->getUriBuilder();
+        $originalRequest = $this->securityContext->getInterceptedRequest();
+        if ($originalRequest !== null) {
+            return (string)$uriBuilder->uriFor(
+                $originalRequest->getControllerActionName(),
+                $originalRequest->getArguments(),
+                $originalRequest->getControllerName(),
+                $originalRequest->getControllerPackageKey()
+            );
+        }
+        return (string)$uriBuilder->uriFor('index', [], 'Backend\Backend', 'Neos.Neos');
     }
 
     /**

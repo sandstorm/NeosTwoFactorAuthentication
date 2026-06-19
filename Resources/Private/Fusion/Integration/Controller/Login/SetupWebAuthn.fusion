@@ -7,6 +7,6 @@ Sandstorm.NeosTwoFactorAuthentication.LoginController.setupWebAuthn = Sandstorm.
 
     body = Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep {
         flashMessages = ${flashMessages}
-        redirectUrl = '/neos'
+        redirectUrl = ${redirectUrl}
     }
 }

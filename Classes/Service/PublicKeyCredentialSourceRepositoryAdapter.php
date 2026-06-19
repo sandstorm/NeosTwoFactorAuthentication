@@ -3,6 +3,8 @@
 namespace Sandstorm\NeosTwoFactorAuthentication\Service;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Psr\Log\LoggerInterface;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
 use Webauthn\PublicKeyCredentialSource;
@@ -25,6 +27,18 @@ class PublicKeyCredentialSourceRepositoryAdapter implements PublicKeyCredentialS
      * @var SecondFactorRepository
      */
     protected $secondFactorRepository;
+
+    /**
+     * @Flow\Inject(name="Neos.Flow:SecurityLogger")
+     * @var LoggerInterface
+     */
+    protected $securityLogger;
+
+    /**
+     * @Flow\Inject
+     * @var PersistenceManagerInterface
+     */
+    protected $persistenceManager;
 
     public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource
     {
@@ -71,7 +85,21 @@ class PublicKeyCredentialSourceRepositoryAdapter implements PublicKeyCredentialS
     private function iterateAllWebAuthnFactors(): \Generator
     {
         foreach ($this->secondFactorRepository->findAllByType(SecondFactor::TYPE_PUBLIC_KEY) as $factor) {
-            yield [$factor, PublicKeyCredentialSource::createFromArray($factor->getCredentialData())];
+            try {
+                $source = PublicKeyCredentialSource::createFromArray($factor->getCredentialData());
+            } catch (\Throwable $exception) {
+                // A single corrupt/truncated credential row must not break the lookup for all
+                // other users. Skip it and log so the broken factor can be investigated.
+                $this->securityLogger->warning(
+                    sprintf(
+                        'Skipping WebAuthn second factor with corrupt credential data (id %s): %s',
+                        $this->persistenceManager->getIdentifierByObject($factor),
+                        $exception->getMessage()
+                    )
+                );
+                continue;
+            }
+            yield [$factor, $source];
         }
     }
 }

@@ -3,7 +3,7 @@ import { createBdd } from 'playwright-bdd';
 import { BackendModulePage, SecondFactorLoginPage, SecondFactorSetupPage } from '../helpers/2fa-pages.ts';
 import { NeosLoginPage } from "../helpers/general-pages.ts";
 import { createUser, logout } from '../helpers/system.ts';
-import { enableVirtualAuthenticator } from '../helpers/webauthn.ts';
+import { enableVirtualAuthenticator, armWebAuthnCancellation } from '../helpers/webauthn.ts';
 import { state } from "../helpers/state.ts";
 
 const { Given, When, Then } = createBdd();
@@ -79,6 +79,33 @@ When('I enter a valid TOTP for device {string}', async ({ page }, deviceName: st
   const otpPage = new SecondFactorLoginPage(page);
   await otpPage.waitForPage();
   await otpPage.loginWithTotp(secret);
+});
+
+When('I log in with username {string} and password {string} but cancel the WebAuthn challenge',
+  async ({ page }, username: string, password: string) => {
+    // Arm a one-shot cancellation before navigating, so the assertion that the
+    // login page auto-starts ~200ms after load rejects as if the user dismissed
+    // the passkey prompt — rather than the virtual authenticator silently
+    // approving it and logging the user in via WebAuthn.
+    await armWebAuthnCancellation(page);
+
+    const loginPage = new NeosLoginPage(page);
+    await loginPage.goto();
+    await loginPage.login(username, password);
+
+    const otpPage = new SecondFactorLoginPage(page);
+    await otpPage.waitForPage();
+    await otpPage.waitForWebAuthnCancelled();
+  },
+);
+
+When('I restart the WebAuthn challenge and authenticate with my security key', async ({ page }) => {
+  // The auto-started ceremony was cancelled; clicking the (now re-enabled) button
+  // starts a fresh assertion, which the virtual authenticator approves.
+  const otpPage = new SecondFactorLoginPage(page);
+  await otpPage.restartWebAuthn();
+
+  await page.waitForLoadState('networkidle');
 });
 
 When('I authenticate with my security key', async ({ page }) => {

@@ -55,6 +55,22 @@ export class SecondFactorLoginPage {
     }
   }
 
+  /**
+   * Wait for the auto-started WebAuthn ceremony to have been cancelled: on a
+   * rejected assertion webauthn.js reveals the (initially hidden) error tooltip
+   * and re-enables the trigger button. Waiting on the error becoming visible is a
+   * reliable post-cancel signal (the button starts enabled, so waiting on the
+   * button alone could match its initial state before the ceremony even ran).
+   */
+  async waitForWebAuthnCancelled() {
+    await this.page.locator('[data-webauthn-login] [data-webauthn-error]').waitFor({ state: 'visible' });
+  }
+
+  /** Restart the WebAuthn ceremony by clicking the (re-enabled) trigger button. */
+  async restartWebAuthn() {
+    await this.page.locator('[data-webauthn-login] [data-webauthn-trigger]:not([disabled])').click();
+  }
+
   async getErrorMessage(): Promise<string> {
     const el = this.page.locator('.neos-tooltip-error .neos-tooltip-inner');
     await el.waitFor();

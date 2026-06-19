@@ -14,3 +14,12 @@ Neos:
 
   Imagine:
     driver: Gd
+
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    webAuthn:
+      # The SUT is served over http://localhost:8081. The WebAuthn library rejects
+      # non-HTTPS origins ("Invalid scheme. HTTPS required.") unless the relying-party
+      # hostname is explicitly trusted here. Production keeps this empty (HTTPS only);
+      # for the E2E tests we trust localhost so the ceremony can run over http.
+      securedRelyingPartyIds: ['localhost']

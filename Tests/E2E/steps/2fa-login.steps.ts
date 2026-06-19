@@ -2,7 +2,6 @@ import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 import { BackendModulePage, SecondFactorLoginPage, SecondFactorSetupPage } from '../helpers/2fa-pages.ts';
 import { NeosLoginPage } from "../helpers/general-pages.ts";
-import { generateOtp } from '../helpers/totp.ts';
 import { createUser, logout } from '../helpers/system.ts';
 import { enableVirtualAuthenticator } from '../helpers/webauthn.ts';
 import { state } from "../helpers/state.ts";
@@ -79,14 +78,16 @@ When('I enter a valid TOTP for device {string}', async ({ page }, deviceName: st
 
   const otpPage = new SecondFactorLoginPage(page);
   await otpPage.waitForPage();
-  await otpPage.enterOtp(generateOtp(secret));
-
-  await page.waitForLoadState('networkidle');
+  await otpPage.loginWithTotp(secret);
 });
 
 When('I authenticate with my security key', async ({ page }) => {
+  // The second-factor-login page auto-starts the WebAuthn ceremony ~200ms after
+  // load, so by the time this step runs the virtual authenticator may have already
+  // completed it and navigated to the backend. Don't wait for the (possibly gone)
+  // second-factor-login URL — just best-effort click the trigger and let the
+  // following assertion wait for the redirect to the content page.
   const otpPage = new SecondFactorLoginPage(page);
-  await otpPage.waitForPage();
   await otpPage.loginWithWebAuthn();
 
   await page.waitForLoadState('networkidle');

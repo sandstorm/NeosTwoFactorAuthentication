@@ -27,6 +27,19 @@ export class SecondFactorLoginPage {
   }
 
   /**
+   * Submit a freshly generated TOTP code, retrying on a boundary-rejected code.
+   * On rejection the server re-renders the verification page; success leaves it.
+   */
+  async loginWithTotp(secret: string) {
+    for (let attempt = 0; attempt < 4; attempt++) {
+      await this.enterOtp(generateOtp(secret));
+      await this.page.waitForLoadState('networkidle');
+      if (!this.page.url().includes('second-factor-login')) return;
+    }
+    throw new Error('TOTP login code repeatedly rejected');
+  }
+
+  /**
    * Trigger the WebAuthn assertion. The page also auto-starts the ceremony
    * ~200ms after load, so the click is best-effort: if the auto-trigger has
    * already started (button disabled) or finished (page navigated away) the
@@ -93,12 +106,20 @@ export class SecondFactorSetupPage {
     await this.page.locator('button[type="submit"]').click();
   }
 
-  /** Walk the full TOTP setup workflow from the method picker and return the secret. */
+  /**
+   * Walk the full TOTP setup workflow from the method picker and return the secret.
+   * Retries on a boundary-rejected OTP (the server re-renders the setup form with a
+   * fresh secret on failure; success leaves the setup flow).
+   */
   async setupTotpDevice(name?: string): Promise<string> {
     await this.chooseTotp();
-    const secret = await this.getSecret();
-    await this.submitOtp(secret, name);
-    return secret;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      const secret = await this.getSecret();
+      await this.submitOtp(secret, name);
+      await this.page.waitForLoadState('networkidle');
+      if (!this.page.url().includes('second-factor-setup')) return secret;
+    }
+    throw new Error('TOTP setup could not be completed (OTP repeatedly rejected)');
   }
 
   /**
@@ -142,19 +163,28 @@ export class BackendModulePage {
   async addDevice(name: string): Promise<string> {
     await this.chooseMethod('totp');
 
-    const secretInput = this.page.locator('input#secret');
-    await secretInput.waitFor();
-    const secret = await secretInput.getAttribute('value');
-    if (!secret) throw new Error('TOTP secret not found on TOTP setup page');
+    // TOTP codes are time-windowed and the server validates with no leeway, so a
+    // code generated near a 30s boundary can be rejected by the time it is checked
+    // (the backend then re-renders the form with a *fresh* secret). Retry with the
+    // newly rendered secret until it is accepted.
+    const table = this.page.locator('.neos-table');
+    for (let attempt = 0; attempt < 4; attempt++) {
+      // Wait for the visible OTP field to confirm the TOTP form rendered, then read
+      // the secret from the hidden input (getAttribute auto-waits for attachment;
+      // a hidden input never becomes "visible", so we must not waitFor() it).
+      await this.page.locator('input#secondFactorFromApp').waitFor();
+      const secret = await this.page.locator('input#secret').getAttribute('value');
+      if (!secret) throw new Error('TOTP secret not found on TOTP setup page');
 
-    await this.page.fill('input#name', name);
-    await this.page.fill('input#secondFactorFromApp', generateOtp(secret));
-    await this.page.locator('button[data-test-id="create-second-factor-submit-button"]').click();
+      await this.page.fill('input#name', name);
+      await this.page.fill('input#secondFactorFromApp', generateOtp(secret));
+      await this.page.locator('button[data-test-id="create-second-factor-submit-button"]').click();
+      await this.page.waitForLoadState('networkidle');
 
-    // Wait for redirect back to the index (table appears)
-    await this.page.locator('.neos-table').waitFor();
-
-    return secret;
+      // Success redirects to the index (table visible); rejection re-renders the form.
+      if (await table.isVisible()) return secret;
+    }
+    throw new Error('TOTP device could not be registered (OTP repeatedly rejected)');
   }
 
   /**

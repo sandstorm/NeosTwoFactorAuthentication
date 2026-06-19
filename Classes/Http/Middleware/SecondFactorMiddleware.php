@@ -77,7 +77,7 @@ class SecondFactorMiddleware implements MiddlewareInterface
 
     /**
      * This middleware checks if the user is authenticated with a second factor "if necessary".
-     * This middleware runs _after_ the 'securityEndpoint' middleware. This means if we are on a secured route we would
+     * This middleware runs _after_ the 'securityEntryPoint' middleware. This means if we are on a secured route we would
      * have an authenticated session by now.
      *
      * The the process looks like this:
@@ -87,9 +87,9 @@ class SecondFactorMiddleware implements MiddlewareInterface
      *                                    ▼
      *                           ... middlewares ...
      *                                    ▼
-     *                     ┌─────────────────────────────┐
-     *                     │  SecurityEndpointMiddleware │
-     *                     └─────────────────────────────┘
+     *                     ┌───────────────────────────────┐
+     *                     │  SecurityEntryPointMiddleware │
+     *                     └───────────────────────────────┘
      *                                    ▼
      *     ┌───────────────────────────────────────────────────────────────────┐
      *     │                     SecondFactorMiddleware                        │

@@ -32,10 +32,16 @@ Sandstorm:
       # via the browser's U2F-compat fallback. Set to 'preferred' or 'required' to
       # demand PIN/biometric — note that 'required' excludes U2F-only keys.
       userVerification: 'discouraged'
-      # Attestation verification is disabled by default — accepts any FIDO2/U2F authenticator.
-      attestation: 'none'
       timeout: 60000
 ```
+
+#### Attestation
+
+There is no setting for attestation. We always request the `none` conveyance preference, so the
+browser does not return identifying attestation data about the authenticator. Only the `none` and
+`fido-u2f` attestation statement formats are accepted when loading a credential (the latter is
+required for U2F-only authenticators registered via the browser's U2F-compat fallback). Other
+attestation statement types are not supported yet.
 
 #### Authenticator compatibility
 
@@ -120,9 +126,9 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
                                            ▼
                                 ... middleware chain ...
                                            ▼
-                            ┌─────────────────────────────┐
-                            │  SecurityEndpointMiddleware │
-                            └─────────────────────────────┘
+                            ┌───────────────────────────────┐
+                            │  SecurityEntryPointMiddleware │
+                            └───────────────────────────────┘
                                            ▼
             ┌───────────────────────────────────────────────────────────────────┐
             │                     SecondFactorMiddleware                        │

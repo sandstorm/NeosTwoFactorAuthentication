@@ -59,7 +59,7 @@ export async function enableVirtualAuthenticator(page: Page): Promise<string> {
   // (The spec-native abort path, navigator.credentials.get({ signal }), isn't
   // usable from the test: the app's webauthn.js doesn't pass an AbortSignal.)
   await page.addInitScript(() => {
-    const credentials = navigator.credentials as Credentials & { __cancelWrapped?: boolean };
+    const credentials = navigator.credentials as CredentialsContainer & { __cancelWrapped?: boolean };
     if (credentials.__cancelWrapped) return;
     const original = credentials.get.bind(credentials);
     credentials.get = function (options?: CredentialRequestOptions) {

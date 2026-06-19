@@ -21,7 +21,6 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\Dto\SecondFactorDto;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
-use Sandstorm\NeosTwoFactorAuthentication\Domain\SecondFactorMethod\SecondFactorMethodRegistry;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
@@ -83,12 +82,6 @@ class BackendController extends AbstractModuleController
 
     /**
      * @Flow\Inject
-     * @var SecondFactorMethodRegistry
-     */
-    protected $methodRegistry;
-
-    /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
     protected $persistenceManager;
@@ -135,7 +128,6 @@ class BackendController extends AbstractModuleController
         $this->view->assignMultiple([
             'currentUser' => $currentUser instanceof User ? $currentUser : null,
             'accountIdentifier' => $account->getAccountIdentifier(),
-            'methods' => $this->methodRegistry->getAll(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),

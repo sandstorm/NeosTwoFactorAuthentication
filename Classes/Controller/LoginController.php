@@ -24,7 +24,6 @@ use Neos\Neos\Domain\Repository\SiteRepository;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
-use Sandstorm\NeosTwoFactorAuthentication\Domain\SecondFactorMethod\SecondFactorMethodRegistry;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\WebAuthnService;
@@ -92,12 +91,6 @@ class LoginController extends ActionController
      * @var WebAuthnService
      */
     protected $webAuthnService;
-
-    /**
-     * @Flow\Inject
-     * @var SecondFactorMethodRegistry
-     */
-    protected $methodRegistry;
 
     /**
      * @Flow\Inject
@@ -186,7 +179,6 @@ class LoginController extends ActionController
             'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'username' => $username,
             'site' => $currentSite,
-            'methods' => $this->methodRegistry->getAll(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),

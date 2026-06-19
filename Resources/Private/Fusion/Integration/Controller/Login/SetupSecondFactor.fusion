@@ -4,6 +4,29 @@ Sandstorm.NeosTwoFactorAuthentication.LoginController.setupSecondFactor = Sandst
     scripts = ${scripts}
     username = ${username}
     flashMessages = ${flashMessages}
-    qrCode = ${qrCode}
-    secret = ${secret}
+
+    body = Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker {
+        items = Neos.Fusion:DataStructure {
+            totp = Neos.Fusion:DataStructure {
+                label = ${I18n.id('method.totp.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                description = ${I18n.id('method.totp.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                testId = 'select-method-totp'
+                href = Neos.Fusion:UriBuilder {
+                    package = 'Sandstorm.NeosTwoFactorAuthentication'
+                    controller = 'Login'
+                    action = 'setupTotp'
+                }
+            }
+            webauthn = Neos.Fusion:DataStructure {
+                label = ${I18n.id('method.webauthn.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                description = ${I18n.id('method.webauthn.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                testId = 'select-method-webauthn'
+                href = Neos.Fusion:UriBuilder {
+                    package = 'Sandstorm.NeosTwoFactorAuthentication'
+                    controller = 'Login'
+                    action = 'setupWebAuthn'
+                }
+            }
+        }
+    }
 }

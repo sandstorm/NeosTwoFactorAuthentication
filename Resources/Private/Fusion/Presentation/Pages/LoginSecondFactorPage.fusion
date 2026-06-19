@@ -1,8 +1,13 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < prototype(Neos.Fusion:Component) {
     site = null
     styles = ${[]}
+    scripts = ${[]}
     username = ''
     flashMessages = ${[]}
+    # the inner challenge step component — pass a LoginSecondFactorStep or LoginWebAuthnStep instance
+    body = Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep {
+        flashMessages = ${props.flashMessages}
+    }
 
     renderer = Neos.Fusion:Join {
         doctype = '<!DOCTYPE html>'
@@ -75,7 +80,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                             </h1>
 
                             <div class="neos-login-body neos">
-                                <Sandstorm.NeosTwoFactorAuthentication:Component.LoginSecondFactorStep flashMessages={props.flashMessages}/>
+                                {props.body}
                             </div>
                         </div>
                     </main>
@@ -89,11 +94,22 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginSecondFactorPage) < pr
                     </footer>
                 </div>
 
+                <Neos.Fusion:Loop items={props.scripts}>
+                    <script @children="attributes.src">
+                      <Neos.Fusion:ResourceUri path={item}/>
+                    </script>
+                </Neos.Fusion:Loop>
                 <script>{"
-                                    document.querySelector('form').addEventListener('submit', function() {
-                                        document.querySelector('.neos-login-btn').classList.toggle('neos-hidden');
-                                        document.querySelector('.neos-login-btn.neos-disabled').classList.toggle('neos-hidden');
-                                    });
+                                    var loginForm = document.querySelector('form');
+                                    if (loginForm) {
+                                        loginForm.addEventListener('submit', function() {
+                                            /* Scope to the submitted form: the WebAuthn step's button also carries .neos-login-btn but lives outside any form, so a global query would toggle the wrong button and duplicate the OTP button. Note: this script is rendered minified onto a single line, so only block comments are safe here. */
+                                            var btn = loginForm.querySelector('.neos-login-btn');
+                                            var disabledBtn = loginForm.querySelector('.neos-login-btn.neos-disabled');
+                                            if (btn) btn.classList.toggle('neos-hidden');
+                                            if (disabledBtn) disabledBtn.classList.toggle('neos-hidden');
+                                        });
+                                    }
                                     try {
                                         document.querySelector('form[name=\"login\"] input[name=\"lastVisitedNode\"]').value = sessionStorage.getItem('Neos.Neos.lastVisitedNode');
                                     } catch(e) {}

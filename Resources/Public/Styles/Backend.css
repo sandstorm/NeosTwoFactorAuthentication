@@ -82,3 +82,63 @@ img.neos-two-factor__qr-code {
     font-size: 16px !important;
     height: unset !important;
 }
+
+/*
+ * Backend module pages DO load Neos core's Foundation/_tooltip.scss (the `.neos`-scoped base
+ * tooltip: absolute, black, centred 5px arrow) but NOT Login.scss (which adds the in-flow layout
+ * and the red `.neos-tooltip-error` variant). So the error tooltip showed up as core's neutral
+ * black tooltip. Reproduce the second-factor-login look here, prefixed with `.neos
+ * .neos-two-factor__webauthn-step` so every rule outranks its core counterpart — notably core's
+ * 4-class `.neos .neos-tooltip.neos-bottom .neos-tooltip-arrow`, which set the black, centred arrow.
+ */
+.neos .neos-two-factor__webauthn-step .neos-tooltip {
+    position: relative;
+    left: 0;
+    top: 0;
+    width: 100%;
+    clear: both;
+    float: none;
+    display: block;
+    opacity: 1;
+}
+
+.neos .neos-two-factor__webauthn-step .neos-tooltip.neos-bottom {
+    margin: 8px 0 0 0;
+    padding: 8px 0 0 0;
+}
+
+.neos .neos-two-factor__webauthn-step .neos-tooltip-inner {
+    /* Cap the width (~2x the register button) instead of stretching the full page. */
+    max-width: 480px;
+    padding: 8px;
+    color: #fff;
+    font-size: 13px;
+    background-color: #000;
+    border-radius: 0;
+    box-sizing: border-box;
+}
+
+/* Left-align the arrow (core centres it at left: 50%) for all variants. Colour is left to
+   core (#000) for neutral flash messages and overridden per-variant below. */
+.neos .neos-two-factor__webauthn-step .neos-tooltip.neos-bottom .neos-tooltip-arrow {
+    top: 0;
+    left: 24px;
+    margin-left: 0;
+    border-width: 0 8px 8px 8px;
+}
+
+.neos .neos-two-factor__webauthn-step .neos-tooltip-error .neos-tooltip-inner {
+    background-color: #ff460d;
+}
+
+.neos .neos-two-factor__webauthn-step .neos-tooltip-error.neos-bottom .neos-tooltip-arrow {
+    border-bottom-color: #ff460d;
+}
+
+.neos .neos-two-factor__webauthn-step .neos-tooltip-notice .neos-tooltip-inner {
+    background-color: #00a338;
+}
+
+.neos .neos-two-factor__webauthn-step .neos-tooltip-notice.neos-bottom .neos-tooltip-arrow {
+    border-bottom-color: #00a338;
+}

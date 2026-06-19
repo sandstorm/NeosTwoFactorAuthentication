@@ -10,6 +10,10 @@
         <source>Verification code from your app</source>
         <target>Bestätigungscode aus der App</target>
       </trans-unit>
+      <trans-unit id="name-placeholder" xml:space="preserve">
+        <source>Name of the second factor (optional)</source>
+        <target>Name des zweiten Faktors (optional)</target>
+      </trans-unit>
       <trans-unit id="form.step.setup" xml:space="preserve">
         <source>Set up your authenticator</source>
         <target>Authenticator einrichten</target>
@@ -23,21 +27,21 @@
         <target>Registrieren</target>
       </trans-unit>
       <trans-unit id="login.flashMessage.errorHeader" xml:space="preserve">
-				<source>Error</source>
-				<target>Fehler</target>
-			</trans-unit>
+        <source>Error</source>
+        <target>Fehler</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.invalidOtp" xml:space="preserve">
-				<source>The provided OTP is invalid.</source>
-				<target>Das eingegebene OTP ist ungültig.</target>
-			</trans-unit>
+        <source>The provided OTP is invalid.</source>
+        <target>Das eingegebene OTP ist ungültig.</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.submittedOtpIncorrect" xml:space="preserve">
-				<source>Submitted OTP was incorrect.</source>
-				<target>Das eingegebene OTP ist nicht korrekt.</target>
-			</trans-unit>
+        <source>Submitted OTP was incorrect.</source>
+        <target>Das eingegebene OTP ist nicht korrekt.</target>
+      </trans-unit>
       <trans-unit id="login.flashMessage.successfullyRegisteredOtp" xml:space="preserve">
-				<source>OTP was registered successfully.</source>
-				<target>Das OTP wurde erfolgreich registriert.</target>
-			</trans-unit>
+        <source>OTP was registered successfully.</source>
+        <target>Das OTP wurde erfolgreich registriert.</target>
+      </trans-unit>
       <trans-unit id="form.setup.qrcode.label" xml:space="preserve">
         <source>Scan QR code</source>
         <target>QR-Code scannen</target>
@@ -58,9 +62,101 @@
         <source>Close</source>
         <target>Schließen</target>
       </trans-unit>
-      <trans-unit id="form.name.label" xml:space="preserve">
-        <source>Name (optional)</source>
-        <target>Name (optional)</target>
+      <trans-unit id="method.picker.intro" xml:space="preserve">
+        <source>Choose how you'd like to set up your second factor.</source>
+        <target>Wählen Sie, wie Sie Ihren zweiten Faktor einrichten möchten.</target>
+      </trans-unit>
+      <trans-unit id="method.totp.label" xml:space="preserve">
+        <source>Authenticator app</source>
+        <target>Authenticator-App</target>
+      </trans-unit>
+      <trans-unit id="method.totp.description" xml:space="preserve">
+        <source>Use Google Authenticator, Authy, 1Password or any TOTP-compatible app on your phone.</source>
+        <target>Verwenden Sie Google Authenticator, Authy, 1Password oder eine andere TOTP-kompatible App.</target>
+      </trans-unit>
+      <trans-unit id="method.webauthn.label" xml:space="preserve">
+        <source>Security key (Yubikey / WebAuthn)</source>
+        <target>Sicherheitsschlüssel (Yubikey / WebAuthn)</target>
+      </trans-unit>
+      <trans-unit id="method.webauthn.description" xml:space="preserve">
+        <source>Use a hardware security key such as a Yubikey, or another FIDO2 authenticator.</source>
+        <target>Verwenden Sie einen Hardware-Sicherheitsschlüssel wie einen Yubikey oder einen anderen FIDO2-Authenticator.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.intro" xml:space="preserve">
+        <source>Plug in your security key and press the button below. When prompted, tap your key and enter its PIN if requested.</source>
+        <target>Stecken Sie Ihren Sicherheitsschlüssel ein und drücken Sie unten auf die Schaltfläche. Tippen Sie bei Aufforderung auf den Schlüssel und geben Sie ggf. die PIN ein.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button" xml:space="preserve">
+        <source>Register security key</source>
+        <target>Sicherheitsschlüssel registrieren</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.success" xml:space="preserve">
+        <source>Security key registered successfully.</source>
+        <target>Sicherheitsschlüssel erfolgreich registriert.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.unsupported" xml:space="preserve">
+        <source>Your browser does not support security keys.</source>
+        <target>Ihr Browser unterstützt keine Sicherheitsschlüssel.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.generic" xml:space="preserve">
+        <source>Could not register security key. Please try again.</source>
+        <target>Der Sicherheitsschlüssel konnte nicht registriert werden. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.prompt" xml:space="preserve">
+        <source>Touch your security key to continue.</source>
+        <target>Berühren Sie Ihren Sicherheitsschlüssel, um fortzufahren.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.button" xml:space="preserve">
+        <source>Use security key</source>
+        <target>Sicherheitsschlüssel verwenden</target>
+      </trans-unit>
+      <trans-unit id="login.or" xml:space="preserve">
+        <source>or</source>
+        <target>oder</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
+        <source>Could not verify your security key. Please try again.</source>
+        <target>Der Sicherheitsschlüssel konnte nicht überprüft werden. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.login.error.result" xml:space="preserve">
+        <source>Security key verification failed</source>
+        <target>Verifizierung des Sicherheitsschlüssels fehlgeschlagen</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.error.result" xml:space="preserve">
+        <source>Security key registration failed</source>
+        <target>Registrierung des Sicherheitsschlüssels fehlgeschlagen</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.unsupportedBrowser" xml:space="preserve">
+        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
+        <target>Ihr Browser oder Gerät unterstützt keine Sicherheitsschlüssel. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.notAllowed" xml:space="preserve">
+        <source>The request was cancelled or timed out. Connect your security key and tap it when the browser prompts you, then try again.</source>
+        <target>Die Anfrage wurde abgebrochen oder ist abgelaufen. Verbinden Sie Ihren Sicherheitsschlüssel und berühren Sie ihn, sobald der Browser Sie dazu auffordert, und versuchen Sie es dann erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.invalidState" xml:space="preserve">
+        <source>This security key is already registered. Use a different key, or sign in with this one instead.</source>
+        <target>Dieser Sicherheitsschlüssel ist bereits registriert. Verwenden Sie einen anderen Schlüssel oder melden Sie sich mit diesem an.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.notSupported" xml:space="preserve">
+        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
+        <target>Ihr Browser oder Gerät unterstützt keine Sicherheitsschlüssel. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.security" xml:space="preserve">
+        <source>The page origin is not allowed for security keys. Make sure you are on the correct, secure (https) address.</source>
+        <target>Die Herkunft der Seite ist für Sicherheitsschlüssel nicht zulässig. Stellen Sie sicher, dass Sie sich auf der korrekten, sicheren (https) Adresse befinden.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.abort" xml:space="preserve">
+        <source>The request was aborted before it could finish. Please try again.</source>
+        <target>Die Anfrage wurde abgebrochen, bevor sie abgeschlossen werden konnte. Bitte versuchen Sie es erneut.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.constraint" xml:space="preserve">
+        <source>Your authenticator could not meet the requirements for this login. Try a different security key.</source>
+        <target>Ihr Authentifikator konnte die Anforderungen für diese Anmeldung nicht erfüllen. Verwenden Sie einen anderen Sicherheitsschlüssel.</target>
+      </trans-unit>
+      <trans-unit id="webauthn.error.unknown" xml:space="preserve">
+        <source>An unexpected error occurred while communicating with your security key. Please try again.</source>
+        <target>Bei der Kommunikation mit Ihrem Sicherheitsschlüssel ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.</target>
       </trans-unit>
     </body>
   </file>

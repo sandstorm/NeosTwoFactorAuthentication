@@ -1,0 +1,18 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker) < prototype(Neos.Fusion:Component) {
+    # array of { label, description, href, testId }
+    items = ${[]}
+
+    renderer = afx`
+        <br />
+        <div class="neos-two-factor__method-picker">
+            <Neos.Fusion:Loop items={props.items} itemName="item">
+                <div class="neos-two-factor__method-picker__row">
+                    <a href={item.href} class="neos-button neos-login-btn neos-two-factor__method-picker__button" data-test-id={item.testId}>
+                        {item.label}
+                    </a>
+                    <span class="neos-two-factor__method-picker__description">{item.description}</span>
+                </div>
+            </Neos.Fusion:Loop>
+        </div>
+    `
+}

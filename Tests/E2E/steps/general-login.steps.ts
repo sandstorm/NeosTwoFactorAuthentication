@@ -28,12 +28,25 @@ When('I log out', async ({ page }) => {
   await logout(page);
 });
 
+When('I open {string} while logged out', async ({ page }, path: string) => {
+  // Requesting a protected backend URL while unauthenticated makes Neos remember
+  // it as the intercepted request and bounce to the login form. After the (2FA)
+  // login completes the plugin should redirect back to exactly this URL.
+  await page.goto(path);
+  await page.locator('input[type="password"]').waitFor();
+});
+
 
 // ── Then ──────────────────────────────────────────────────────────────────────
 
 Then('I should see the Neos content page', async ({ page }) => {
   const neosContentPage = new NeosContentPage(page);
   await expect(page).toHaveURL(neosContentPage.URL_REGEX);
+});
+
+Then('I should land on {string}', async ({ page }, path: string) => {
+  const escaped = path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  await expect(page).toHaveURL(new RegExp(escaped));
 });
 
 Then('I cannot access the Neos content page', async ({ page }) => {

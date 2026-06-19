@@ -17,6 +17,7 @@ Neos:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Backend.css'
               javaScripts:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/JavaScript/webauthn.js'
 
     userInterface:
       translation:
@@ -29,6 +30,7 @@ Neos:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
         scripts:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
+          'Sandstorm.NeosTwoFactorAuthentication:WebAuthnScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/JavaScript/webauthn.js'
 
   Flow:
     http:

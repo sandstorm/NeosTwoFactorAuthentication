@@ -20,10 +20,19 @@ When('I add a new TOTP 2FA device with name {string}',
   },
 );
 
+When('I add a new WebAuthn 2FA device', async ({ page }) => {
+  const modulePage = new BackendModulePage(page);
+  await modulePage.addWebAuthnDevice();
+});
+
+When('I add a new WebAuthn 2FA device with name {string}', async ({ page }, deviceName: string) => {
+  const modulePage = new BackendModulePage(page);
+  await modulePage.addWebAuthnDevice(deviceName);
+});
+
 When('I try to remove the 2FA device with the name {string}',
   async ({ page }, name: string) => {
     const modulePage = new BackendModulePage(page);
-    await page.pause();
     await modulePage.tryDeleteDeviceByName(name);
   },
 );
@@ -53,5 +62,12 @@ Then('There should be no 2FA device with the name {string}',
   async ({ page }, name: string) => {
     const modulePage = new BackendModulePage(page);
     await expect(modulePage.locatorForDeviceRow(name)).toHaveCount(0);
+  },
+);
+
+Then('There should be {int} enrolled {string} 2FA device(s)',
+  async ({ page }, countStr: string, typeLabel: string) => {
+    const modulePage = new BackendModulePage(page);
+    await expect(modulePage.locatorForDeviceRowsOfType(typeLabel)).toHaveCount(parseInt(countStr, 10));
   },
 );

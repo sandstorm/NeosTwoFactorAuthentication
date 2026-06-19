@@ -173,6 +173,89 @@
     background-color: initial;
 }
 
-.neos-control-group > * + * {
-  margin-top: 8px;
+/* Method picker (2FA setup) — compact button on the left, description to its right */
+.neos-two-factor__method-picker {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.neos-two-factor__method-picker__row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.neos-two-factor__method-picker__button {
+    flex: 0 0 auto;
+    background-color: #00b5ff !important;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.neos-two-factor__method-picker__button:hover,
+.neos-two-factor__method-picker__button:focus {
+    text-decoration: none;
+}
+
+.neos-two-factor__method-picker__description {
+    flex: 1 1 auto;
+    font-size: .9rem;
+    opacity: .85;
+    line-height: 1.4;
+}
+
+/* WebAuthn step (setup + login) */
+.neos-two-factor__webauthn-step fieldset {
+    padding: 12px 0;
+    border: 0;
+}
+
+.neos-two-factor__webauthn-prompt,
+.neos-two-factor__webauthn-intro {
+    margin: 0 0 16px;
+    color: #fff;
+    opacity: .9;
+}
+
+.neos-two-factor__webauthn-button {
+    background-color: #00b5ff !important;
+}
+
+.neos-two-factor__webauthn-button[disabled] {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.neos-two-factor__webauthn-fallback {
+    margin-top: 16px;
+    text-align: center;
+}
+
+.neos-two-factor__webauthn-fallback a {
+    color: #00adee;
+    text-decoration: underline;
+    font-size: .9rem;
+}
+
+/* Separator between the two methods on the 2FA challenge screen */
+.neos-two-factor__or-separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 20px 0;
+    color: #fff;
+    opacity: .6;
+    text-transform: uppercase;
+    font-size: .8rem;
+    letter-spacing: .1em;
+}
+
+.neos-two-factor__or-separator::before,
+.neos-two-factor__or-separator::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid currentColor;
+    opacity: .5;
 }

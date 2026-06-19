@@ -37,7 +37,11 @@ class SecondFactor
     protected int $type;
 
     /**
+     * For TYPE_TOTP this is a base32-encoded shared secret.
+     * For TYPE_PUBLIC_KEY this is the JSON-serialized WebAuthn credential source.
+     *
      * @var string
+     * @ORM\Column(type="text")
      */
     protected string $secret;
 
@@ -135,6 +139,31 @@ class SecondFactor
         $this->creationDate = $creationDate;
     }
 
+    /**
+     * Decode the credential data stored in `secret` for non-TOTP factors.
+     *
+     * @return array<string, mixed>
+     */
+    public function getCredentialData(): array
+    {
+        $decoded = json_decode($this->secret, true);
+        if (!is_array($decoded)) {
+            throw new InvalidArgumentException('Stored credential data is not valid JSON');
+        }
+        return $decoded;
+    }
+
+    /**
+     * Encode credential data as JSON for non-TOTP factors.
+     *
+     * @param array<string, mixed> $data
+     */
+    public function setCredentialData(array $data): void
+    {
+        $encoded = json_encode($data, JSON_THROW_ON_ERROR);
+        $this->secret = $encoded;
+    }
+
     public function __toString(): string
     {
         return $this->account->getAccountIdentifier() . " with " . self::typeToString($this->type);
@@ -144,9 +173,9 @@ class SecondFactor
     {
         switch ($type) {
             case self::TYPE_TOTP:
-                return 'OTP';
+                return 'OTP code';
             case self::TYPE_PUBLIC_KEY:
-                return 'Public Key';
+                return 'Security Key';
             default:
                 throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
         }

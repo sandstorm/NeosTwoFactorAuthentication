@@ -34,9 +34,17 @@ setup-sut:
 setup-test:
 	echo "${GREEN}Installing test setup.${RESET}"
 	cd $(E2E_DIR) && \
-	if [ -s "$$NVM_DIR" ]; then \
-		. "$$NVM_DIR/nvm.sh" && echo "${GREEN}Found nvm on system -> using it to install nodejs!${RESET}" && nvm install; \
-	fi && \
+	REQUIRED_NODE="$$(cat .nvmrc)"; \
+	CURRENT_NODE="$$(node --version 2>/dev/null)"; \
+	REQUIRED_MINOR="$$(echo "$$REQUIRED_NODE" | cut -d. -f1,2)"; \
+	CURRENT_MINOR="$$(echo "$$CURRENT_NODE" | cut -d. -f1,2)"; \
+	if [ "$$CURRENT_MINOR" != "$$REQUIRED_MINOR" ]; then \
+		echo "${YELLOW}Wrong Node.js version.${RESET}"; \
+		echo "  required: $$REQUIRED_MINOR.x (from .nvmrc: $$REQUIRED_NODE)"; \
+		echo "  current:  $${CURRENT_NODE:-not found}"; \
+		echo "Please install/activate Node.js $$REQUIRED_MINOR.x (e.g. 'nvm install', 'mise install', or 'fnm use') and re-run 'make setup-test'."; \
+		exit 1; \
+	fi; \
 	npm install && npx playwright install --with-deps chromium && \
 	echo "" && echo "${GREEN}generate BDD files from feature files${RESET}" && npm run generate-tests
 

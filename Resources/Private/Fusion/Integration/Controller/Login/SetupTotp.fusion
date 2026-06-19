@@ -1,0 +1,13 @@
+Sandstorm.NeosTwoFactorAuthentication.LoginController.setupTotp = Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage {
+    site = ${site}
+    styles = ${styles}
+    scripts = ${scripts}
+    username = ${username}
+    flashMessages = ${flashMessages}
+
+    body = Sandstorm.NeosTwoFactorAuthentication:Component.SetupTotpStep {
+        secret = ${secret}
+        qrCode = ${qrCode}
+        targetAction = 'createSecondFactor'
+    }
+}

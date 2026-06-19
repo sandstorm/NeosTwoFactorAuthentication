@@ -233,6 +233,14 @@ You can add more Flow CLI wrappers to `system.ts` following the same pattern.
 
 To complete a 2FA login a test needs a valid one-time code. `helpers/totp.ts` generates one from a TOTP secret (via `otplib`), and `helpers/state.ts` keeps a shared map of device-name → secret so a code can be generated for a device created earlier in the same scenario.
 
+### 7. The "add second factor" workflow
+
+Adding a second factor (both in the backend module at `/new` and during enforced login setup at `/neos/second-factor-setup`) starts on a **method picker** where the user chooses TOTP or WebAuthn. The picker buttons carry `data-test-id="select-method-totp"` / `select-method-webauthn`. The page objects in `helpers/2fa-pages.ts` (`BackendModulePage.chooseMethod`, `SecondFactorSetupPage.chooseTotp/chooseWebAuthn`) walk this picker before driving the method-specific form.
+
+### 8. Testing WebAuthn (security keys)
+
+WebAuthn ceremonies need an authenticator. Instead of real hardware the tests install a **CDP virtual authenticator** on the browser context (`helpers/webauthn.ts`, exposed via the `Given I have a virtual security key` step). It auto-approves registration and assertion (`isUserVerified` + `automaticPresenceSimulation`), and the registered credential survives the logout/login within a scenario because it lives on the context, not the page. This only works with the Chromium project (which the suite uses). WebAuthn devices can be named (`I add a new WebAuthn 2FA device with name "..."`), so they can be asserted by name like TOTP devices, or by type — `There should be N enrolled "Security Key" 2FA device(s)`.
+
 ### Cleanup
 
 The `AfterScenario` hook in `steps/hooks.ts` logs out the current browser session and removes all users after every scenario, keeping tests isolated. If your tests create other persistent data, add cleanup logic there.

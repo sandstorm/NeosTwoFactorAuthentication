@@ -13,6 +13,7 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
  * @Flow\Scope("singleton")
  *
  * @method QueryResult findByAccount(Account $account)
+ * @method int countByAccount(Account $account)
  */
 class SecondFactorRepository extends Repository
 {

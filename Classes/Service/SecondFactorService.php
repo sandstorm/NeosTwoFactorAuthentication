@@ -60,8 +60,7 @@ class SecondFactorService
      */
     public function isSecondFactorEnabledForAccount(Account $account): bool
     {
-        $factors = $this->secondFactorRepository->findByAccount($account);
-        return count($factors) > 0;
+        return $this->secondFactorRepository->countByAccount($account) > 0;
     }
 
     /**
@@ -72,7 +71,7 @@ class SecondFactorService
     public function canOneSecondFactorBeDeletedForAccount(Account $account): bool
     {
         $isEnforcedForAccount = $this->isSecondFactorEnforcedForAccount($account);
-        $hasMultipleFactors = count($this->secondFactorRepository->findByAccount($account)) > 1;
+        $hasMultipleFactors = $this->secondFactorRepository->countByAccount($account) > 1;
 
         return !$isEnforcedForAccount || $hasMultipleFactors;
     }

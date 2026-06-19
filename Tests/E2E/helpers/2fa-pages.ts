@@ -1,6 +1,13 @@
 import type { Page } from '@playwright/test';
 import { generateOtp } from './totp.js';
 
+/**
+ * The 2FA verification page shown on login when the account already has an
+ * enrolled second factor (route: /neos/second-factor-login).
+ *
+ * Depending on the enrolled factors this page can show a WebAuthn step, a TOTP
+ * step, or both. The TOTP step is the form containing the `#secondFactor` input.
+ */
 export class SecondFactorLoginPage {
   constructor(private readonly page: Page) {}
 
@@ -8,9 +15,31 @@ export class SecondFactorLoginPage {
     await this.page.waitForURL('**/neos/second-factor-login');
   }
 
+  /** The TOTP form (the WebAuthn step also carries `.neos-login-btn`, so scope to this form). */
+  private otpForm() {
+    return this.page.locator('form', { has: this.page.locator('input#secondFactor') });
+  }
+
   async enterOtp(otp: string) {
-    await this.page.locator('input#secondFactor').fill(otp);
-    await this.page.locator('.neos-login-btn:not(.neos-disabled):not(.neos-hidden)').first().click();
+    const form = this.otpForm();
+    await form.locator('input#secondFactor').fill(otp);
+    await form.locator('.neos-login-btn:not(.neos-disabled):not(.neos-hidden)').first().click();
+  }
+
+  /**
+   * Trigger the WebAuthn assertion. The page also auto-starts the ceremony
+   * ~200ms after load, so the click is best-effort: if the auto-trigger has
+   * already started (button disabled) or finished (page navigated away) the
+   * click is swallowed, and the redirect to the backend is awaited by the
+   * caller's assertion. With a virtual authenticator the ceremony auto-resolves.
+   */
+  async loginWithWebAuthn() {
+    const trigger = this.page.locator('[data-webauthn-login] [data-webauthn-trigger]');
+    try {
+      await trigger.click({ timeout: 2000 });
+    } catch {
+      // auto-trigger already running or completed — nothing to do.
+    }
   }
 
   async getErrorMessage(): Promise<string> {
@@ -20,11 +49,33 @@ export class SecondFactorLoginPage {
   }
 }
 
+/**
+ * The enforced-login 2FA setup flow (route: /neos/second-factor-setup).
+ *
+ * Since the WebAuthn feature the setup landing page is a *method picker*: the
+ * user first chooses TOTP or WebAuthn, which navigates to the method-specific
+ * setup page (.../setup/totp or .../setup/webauthn).
+ */
 export class SecondFactorSetupPage {
   constructor(private readonly page: Page) {}
 
+  /** Wait for the method-picker landing page. */
   async waitForPage() {
     await this.page.waitForURL('**/neos/second-factor-setup');
+  }
+
+  isMethodPickerVisible() {
+    return this.page.locator('.neos-two-factor__method-picker').isVisible();
+  }
+
+  async chooseTotp() {
+    await this.page.locator('[data-test-id="select-method-totp"]').click();
+    await this.page.waitForURL('**/neos/second-factor-setup/totp');
+  }
+
+  async chooseWebAuthn() {
+    await this.page.locator('[data-test-id="select-method-webauthn"]').click();
+    await this.page.waitForURL('**/neos/second-factor-setup/webauthn');
   }
 
   async getSecret(): Promise<string> {
@@ -33,13 +84,33 @@ export class SecondFactorSetupPage {
     return secret;
   }
 
+  /** Submit the OTP (and optional device name) on the TOTP setup form. */
   async submitOtp(secret: string, name?: string) {
     if (name) {
       await this.page.fill('input#name', name);
     }
-    const otp = generateOtp(secret);
-    await this.page.locator('input#secondFactorFromApp').fill(otp);
+    await this.page.locator('input#secondFactorFromApp').fill(generateOtp(secret));
     await this.page.locator('button[type="submit"]').click();
+  }
+
+  /** Walk the full TOTP setup workflow from the method picker and return the secret. */
+  async setupTotpDevice(name?: string): Promise<string> {
+    await this.chooseTotp();
+    const secret = await this.getSecret();
+    await this.submitOtp(secret, name);
+    return secret;
+  }
+
+  /**
+   * Walk the WebAuthn setup workflow from the method picker. Requires a virtual
+   * authenticator to be enabled on the browser context (see helpers/webauthn.ts).
+   */
+  async setupWebAuthnDevice(name?: string) {
+    await this.chooseWebAuthn();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
   }
 }
 
@@ -58,19 +129,23 @@ export class BackendModulePage {
     return this.page.locator('.neos-table tbody tr').count();
   }
 
-  async deleteFirstDevice() {
-    await this.page.locator('button.neos-button-danger').first().click();
-    // Confirm in modal
-    await this.page.locator('.neos-modal-footer button.neos-button-danger').click();
+  /** Open the "add second factor" method picker and select a method. */
+  async chooseMethod(method: 'totp' | 'webauthn') {
+    await this.page.goto('/neos/management/twoFactorAuthentication/new');
+    await this.page.locator(`[data-test-id="select-method-${method}"]`).click();
   }
 
-  /** Navigate to the new-device form, complete setup, and return the TOTP secret. */
+  /**
+   * Add a TOTP device through the new method-picker workflow and return its secret.
+   * Picks TOTP from the method picker, then completes the TOTP setup form.
+   */
   async addDevice(name: string): Promise<string> {
-    await this.page.goto('/neos/management/twoFactorAuthentication/new');
+    await this.chooseMethod('totp');
 
     const secretInput = this.page.locator('input#secret');
+    await secretInput.waitFor();
     const secret = await secretInput.getAttribute('value');
-    if (!secret) throw new Error('TOTP secret not found on new-device page');
+    if (!secret) throw new Error('TOTP secret not found on TOTP setup page');
 
     await this.page.fill('input#name', name);
     await this.page.fill('input#secondFactorFromApp', generateOtp(secret));
@@ -80,6 +155,20 @@ export class BackendModulePage {
     await this.page.locator('.neos-table').waitFor();
 
     return secret;
+  }
+
+  /**
+   * Add a WebAuthn (security key) device through the new method-picker workflow.
+   * Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
+   */
+  async addWebAuthnDevice(name?: string): Promise<void> {
+    await this.chooseMethod('webauthn');
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    // Wait for redirect back to the index (table appears)
+    await this.page.locator('.neos-table').waitFor();
   }
 
   /** Find the table row for the named device and click the delete button, then confirm. */
@@ -116,5 +205,10 @@ export class BackendModulePage {
   /** Locator for the table row matching a device name (for assertions). */
   locatorForDeviceRow(name: string) {
     return this.page.locator('.neos-table tbody tr').filter({ hasText: name });
+  }
+
+  /** Locator for table rows of a given type, e.g. "OTP code" or "Security Key". */
+  locatorForDeviceRowsOfType(typeLabel: string) {
+    return this.page.locator('.neos-table tbody tr').filter({ hasText: typeLabel });
   }
 }

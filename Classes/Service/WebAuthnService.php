@@ -144,7 +144,8 @@ class WebAuthnService
         string $attestationResponseJson,
         PublicKeyCredentialCreationOptions $options,
         Account $account,
-        ServerRequestInterface $request
+        ServerRequestInterface $request,
+        string $name = ''
     ): SecondFactor {
         $publicKeyCredentialLoader = $this->buildCredentialLoader();
         $publicKeyCredential = $publicKeyCredentialLoader->load($attestationResponseJson);
@@ -159,7 +160,8 @@ class WebAuthnService
         return $this->secondFactorRepository->createSecondFactorForAccount(
             json_encode($credentialSource->jsonSerialize(), JSON_THROW_ON_ERROR),
             $account,
-            SecondFactor::TYPE_PUBLIC_KEY
+            SecondFactor::TYPE_PUBLIC_KEY,
+            $name
         );
     }
 

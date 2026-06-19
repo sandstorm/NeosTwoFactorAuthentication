@@ -24,7 +24,7 @@ class SecondFactorRepository extends Repository
     /**
      * @throws IllegalObjectTypeException
      */
-    public function createSecondFactorForAccount(string $secret, Account $account, int $type = SecondFactor::TYPE_TOTP, string $name): SecondFactor
+    public function createSecondFactorForAccount(string $secret, Account $account, int $type = SecondFactor::TYPE_TOTP, string $name = ''): SecondFactor
     {
         $secondFactor = new SecondFactor();
         $secondFactor->setAccount($account);

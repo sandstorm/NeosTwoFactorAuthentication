@@ -140,7 +140,9 @@
             });
             if (!credential) throw new Error('No credential returned by browser');
             var encoded = encodeAttestation(credential);
-            await postJson(container.dataset.verifyUrl, { attestation: JSON.stringify(encoded) });
+            var nameEl = container.querySelector('[data-webauthn-name]');
+            var name = nameEl ? nameEl.value : '';
+            await postJson(container.dataset.verifyUrl, { attestation: JSON.stringify(encoded), name: name });
             window.location.href = container.dataset.redirectUrl || '/neos';
         } catch (e) {
             showError(container, describeError(container, e));

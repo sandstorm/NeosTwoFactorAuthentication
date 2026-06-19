@@ -310,7 +310,7 @@ class LoginController extends ActionController
      * @throws SessionNotStartedException
      * @throws StopActionException
      */
-    public function webAuthnRegisterVerifyAction(string $attestation): string
+    public function webAuthnRegisterVerifyAction(string $attestation, string $name = ''): string
     {
         $serialized = $this->secondFactorSessionStorageService->getValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS
@@ -325,7 +325,8 @@ class LoginController extends ActionController
                 $attestation,
                 $options,
                 $account,
-                $this->request->getHttpRequest()
+                $this->request->getHttpRequest(),
+                $name
             );
         } catch (\Throwable $e) {
             return $this->jsonError($e->getMessage(), 400);

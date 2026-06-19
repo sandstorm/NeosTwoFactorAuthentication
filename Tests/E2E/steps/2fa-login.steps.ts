@@ -4,6 +4,7 @@ import { BackendModulePage, SecondFactorLoginPage, SecondFactorSetupPage } from 
 import { NeosLoginPage } from "../helpers/general-pages.ts";
 import { generateOtp } from '../helpers/totp.ts';
 import { createUser, logout } from '../helpers/system.ts';
+import { enableVirtualAuthenticator } from '../helpers/webauthn.ts';
 import { state } from "../helpers/state.ts";
 
 const { Given, When, Then } = createBdd();
@@ -22,9 +23,9 @@ Given('A user with username {string}, password {string} and role {string} with e
     let secret: string;
 
     if (page.url().includes('second-factor-setup')) {
+      // Enforced setup: the landing page is the method picker -> walk the TOTP workflow.
       const setupPage = new SecondFactorSetupPage(page);
-      secret = await setupPage.getSecret();
-      await setupPage.submitOtp(secret, deviceName);
+      secret = await setupPage.setupTotpDevice(deviceName);
       await page.waitForLoadState('networkidle');
     } else {
       const modulePage = new BackendModulePage(page);
@@ -39,15 +40,35 @@ Given('A user with username {string}, password {string} and role {string} with e
   },
 );
 
+Given('I have a virtual security key', async ({ page }) => {
+  await enableVirtualAuthenticator(page);
+});
+
 // ── When ──────────────────────────────────────────────────────────────────────
 
 When('I set up a 2FA device with name {string}', async ({ page }, deviceName: string) => {
+  // Enforced login setup -> method picker -> TOTP workflow.
   const setupPage = new SecondFactorSetupPage(page);
   await setupPage.waitForPage();
-  const secret = await setupPage.getSecret();
-  await setupPage.submitOtp(secret, deviceName);
+  const secret = await setupPage.setupTotpDevice(deviceName);
 
   state.deviceNameSecretMap.set(deviceName, secret);
+
+  await page.waitForLoadState('networkidle');
+});
+
+When('I set up a WebAuthn 2FA device', async ({ page }) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await setupPage.waitForPage();
+  await setupPage.setupWebAuthnDevice();
+
+  await page.waitForLoadState('networkidle');
+});
+
+When('I set up a WebAuthn 2FA device with name {string}', async ({ page }, deviceName: string) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await setupPage.waitForPage();
+  await setupPage.setupWebAuthnDevice(deviceName);
 
   await page.waitForLoadState('networkidle');
 });
@@ -63,6 +84,14 @@ When('I enter a valid TOTP for device {string}', async ({ page }, deviceName: st
   await page.waitForLoadState('networkidle');
 });
 
+When('I authenticate with my security key', async ({ page }) => {
+  const otpPage = new SecondFactorLoginPage(page);
+  await otpPage.waitForPage();
+  await otpPage.loginWithWebAuthn();
+
+  await page.waitForLoadState('networkidle');
+});
+
 // ── Then ──────────────────────────────────────────────────────────────────────
 
 Then('I should see the 2FA verification page', async ({ page }) => {
@@ -71,4 +100,9 @@ Then('I should see the 2FA verification page', async ({ page }) => {
 
 Then('I should see the 2FA setup page', async ({ page }) => {
   await expect(page).toHaveURL(/second-factor-setup/);
+});
+
+Then('I should see the 2FA method selection', async ({ page }) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  expect(await setupPage.isMethodPickerVisible()).toBe(true);
 });

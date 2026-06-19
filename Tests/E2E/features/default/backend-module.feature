@@ -12,6 +12,27 @@ Feature: Backend module for two-factor authentication management with default se
     Then There should be 1 enrolled 2FA device
     And There should be a 2FA device with the name "Admin Test Device"
 
+  Scenario: Admin user can add a named WebAuthn 2FA device in backend module
+    Given I have a virtual security key
+    When I log in with username "admin" and password "password"
+    And I navigate to the 2FA management page
+    And I add a new WebAuthn 2FA device with name "Admin Security Key"
+    Then There should be 1 enrolled 2FA device
+    And There should be 1 enrolled "Security Key" 2FA device
+    And There should be a 2FA device with the name "Admin Security Key"
+
+  Scenario: Admin user can have both a TOTP and a WebAuthn 2FA device
+    Given I have a virtual security key
+    When I log in with username "admin" and password "password"
+    And I navigate to the 2FA management page
+    And I add a new TOTP 2FA device with name "Admin Test Device"
+    And I add a new WebAuthn 2FA device with name "Admin Security Key"
+    Then There should be 2 enrolled 2FA devices
+    And There should be 1 enrolled "OTP code" 2FA device
+    And There should be 1 enrolled "Security Key" 2FA device
+    And There should be a 2FA device with the name "Admin Test Device"
+    And There should be a 2FA device with the name "Admin Security Key"
+
   Scenario: Admin user can remove his own, last 2FA when 2FA is not enforced
     When I log in with username "admin" and password "password"
     And I navigate to the 2FA management page

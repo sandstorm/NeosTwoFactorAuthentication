@@ -33,6 +33,16 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                     {I18n.id('webauthn.setup.intro').package('Sandstorm.NeosTwoFactorAuthentication')}
                 </p>
                 <br />
+                <div class="neos-control-group">
+                    <input type="text"
+                        id="name"
+                        data-webauthn-name
+                        class="neos-span6"
+                        autocomplete="off"
+                        placeholder={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        aria-label={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                    />
+                </div>
                 <div class="neos-actions">
                     <button type="button"
                         class="neos-button neos-login-btn neos-two-factor__webauthn-button"

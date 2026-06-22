@@ -77,9 +77,10 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                     {I18n.id('login.index.title').value('Login to').package('Neos.Neos').source('Main')} <strong>{props.site.name}</strong>
                                 </h1>
 
-                                <div class="neos-login-body neos">
+                                <div class="neos-login-body neos neos-two-factor__login">
                                     <Sandstorm.NeosTwoFactorAuthentication:Component.LoginFlashMessages flashMessages={props.flashMessages} />
                                     {props.body}
+                                    <Sandstorm.NeosTwoFactorAuthentication:Component.CancelLoginButton />
                                 </div>
                             </div>
                         </main>

@@ -21,6 +21,7 @@ use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageServ
 class SecondFactorMiddleware implements MiddlewareInterface
 {
     const LOGGING_PREFIX = 'Sandstorm/NeosTwoFactorAuthentication: ';
+    const SECOND_FACTOR_PACKAGE_KEY = 'Sandstorm.NeosTwoFactorAuthentication';
     const SECOND_FACTOR_LOGIN_URI = '/neos/second-factor-login';
     const SECOND_FACTOR_SETUP_URI = '/neos/second-factor-setup';
 
@@ -163,6 +164,19 @@ class SecondFactorMiddleware implements MiddlewareInterface
         //    authenticated with the authentication provider of 'Neos.Backend:Backend' first.
         if (!$isAuthenticated) {
             $this->log('Not authenticated on "Neos.Neos:Backend" authentication provider, skipping second factor.');
+
+            return $handler->handle($request);
+        }
+
+        // Let a cancellation request through regardless of the 2FA state (challenge or enforced setup),
+        // so the controller can tear down the half-authenticated session instead of being redirected
+        // back to the 2FA screen by the checks below.
+        $routingMatchResults = $request->getAttribute(ServerRequestAttributes::ROUTING_RESULTS) ?? [];
+        if (
+            ($routingMatchResults['@package'] ?? '') === self::SECOND_FACTOR_PACKAGE_KEY
+            && ($routingMatchResults['@action'] ?? '') === 'cancelLogin'
+        ) {
+            $this->log('Second factor login cancellation requested, skipping second factor.');
 
             return $handler->handle($request);
         }

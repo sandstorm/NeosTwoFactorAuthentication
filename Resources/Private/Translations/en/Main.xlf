@@ -86,6 +86,9 @@
       <trans-unit id="login.or" xml:space="preserve">
         <source>or</source>
       </trans-unit>
+      <trans-unit id="login.cancel" xml:space="preserve">
+        <source>Cancel and return to login</source>
+      </trans-unit>
       <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
         <source>Could not verify your security key. Please try again.</source>
       </trans-unit>

@@ -20,6 +20,12 @@ Feature: Login flow with 2FA enforced for all users
     Then I should see the 2FA setup page
     And I should see the 2FA method selection
 
+  Scenario: User can cancel the enforced 2FA setup and return to the login screen
+    When I log in with username "editor" and password "password"
+    And I should see the 2FA setup page
+    And I cancel the 2FA login
+    Then I should see the login page
+
   Scenario: User can log in when after setting up a 2FA device
     When I log in with username "editor" and password "password"
     And I set up a 2FA device with name "Editor Test Device"

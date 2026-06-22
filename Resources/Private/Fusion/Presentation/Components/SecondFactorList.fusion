@@ -47,8 +47,8 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry
             <td>{props.factorAndPerson.secondFactor.name == null ? '-' : props.factorAndPerson.secondFactor.name}</td>
             <td>{props.factorAndPerson.secondFactor.creationDate == null ? '-' : Date.format(props.factorAndPerson.secondFactor.creationDate, 'Y-m-d H:i')}</td>
             <td>
-                <button class="neos-button neos-button-danger" data-toggle="modal" data-test-id="delete-second-factor-button"
-                        href={'#user-' + props.iterator.index} title={I18n.id('module.index.list.action.delete').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()} data-neos-toggle="tooltip">
+                <button class="neos-button neos-button-danger" data-toggle="modal"
+                        href={'#user-' + props.iterator.index} title={I18n.id('module.index.list.action.delete').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()} aria-label={I18n.id('module.index.list.action.delete').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()} data-neos-toggle="tooltip">
                     <i class="fas fa-trash-alt icon-white"></i>
                 </button>
 
@@ -56,7 +56,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList.Entry
                     <div class="neos-modal-centered">
                         <div class="neos-modal-content">
                             <div class="neos-modal-header">
-                                <button type="button" class="neos-close neos-button" data-dismiss="modal"></button>
+                                <button type="button" class="neos-close neos-button" data-dismiss="modal" aria-label={I18n.id('module.index.delete.close').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}></button>
                                 <div class="neos-header">
                                     {I18n.id('module.index.delete.header').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                                 </div>

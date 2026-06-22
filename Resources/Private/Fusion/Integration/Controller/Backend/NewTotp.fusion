@@ -126,7 +126,6 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newTotp = Sandstorm.Neos
                     </div>
                     <div class="neos-control-group">
                         <Neos.Fusion.Form:Button
-                            attributes.data-test-id="create-second-factor-submit-button"
                             attributes.class="neos-button neos-two-factor__register-button">
                             {I18n.id('module.new.submit-otp').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
                         </Neos.Fusion.Form:Button>

@@ -114,6 +114,10 @@
         <source>or</source>
         <target>oder</target>
       </trans-unit>
+      <trans-unit id="login.cancel" xml:space="preserve">
+        <source>Cancel and return to login</source>
+        <target>Abbrechen und zurück zur Anmeldung</target>
+      </trans-unit>
       <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
         <source>Could not verify your security key. Please try again.</source>
         <target>Der Sicherheitsschlüssel konnte nicht überprüft werden. Bitte versuchen Sie es erneut.</target>

@@ -8,9 +8,9 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
         content = Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker {
             items = Neos.Fusion:DataStructure {
                 totp = Neos.Fusion:DataStructure {
+                    id = 'method.totp'
                     label = ${I18n.id('method.totp.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                     description = ${I18n.id('method.totp.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
-                    testId = 'select-method-totp'
                     href = Neos.Fusion:UriBuilder {
                         package = 'Sandstorm.NeosTwoFactorAuthentication'
                         controller = 'Backend'
@@ -18,9 +18,9 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.new = Sandstorm.NeosTwoF
                     }
                 }
                 webauthn = Neos.Fusion:DataStructure {
+                    id = 'method.webauthn'
                     label = ${I18n.id('method.webauthn.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                     description = ${I18n.id('method.webauthn.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
-                    testId = 'select-method-webauthn'
                     href = Neos.Fusion:UriBuilder {
                         package = 'Sandstorm.NeosTwoFactorAuthentication'
                         controller = 'Backend'

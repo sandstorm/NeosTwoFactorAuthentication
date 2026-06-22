@@ -1,16 +1,17 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker) < prototype(Neos.Fusion:Component) {
-    # array of { label, description, href, testId }
+    # array of { id, label, description, href }
+    # Each method is a link whose visible label is its accessible name, so it can
+    # be addressed in tests by role+name (e.g. "Authenticator app") — no test id needed.
     items = ${[]}
 
     renderer = afx`
-        <br />
-        <div class="neos-two-factor__method-picker">
+        <div class="neos-two-factor__method-picker neos-actions">
             <Neos.Fusion:Loop items={props.items} itemName="item">
                 <div class="neos-two-factor__method-picker__row">
-                    <a href={item.href} class="neos-button neos-login-btn neos-two-factor__method-picker__button" data-test-id={item.testId}>
+                    <a aria-describedby={item.id} href={item.href} class="btn neos-button neos-login-btn neos-two-factor__method-picker__button">
                         {item.label}
                     </a>
-                    <span class="neos-two-factor__method-picker__description">{item.description}</span>
+                    <label id={item.id} class="neos-two-factor__method-picker__description">{item.description}</label>
                 </div>
             </Neos.Fusion:Loop>
         </div>

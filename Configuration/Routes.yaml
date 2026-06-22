@@ -37,6 +37,15 @@
       '@format': 'html'
   httpMethods: ['POST']
 
+- name: 'Sandstorm Two Factor Authentication - Cancel Login'
+  uriPattern: 'neos/second-factor-cancel-login'
+  defaults:
+      '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+      '@controller': 'Login'
+      '@action': 'cancelLogin'
+      '@format': 'html'
+  httpMethods: ['POST']
+
 - name: 'Sandstorm Two Factor Authentication - Setup TOTP'
   uriPattern: 'neos/second-factor-setup/totp'
   defaults:

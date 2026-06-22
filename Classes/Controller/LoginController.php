@@ -278,6 +278,27 @@ class LoginController extends ActionController
         $this->redirectToInterceptedRequestOrBackend();
     }
 
+    /**
+     * Abort the login process from the 2FA challenge or enforced-setup screen: tear down
+     * the half-authenticated session and bounce the user back to the regular login screen.
+     *
+     * @throws StopActionException
+     */
+    public function cancelLoginAction(): void
+    {
+        // Resolve the redirect target *before* destroying the session: the intercepted request
+        // lives in the (session-backed) security context and would be gone afterwards. Sending the
+        // user back to that same URI means the security entry point re-intercepts it, so the next
+        // login attempt resumes at the page they originally wanted instead of the backend default.
+        $redirectUri = $this->interceptedRequestOrBackendUri();
+
+        $this->secondFactorSessionStorageService->cancelLoginAttempt();
+
+        // The session (including the Neos backend authentication) is gone now, so this secured
+        // target bounces straight to the login screen via the security entry point.
+        $this->redirectToUri($redirectUri);
+    }
+
     // ------------------------------------------------------------------
     // WebAuthn XHR endpoints (registration ceremony)
     // ------------------------------------------------------------------

@@ -85,4 +85,18 @@ class SecondFactorSessionStorageService
         unset($data[$key]);
         $session->putData(self::SESSION_OBJECT_ID, $data);
     }
+
+    /**
+     * Abort the login attempt: destroy the whole session to leave the in-between state
+     * of "authenticated with username/password, but not yet with the second factor".
+     * This also drops the Neos backend authentication, so the next request lands on the
+     * regular login screen again.
+     */
+    public function cancelLoginAttempt(): void
+    {
+        $session = $this->sessionManager->getCurrentSession();
+        if ($session->isStarted()) {
+            $session->destroy('Second factor login attempt cancelled by user.');
+        }
+    }
 }

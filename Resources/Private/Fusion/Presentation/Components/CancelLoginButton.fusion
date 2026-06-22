@@ -1,0 +1,22 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.CancelLoginButton) < prototype(Neos.Fusion:Component) {
+    # Secondary "escape hatch" shown on every 2FA screen (challenge + enforced setup).
+    # It is a self-contained form, so it works whether or not the surrounding step is itself
+    # a form (the WebAuthn step and method picker are not), and avoids invalid nested forms.
+    renderer = afx`
+        <Neos.Fusion.Form:Form
+            attributes.class="neos-two-factor__cancel-login"
+            form.target.package="Sandstorm.NeosTwoFactorAuthentication"
+            form.target.controller="Login"
+            form.target.action="cancelLogin"
+        >
+            <Neos.Fusion.Form:Button
+                attributes.type="submit"
+                attributes.formnovalidate="true"
+                attributes.class="neos-two-factor__cancel-login__button"
+                attributes.aria-label={I18n.id('login.cancel').value('Cancel and return to login').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+            >
+                {I18n.id('login.cancel').value('Cancel and return to login').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+            </Neos.Fusion.Form:Button>
+        </Neos.Fusion.Form:Form>
+    `
+}

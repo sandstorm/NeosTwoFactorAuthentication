@@ -13,7 +13,7 @@ Neos:
             icon: 'fas fa-qrcode'
             additionalResources:
               styleSheets:
-                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Shared.css'
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Backend.css'
               javaScripts:
                 - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
@@ -27,6 +27,7 @@ Neos:
 
       backendLoginForm:
         stylesheets:
+          'Sandstorm.NeosTwoFactorAuthentication:SharedStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Shared.css'
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Login.css'
         scripts:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'

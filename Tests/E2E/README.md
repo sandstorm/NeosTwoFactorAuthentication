@@ -235,7 +235,9 @@ To complete a 2FA login a test needs a valid one-time code. `helpers/totp.ts` ge
 
 ### 7. The "add second factor" workflow
 
-Adding a second factor (both in the backend module at `/new` and during enforced login setup at `/neos/second-factor-setup`) starts on a **method picker** where the user chooses TOTP or WebAuthn. The picker buttons carry `data-test-id="select-method-totp"` / `select-method-webauthn`. The page objects in `helpers/2fa-pages.ts` (`BackendModulePage.chooseMethod`, `SecondFactorSetupPage.chooseTotp/chooseWebAuthn`) walk this picker before driving the method-specific form.
+Adding a second factor (both in the backend module at `/new` and during enforced login setup at `/neos/second-factor-setup`) starts on a **method picker** where the user chooses TOTP or WebAuthn. The picker entries are links selected by their accessible name (`getByRole('link', { name: 'Authenticator app' | 'Security key (Yubikey / WebAuthn)' })`). The page objects in `helpers/2fa-pages.ts` (`BackendModulePage.chooseMethod`, `SecondFactorSetupPage.chooseTotp/chooseWebAuthn`) walk this picker before driving the method-specific form.
+
+> **Selector convention:** prefer addressing interactive elements by their accessible name (`getByRole(role, { name })`, matching the element's visible label or `aria-label`, which the SUT renders in English). Fall back to `data-test-id` only where an accessible-name selector isn't reliably possible — e.g. the delete-confirmation button, whose accessible name is identical to the row's delete button.
 
 ### 8. Testing WebAuthn (security keys)
 

@@ -108,6 +108,16 @@ When('I restart the WebAuthn challenge and authenticate with my security key', a
   await page.waitForLoadState('networkidle');
 });
 
+When('I cancel the 2FA login', async ({ page }) => {
+  // The cancel button is the same shared component on both the 2FA verification
+  // and the enforced-setup screens. Submitting it tears down the half-authenticated
+  // session; the browser then follows the redirect chain back to the login screen.
+  // It carries an aria-label, so we target it by its accessible name (rendered in
+  // English by the SUT) rather than a test id.
+  await page.getByRole('button', { name: 'Cancel and return to login', exact: true }).click();
+  await page.locator('input[type="password"]').waitFor();
+});
+
 When('I authenticate with my security key', async ({ page }) => {
   // The second-factor-login page auto-starts the WebAuthn ceremony ~200ms after
   // load, so by the time this step runs the virtual authenticator may have already

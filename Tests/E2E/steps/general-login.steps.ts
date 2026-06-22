@@ -49,6 +49,11 @@ Then('I should land on {string}', async ({ page }, path: string) => {
   await expect(page).toHaveURL(new RegExp(escaped));
 });
 
+Then('I should see the login page', async ({ page }) => {
+  await expect(page).toHaveURL(/neos\/login/);
+  await expect(page.locator('input[type="password"]')).toBeVisible();
+});
+
 Then('I cannot access the Neos content page', async ({ page }) => {
   const neosContentPage = new NeosContentPage(page);
   await neosContentPage.goto();

@@ -2,6 +2,16 @@ import type { Page } from '@playwright/test';
 import { generateOtp } from './totp.js';
 
 /**
+ * Accessible names (English) of the two method-picker entries, used to select
+ * them by role+name instead of a test id. These mirror the `method.*.label`
+ * translations the SUT renders in English.
+ */
+const METHOD_LINK_NAME = {
+  totp: 'Authenticator app',
+  webauthn: 'Security key (Yubikey / WebAuthn)',
+} as const;
+
+/**
  * The 2FA verification page shown on login when the account already has an
  * enrolled second factor (route: /neos/second-factor-login).
  *
@@ -98,12 +108,12 @@ export class SecondFactorSetupPage {
   }
 
   async chooseTotp() {
-    await this.page.locator('[data-test-id="select-method-totp"]').click();
+    await this.page.getByRole('link', { name: METHOD_LINK_NAME.totp, exact: true }).click();
     await this.page.waitForURL('**/neos/second-factor-setup/totp');
   }
 
   async chooseWebAuthn() {
-    await this.page.locator('[data-test-id="select-method-webauthn"]').click();
+    await this.page.getByRole('link', { name: METHOD_LINK_NAME.webauthn, exact: true }).click();
     await this.page.waitForURL('**/neos/second-factor-setup/webauthn');
   }
 
@@ -119,7 +129,9 @@ export class SecondFactorSetupPage {
       await this.page.fill('input#name', name);
     }
     await this.page.locator('input#secondFactorFromApp').fill(generateOtp(secret));
-    await this.page.locator('button[type="submit"]').click();
+    // Scope to the TOTP form's submit by its accessible name: the page also
+    // renders the cancel button, which is itself a type="submit" button.
+    await this.page.getByRole('button', { name: 'Register second factor', exact: true }).click();
   }
 
   /**
@@ -169,7 +181,7 @@ export class BackendModulePage {
   /** Open the "add second factor" method picker and select a method. */
   async chooseMethod(method: 'totp' | 'webauthn') {
     await this.page.goto('/neos/management/twoFactorAuthentication/new');
-    await this.page.locator(`[data-test-id="select-method-${method}"]`).click();
+    await this.page.getByRole('link', { name: METHOD_LINK_NAME[method], exact: true }).click();
   }
 
   /**
@@ -194,7 +206,7 @@ export class BackendModulePage {
 
       await this.page.fill('input#name', name);
       await this.page.fill('input#secondFactorFromApp', generateOtp(secret));
-      await this.page.locator('button[data-test-id="create-second-factor-submit-button"]').click();
+      await this.page.getByRole('button', { name: 'Register second factor', exact: true }).click();
       await this.page.waitForLoadState('networkidle');
 
       // Success redirects to the index (table visible); rejection re-renders the form.
@@ -220,7 +232,10 @@ export class BackendModulePage {
   /** Find the table row for the named device and click the delete button, then confirm. */
   async deleteDeviceByName(name: string): Promise<void> {
     const row = this.locatorForDeviceRow(name);
-    await row.locator('button[data-test-id="delete-second-factor-button"]').click();
+    await row.getByRole('button', { name: 'Delete second factor' }).click();
+    // The confirm button shares the same accessible name as the row's delete
+    // button, so a unique aria-label selector isn't possible here — target it by
+    // test id, scoped to the now-visible modal.
     await this.page.locator('button[data-test-id="confirm-delete"]:visible').click();
     await this.page.waitForLoadState('networkidle');
   }
@@ -232,7 +247,7 @@ export class BackendModulePage {
    */
   async tryDeleteDeviceByName(name: string): Promise<void> {
     const row = this.locatorForDeviceRow(name);
-    const deleteButton = row.locator('button[data-test-id="delete-second-factor-button"]');
+    const deleteButton = row.getByRole('button', { name: 'Delete second factor' });
 
     if (await deleteButton.isDisabled()) {
       return;

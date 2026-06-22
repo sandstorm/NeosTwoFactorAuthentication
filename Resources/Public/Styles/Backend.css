@@ -1,3 +1,8 @@
+/*
+ * Styles used ONLY by the backend module (Sandstorm\...\Controller\BackendController).
+ * Loaded after Shared.css. Nothing in here is loaded on the login screen.
+ */
+
 .neos-two-factor__form {
     max-width: 800px;
 }
@@ -81,6 +86,21 @@ img.neos-two-factor__qr-code {
     padding: 10px 24px !important;
     font-size: 16px !important;
     height: unset !important;
+}
+
+/* Keyboard focus ring for buttons and button-styled links. Backend.css only loads on this
+   package's standalone module page, so .neos-button is already package-scoped. !important
+   beats Neos core's `:focus { outline: 0 }` reset. */
+.neos-button:focus-visible {
+    outline: 2px solid #00b5ff !important;
+    outline-offset: 2px;
+}
+
+/* Method picker — backend layout: compact button on the right, description to its left.
+   (Login.css gives the login screen a stacked column layout instead.) */
+.neos div.neos-two-factor__method-picker {
+    margin-top: 16px;
+    gap: 12px;
 }
 
 /*

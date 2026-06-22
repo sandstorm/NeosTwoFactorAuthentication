@@ -242,7 +242,7 @@ class LoginController extends ActionController
      */
     public function createSecondFactorAction(string $secret, string $secondFactorFromApp, string $name = ''): void
     {
-        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
+        $isValid = $this->tOTPService->checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
             $this->addFlashMessage(
@@ -441,7 +441,7 @@ class LoginController extends ActionController
     {
         $totpFactors = $this->secondFactorRepository->findByAccountAndType($account, SecondFactor::TYPE_TOTP);
         foreach ($totpFactors as $secondFactor) {
-            if (TOTPService::checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor)) {
+            if ($this->tOTPService->checkIfOtpIsValid($secondFactor->getSecret(), $enteredSecondFactor)) {
                 return true;
             }
         }

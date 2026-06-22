@@ -8,6 +8,10 @@ Sandstorm:
     enforce2FAForRoles: []
     # (optional) if set this will be used as a naming convention for the TOTP. If empty the Site name will be used
     issuerName: ''
+    # Acceptable TOTP clock drift in seconds. verify() will accept codes from
+    # (now - leeway) through (now + leeway). 0 disables leeway (exact match only).
+    # MUST be lower than the 30s TOTP period; values >= 30 are clamped to 29.
+    totpLeewayInSeconds: 0
 
     webAuthn:
       # Human-readable relying party name shown in the browser's WebAuthn prompt.

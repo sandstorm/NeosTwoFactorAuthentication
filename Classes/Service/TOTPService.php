@@ -4,8 +4,8 @@ namespace Sandstorm\NeosTwoFactorAuthentication\Service;
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
-use Neos\Flow\Security\Account;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Security\Account;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\Neos\Domain\Repository\SiteRepository;
 use OTPHP\TOTP;
@@ -14,31 +14,48 @@ class TOTPService
 {
     /**
      * @Flow\Inject
-     * @var DomainRepository
      */
-    protected $domainRepository;
+    protected DomainRepository $domainRepository;
 
     /**
      * @Flow\Inject
-     * @var SiteRepository
      */
-    protected $siteRepository;
+    protected SiteRepository $siteRepository;
 
     /**
      * @Flow\InjectConfiguration(path="issuerName")
-     * @var string | null
      */
-    protected $issuerName;
+    protected string|null $issuerName;
+
+    /**
+     * @Flow\InjectConfiguration(path="totpLeewayInSeconds")
+     */
+    protected int $totpLeewayInSeconds;
 
     public static function generateNewTotp(): TOTP
     {
         return TOTP::create();
     }
 
-    public static function checkIfOtpIsValid(string $secret, string $submittedOtp): bool
+    public function checkIfOtpIsValid(string $secret, string $submittedOtp): bool
     {
         $otp = TOTP::create($secret);
-        return $otp->verify($submittedOtp);
+
+        $leeway = (int)$this->totpLeewayInSeconds;
+        $period = $otp->getPeriod();
+
+        if ($leeway <= 0) {
+            // No leeway configured: exact-match verification (single window).
+            return $otp->verify($submittedOtp);
+        }
+
+        if ($leeway >= $period) {
+            // The leeway MUST be lower than the TOTP period, otherwise verify() throws.
+            // Clamp to the maximum allowed value instead of failing at login time.
+            $leeway = $period - 1;
+        }
+
+        return $otp->verify($submittedOtp, null, $leeway);
     }
 
     public function generateQRCodeForTokenAndAccount(TOTP $otp, Account $account): string

@@ -184,7 +184,7 @@ class BackendController extends AbstractModuleController
      */
     public function createAction(string $secret, string $secondFactorFromApp, string $name = ''): void
     {
-        $isValid = TOTPService::checkIfOtpIsValid($secret, $secondFactorFromApp);
+        $isValid = $this->tOTPService->checkIfOtpIsValid($secret, $secondFactorFromApp);
 
         if (!$isValid) {
             $this->addFlashMessage(

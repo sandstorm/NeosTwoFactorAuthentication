@@ -33,6 +33,12 @@ Neos:
           'Sandstorm.NeosTwoFactorAuthentication:AdditionalScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/index.js'
           'Sandstorm.NeosTwoFactorAuthentication:WebAuthnScripts': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/JavaScript/webauthn.js'
 
+    Ui:
+      resources:
+        javascript:
+          'Sandstorm.NeosTwoFactorAuthentication:ReloadOnAuthTimeout':
+            resource: 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Neos.Ui/Plugin.js'
+
   Flow:
     http:
       middlewares:

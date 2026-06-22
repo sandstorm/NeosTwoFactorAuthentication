@@ -1,0 +1,17 @@
+{
+  "name": "@sandstorm/neos-two-factor-authentication-neos-ui",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@neos-project/neos-ui-extensibility": "^8.0.0"
+  }
+}

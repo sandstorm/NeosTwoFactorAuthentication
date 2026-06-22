@@ -21,3 +21,13 @@ export function removeAllUsers() {
 export async function logout(page: Page) {
   await page.context().request.post('/neos/logout');
 }
+
+// Destroys ALL Neos/Flow sessions server-side by flushing the session caches.
+// This is the server-side equivalent of every logged-in user's session timing
+// out at once — the next authenticated backend request they make answers 401.
+export function destroyAllSessions() {
+  execSync(
+    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow flow:session:destroyAll"`,
+    { stdio: 'ignore', cwd: dirname('.') }
+  )
+}

@@ -95,6 +95,13 @@ Feature: Login flow with default settings
     And I enter a valid TOTP for device "Admin Test Device"
     Then I should land on "/neos/management/twoFactorAuthentication"
 
+  Scenario: The page reloads to the login screen when the backend session is destroyed server-side
+    When I log in with username "admin" and password "password"
+    And I should see the Neos content page
+    And the Neos backend session is destroyed on the server
+    And the Neos UI makes a backend request
+    Then I should see the login page
+
   Scenario: User is redirected to the originally requested page after logging in with WebAuthn
     Given I have a virtual security key
     When I log in with username "admin" and password "password"

@@ -97,6 +97,21 @@ Sandstorm:
     issuerName: ""
 ```
 
+### TOTP leeway
+
+By default, TOTP codes are verified against the current 30-second window only, with no tolerance for
+clock drift between the user's device and the server. If users occasionally hit "invalid code"
+errors near the boundary of a code's lifetime, you can allow some drift via:
+
+```yml
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # Acceptable TOTP clock drift in seconds. Codes from (now - leeway) through (now + leeway)
+    # are accepted. 0 disables leeway (exact match only). MUST be lower than the 30s TOTP period;
+    # values >= 30 are clamped to 29.
+    totpLeewayInSeconds: 5
+```
+
 ## Tested 2FA apps
 
 Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!

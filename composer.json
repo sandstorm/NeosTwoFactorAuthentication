@@ -21,9 +21,6 @@
         "chillerlan/php-qrcode": "^5.0",
         "web-auth/webauthn-lib": "^4.9.3"
     },
-    "require-dev": {
-        "sandstorm/neos-init-e2e-tests-plugin": "@dev"
-    },
     "autoload": {
         "psr-4": {
             "Sandstorm\\NeosTwoFactorAuthentication\\": "Classes/"
@@ -55,8 +52,7 @@
     },
     "config": {
         "allow-plugins": {
-            "neos/composer-plugin": true,
-            "sandstorm/neos-init-e2e-tests-plugin": true
+            "neos/composer-plugin": true
         }
     }
 }

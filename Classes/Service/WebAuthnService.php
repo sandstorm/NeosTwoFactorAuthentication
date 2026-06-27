@@ -173,11 +173,16 @@ class WebAuthnService
         $validator = $this->buildAttestationValidator();
         $credentialSource = $validator->check($authenticatorResponse, $options, $request, $this->securedRelyingPartyIds);
 
+        // A credential registered while passwordless login is enabled is created with
+        // `residentKey: required` (see createRegistrationOptions), so a successful registration
+        // is necessarily a discoverable credential — a "Passkey". When passwordless login is
+        // disabled the credential is non-discoverable and usable only as a second factor.
         return $this->secondFactorRepository->createSecondFactorForAccount(
             json_encode($credentialSource->jsonSerialize(), JSON_THROW_ON_ERROR),
             $account,
             SecondFactor::TYPE_PUBLIC_KEY,
-            $name
+            $name,
+            $this->passwordlessLoginEnabled
         );
     }
 

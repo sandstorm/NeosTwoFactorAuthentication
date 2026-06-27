@@ -42,5 +42,5 @@ Feature: Login flow with 2FA enforced for all users
     When I log in with username "editor" and password "password"
     And I set up a WebAuthn 2FA device with name "Editor Security Key"
     And I navigate to the 2FA management page
-    Then There should be 1 enrolled "Security Key" 2FA device
+    Then There should be 1 enrolled "Passkey as 2nd factor" 2FA device
     And There should be a 2FA device with the name "Editor Security Key"

@@ -15,6 +15,18 @@
         <source>List of all registered second factors</source>
         <target>Liste aller registrierten zweiten Faktoren</target>
       </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.title" xml:space="preserve">
+        <source>Set up a passkey for faster sign-in</source>
+        <target>Richten Sie einen Passkey für die schnellere Anmeldung ein</target>
+      </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.text" xml:space="preserve">
+        <source>Register a passkey to sign in without a password — one tap with your fingerprint, face, or device PIN.</source>
+        <target>Registrieren Sie einen Passkey, um sich ohne Passwort anzumelden — mit Fingerabdruck, Gesicht oder Geräte-PIN.</target>
+      </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.cta" xml:space="preserve">
+        <source>Register a passkey</source>
+        <target>Passkey registrieren</target>
+      </trans-unit>
       <trans-unit id="module.index.list.header.username" xml:space="preserve">
         <source>User</source>
         <target>Nutzer</target>
@@ -102,8 +114,8 @@
         <target>Wählen Sie, welchen zweiten Faktor Sie einrichten möchten:</target>
       </trans-unit>
       <trans-unit id="module.newWebAuthn.title" xml:space="preserve">
-        <source>Register a security key</source>
-        <target>Sicherheitsschlüssel registrieren</target>
+        <source>Register a passkey</source>
+        <target>Passkey registrieren</target>
       </trans-unit>
     </body>
   </file>

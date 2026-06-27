@@ -25,13 +25,14 @@ class SecondFactorRepository extends Repository
     /**
      * @throws IllegalObjectTypeException
      */
-    public function createSecondFactorForAccount(string $secret, Account $account, int $type = SecondFactor::TYPE_TOTP, string $name = ''): SecondFactor
+    public function createSecondFactorForAccount(string $secret, Account $account, int $type = SecondFactor::TYPE_TOTP, string $name = '', bool $discoverable = false): SecondFactor
     {
         $secondFactor = new SecondFactor();
         $secondFactor->setAccount($account);
         $secondFactor->setSecret($secret);
         $secondFactor->setType($type);
         $secondFactor->setName($name);
+        $secondFactor->setDiscoverable($discoverable);
         $secondFactor->setCreationDate(new \DateTime());
         $this->add($secondFactor);
         $this->persistenceManager->persistAll();

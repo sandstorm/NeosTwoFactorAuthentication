@@ -8,7 +8,7 @@ import { generateOtp } from './totp.js';
  */
 const METHOD_LINK_NAME = {
   totp: 'Authenticator app',
-  webauthn: 'Security key (Yubikey / WebAuthn)',
+  webauthn: 'Passkey',
 } as const;
 
 /**
@@ -229,6 +229,24 @@ export class BackendModulePage {
     await this.page.locator('.neos-table').waitFor();
   }
 
+  /** The "register a passkey" CTA banner shown when passwordless login is enabled and the user has no passkey yet. */
+  bannerLocator() {
+    return this.page.locator('[data-test-id="register-passkey-banner"]');
+  }
+
+  /**
+   * Follow the banner's call-to-action into the passkey registration wizard and complete it.
+   * Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
+   */
+  async registerPasskeyFromBanner(name?: string): Promise<void> {
+    await this.bannerLocator().locator('[data-test-id="register-passkey-cta"]').click();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    await this.page.locator('.neos-table').waitFor();
+  }
+
   /** Find the table row for the named device and click the delete button, then confirm. */
   async deleteDeviceByName(name: string): Promise<void> {
     const row = this.locatorForDeviceRow(name);
@@ -268,8 +286,14 @@ export class BackendModulePage {
     return this.page.locator('.neos-table tbody tr').filter({ hasText: name });
   }
 
-  /** Locator for table rows of a given type, e.g. "OTP code" or "Security Key". */
+  /**
+   * Locator for table rows of a given type, e.g. "OTP code", "Passkey" or
+   * "Passkey as 2nd factor". Matches the type cell exactly so "Passkey" does not also
+   * match "Passkey as 2nd factor" (substring matching would conflate the two).
+   */
   locatorForDeviceRowsOfType(typeLabel: string) {
-    return this.page.locator('.neos-table tbody tr').filter({ hasText: typeLabel });
+    return this.page.locator('.neos-table tbody tr').filter({
+      has: this.page.getByRole('cell', { name: typeLabel, exact: true }),
+    });
   }
 }

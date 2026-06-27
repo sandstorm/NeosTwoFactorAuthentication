@@ -71,3 +71,15 @@ Then('There should be {int} enrolled {string} 2FA device(s)',
     await expect(modulePage.locatorForDeviceRowsOfType(typeLabel)).toHaveCount(parseInt(countStr, 10));
   },
 );
+
+Then('I should see the register-a-passkey banner', async ({ page }) => {
+  await expect(new BackendModulePage(page).bannerLocator()).toBeVisible();
+});
+
+When('I register a passkey from the banner', async ({ page }) => {
+  await new BackendModulePage(page).registerPasskeyFromBanner();
+});
+
+Then('I should not see the register-a-passkey banner', async ({ page }) => {
+  await expect(new BackendModulePage(page).bannerLocator()).toHaveCount(0);
+});

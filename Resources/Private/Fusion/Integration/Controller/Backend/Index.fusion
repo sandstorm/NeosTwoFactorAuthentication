@@ -4,8 +4,18 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTw
 
         teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
-        content = Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList {
-            factorsAndPerson = ${factorsAndPerson}
+        content = Neos.Fusion:Join {
+            passkeyBanner = Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner {
+                show = ${showRegisterPasskeyBanner}
+                registerUri = Neos.Fusion:UriBuilder {
+                    package = 'Sandstorm.NeosTwoFactorAuthentication'
+                    controller = 'Backend'
+                    action = 'newWebAuthn'
+                }
+            }
+            list = Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList {
+                factorsAndPerson = ${factorsAndPerson}
+            }
         }
 
         footer = Sandstorm.NeosTwoFactorAuthentication:Component.Footer {

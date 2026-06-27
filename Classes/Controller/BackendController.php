@@ -87,6 +87,12 @@ class BackendController extends AbstractModuleController
     protected $persistenceManager;
 
     /**
+     * @Flow\InjectConfiguration(path="webAuthn.passwordlessLoginEnabled")
+     * @var bool
+     */
+    protected $passwordlessLoginEnabled = false;
+
+    /**
      * used to list all second factors of the current user
      */
     public function indexAction()
@@ -111,10 +117,31 @@ class BackendController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'factorsAndPerson' => $factorsAndPerson,
+            'showRegisterPasskeyBanner' => $this->shouldNudgePasskeyRegistration($account),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),
         ]);
+    }
+
+    /**
+     * Whether to nudge the current user to register a passkey: only when passwordless login is
+     * enabled and the user does not yet have a discoverable (passwordless-capable) credential of
+     * their own. Non-discoverable "Passkey as 2nd factor" credentials do not count, as they cannot
+     * be used for passwordless login.
+     */
+    protected function shouldNudgePasskeyRegistration(\Neos\Flow\Security\Account $account): bool
+    {
+        if (!$this->passwordlessLoginEnabled) {
+            return false;
+        }
+        $ownPublicKeyFactors = $this->secondFactorRepository->findByAccountAndType($account, SecondFactor::TYPE_PUBLIC_KEY);
+        foreach ($ownPublicKeyFactors as $factor) {
+            if ($factor->isDiscoverable()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

@@ -1,0 +1,22 @@
+prototype(Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner) < prototype(Neos.Fusion:Component) {
+    show = false
+    registerUri = ''
+
+    @propTypes {
+        @strict = true
+        show = ${PropTypes.bool}
+        registerUri = ${PropTypes.string}
+    }
+
+    renderer = afx`
+        <div @if={props.show} class="neos-two-factor__passkey-banner" data-test-id="register-passkey-banner">
+            <div class="neos-two-factor__passkey-banner-text">
+                <strong>{I18n.id('module.index.passkeyBanner.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</strong>
+                <p>{I18n.id('module.index.passkeyBanner.text').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</p>
+            </div>
+            <a href={props.registerUri} class="neos-button neos-button-primary" data-test-id="register-passkey-cta">
+                {I18n.id('module.index.passkeyBanner.cta').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+            </a>
+        </div>
+    `
+}

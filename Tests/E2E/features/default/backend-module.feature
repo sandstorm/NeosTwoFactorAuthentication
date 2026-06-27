@@ -18,7 +18,7 @@ Feature: Backend module for two-factor authentication management with default se
     And I navigate to the 2FA management page
     And I add a new WebAuthn 2FA device with name "Admin Security Key"
     Then There should be 1 enrolled 2FA device
-    And There should be 1 enrolled "Security Key" 2FA device
+    And There should be 1 enrolled "Passkey as 2nd factor" 2FA device
     And There should be a 2FA device with the name "Admin Security Key"
 
   Scenario: Admin user can have both a TOTP and a WebAuthn 2FA device
@@ -29,7 +29,7 @@ Feature: Backend module for two-factor authentication management with default se
     And I add a new WebAuthn 2FA device with name "Admin Security Key"
     Then There should be 2 enrolled 2FA devices
     And There should be 1 enrolled "OTP code" 2FA device
-    And There should be 1 enrolled "Security Key" 2FA device
+    And There should be 1 enrolled "Passkey as 2nd factor" 2FA device
     And There should be a 2FA device with the name "Admin Test Device"
     And There should be a 2FA device with the name "Admin Security Key"
 

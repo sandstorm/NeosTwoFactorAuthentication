@@ -57,7 +57,8 @@ attestation statement types are not supported yet.
 
 | Package Version | Neos / Flow Version | Released? | Supported | Remarks       |
 | --------------- | ------------------- | --------- | --------- |---------------|
-| 2.x             | 9.x, 8.x, 7.x       | ✅        | ✅        | `main` branch |
+| 3.x             | 9.x, 8.x.           | ✅        | ✅        | `main` branch |
+| 2.x             | 9.x, 8.x, 7.x       | ✅        |           | `main` branch |
 | 1.x             | 9.x, 8.x, 7.x, 3.x  | ✅        |           |               |
 
 ## Settings

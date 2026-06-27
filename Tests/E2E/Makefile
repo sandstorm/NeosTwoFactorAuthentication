@@ -94,6 +94,14 @@ test-neos9-enforce-role:
 test-neos9-enforce-provider:
 	cd $(E2E_DIR) && npm run test:neos9:enforce-provider
 
+## Run neos8 E2E tests for passwordless passkey login
+test-neos8-passwordless:
+	cd $(E2E_DIR) && npm run test:neos8:passwordless
+
+## Run neos9 E2E tests for passwordless passkey login
+test-neos9-passwordless:
+	cd $(E2E_DIR) && npm run test:neos9:passwordless
+
 ## Start the neos8 SUT containers
 start-sut-neos8:
 	docker compose -f $(NEOS8_COMPOSE) up -d --build

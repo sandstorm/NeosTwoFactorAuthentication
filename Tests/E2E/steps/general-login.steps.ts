@@ -28,6 +28,30 @@ When('I log out', async ({ page }) => {
   await logout(page);
 });
 
+When('I sign in with a passkey', async ({ page }) => {
+  const loginPage = new NeosLoginPage(page);
+  await loginPage.signInWithPasskey();
+  await page.waitForLoadState('networkidle');
+});
+
+When('I open the login page', async ({ page }) => {
+  await new NeosLoginPage(page).goto();
+});
+
+Then('I should not see the passkey sign-in button', async ({ page }) => {
+  await expect(page.locator('[data-webauthn-passwordless]')).toHaveCount(0);
+});
+
+Then('the passwordless verify endpoint is forbidden', async ({ page }) => {
+  // The endpoint must reject everyone while passwordless login is disabled — server-side,
+  // not just by hiding the button.
+  const response = await page.request.post('/neos/passwordless-webauthn/verify', {
+    data: { assertion: '{}' },
+    failOnStatusCode: false,
+  });
+  expect(response.status()).toBe(403);
+});
+
 When('I open {string} while logged out', async ({ page }, path: string) => {
   // Requesting a protected backend URL while unauthenticated makes Neos remember
   // it as the intercepted request and bounce to the login form. After the (2FA)

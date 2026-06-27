@@ -26,6 +26,12 @@ Sandstorm:
       userVerification: 'discouraged'
       # Browser ceremony timeout in milliseconds.
       timeout: 60000
+      # Opt-in: allow usernameless, passwordless login with a discoverable passkey directly
+      # from the Neos login screen (a user-verified passkey is a full multi-factor login on its
+      # own). OFF by default — must be explicitly enabled. When enabled, new WebAuthn
+      # registrations create discoverable credentials so one passkey serves both passwordless
+      # login and 2nd-factor use.
+      passwordlessLoginEnabled: false
       # Relying-party hostnames for which the server-side library should accept non-HTTPS
       # requests. The browser already treats *.localhost as a secure context (RFC 6761),
       # but the PHP validator only special-cases the literal 'localhost' — list any

@@ -13,6 +13,7 @@ class SecondFactorSessionStorageService
     const SESSION_OBJECT_AUTH_STATUS = 'authenticationStatus';
     const SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS = 'webAuthnRegistrationOptions';
     const SESSION_OBJECT_WEBAUTHN_AUTHENTICATION_OPTIONS = 'webAuthnAuthenticationOptions';
+    const SESSION_OBJECT_WEBAUTHN_PASSWORDLESS_OPTIONS = 'webAuthnPasswordlessOptions';
 
     /**
      * @Flow\Inject
@@ -65,14 +66,27 @@ class SecondFactorSessionStorageService
         $session->putData(self::SESSION_OBJECT_ID, $data);
     }
 
-    /**
-     * @throws SessionNotStartedException
-     */
     public function getValue(string $key): mixed
     {
         $session = $this->sessionManager->getCurrentSession();
+        if (!$session->isStarted()) {
+            return null;
+        }
         $data = $session->getData(self::SESSION_OBJECT_ID) ?: [];
         return $data[$key] ?? null;
+    }
+
+    /**
+     * Start the current session if it has not been started yet. Needed for the passwordless
+     * login flow, which runs for a not-yet-authenticated visitor (so, unlike the 2nd-factor
+     * flow, there is no session started by the preceding password authentication).
+     */
+    public function startSessionIfNotStarted(): void
+    {
+        $session = $this->sessionManager->getCurrentSession();
+        if (!$session->isStarted()) {
+            $session->start();
+        }
     }
 
     /**

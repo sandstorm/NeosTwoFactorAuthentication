@@ -101,3 +101,21 @@
       '@action': 'webAuthnAuthenticateVerify'
       '@format': 'json'
   httpMethods: ['POST']
+
+- name: 'Sandstorm Two Factor Authentication - Passwordless WebAuthn options'
+  uriPattern: 'neos/passwordless-webauthn/options'
+  defaults:
+      '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+      '@controller': 'PasswordlessLogin'
+      '@action': 'options'
+      '@format': 'json'
+  httpMethods: ['POST']
+
+- name: 'Sandstorm Two Factor Authentication - Passwordless WebAuthn verify'
+  uriPattern: 'neos/passwordless-webauthn/verify'
+  defaults:
+      '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+      '@controller': 'PasswordlessLogin'
+      '@action': 'verify'
+      '@format': 'json'
+  httpMethods: ['POST']

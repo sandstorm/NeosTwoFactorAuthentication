@@ -31,6 +31,9 @@ services:
       - ../../../Configuration:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Configuration:cached
       - ../../../Migrations:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Migrations:cached
       - ../../../Resources:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Resources:cached
+      # Tests are mounted so the package's PHPUnit unit/functional tests can run inside the SUT
+      # (the E2E Playwright suite lives here too but runs from the host).
+      - ../../../Tests:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/Tests:cached
       - ../../../composer.json:/app/DistributionPackages/Sandstorm.NeosTwoFactorAuthentication/composer.json:cached
     networks:
       - neos_SUT

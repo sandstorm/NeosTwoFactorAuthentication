@@ -186,6 +186,16 @@
                 setTimeout(function () { runAuthentication(container); }, 200);
             }
         });
+
+        // Passwordless (usernameless) login on the main login screen. The assertion ceremony
+        // is identical to the 2nd-factor login (options -> get -> verify -> redirect), so we
+        // reuse runAuthentication. Click-only (no auto-trigger): the OS passkey prompt must
+        // not pop up on every visit to the login page — the user opts in by clicking.
+        document.querySelectorAll('[data-webauthn-passwordless]').forEach(function (container) {
+            if (!checkSupport(container)) return;
+            var trigger = container.querySelector('[data-webauthn-trigger]');
+            if (trigger) trigger.addEventListener('click', function () { runAuthentication(container); });
+        });
     }
 
     if (document.readyState === 'loading') {

@@ -4,3 +4,15 @@
   options:
     fusionPathPatterns:
       - 'resource://Sandstorm.NeosTwoFactorAuthentication/Private/Fusion/Login'
+
+# Extend the CORE Neos backend login screen so we can append the passwordless passkey button.
+# Neos' own FusionView for this action loads only 'resource://Neos.Neos/Private/Fusion/Backend',
+# and view configurations are selected by weight (not merged), so this entry must repeat that
+# path AND add our Fusion. Our package loads after Neos.Neos, so this higher-order entry wins.
+-
+  requestFilter: 'isPackage("Neos.Neos") && isController("Login") && isAction("index") && isFormat("html")'
+  viewObjectName: 'Neos\Fusion\View\FusionView'
+  options:
+    fusionPathPatterns:
+      - 'resource://Neos.Neos/Private/Fusion/Backend'
+      - 'resource://Sandstorm.NeosTwoFactorAuthentication/Private/Fusion'

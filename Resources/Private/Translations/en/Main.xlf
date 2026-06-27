@@ -83,6 +83,9 @@
       <trans-unit id="webauthn.login.button" xml:space="preserve">
         <source>Use security key</source>
       </trans-unit>
+      <trans-unit id="passwordless.login.button" xml:space="preserve">
+        <source>Sign in with a passkey</source>
+      </trans-unit>
       <trans-unit id="login.or" xml:space="preserve">
         <source>or</source>
       </trans-unit>

@@ -44,6 +44,29 @@ Sandstorm:
       timeout: 60000
 ```
 
+##### Local development over plain HTTP
+
+WebAuthn requires a secure context. The browser treats `localhost` as secure, but the verification
+library is stricter: it only exempts the **exact** host `localhost` from the HTTPS requirement, and
+rejects any other host served over `http://` (including `localhost` subdomains such as
+`myproject.localhost`) with `Invalid scheme. HTTPS required.`.
+
+If your local backend runs over plain HTTP on a host other than `localhost`, list that host under
+`securedRelyingPartyIds` to skip the HTTPS check for it:
+
+```yml
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    webAuthn:
+      # LOCAL DEVELOPMENT ONLY — never add a real production hostname here.
+      # Relying-party ids listed here are treated as secured even without HTTPS.
+      securedRelyingPartyIds:
+        - 'myproject.localhost'
+```
+
+Keep this scoped to a development context (e.g. `Configuration/Development/Settings.yaml`). In
+production the backend must be served over HTTPS and this setting should stay empty (the default).
+
 #### Passwordless passkey login
 
 A discoverable passkey is inherently multi-factor (something you have + the verification you perform

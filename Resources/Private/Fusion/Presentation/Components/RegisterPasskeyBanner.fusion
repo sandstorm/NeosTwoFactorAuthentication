@@ -1,12 +1,10 @@
 prototype(Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner) < prototype(Neos.Fusion:Component) {
+    # No @propTypes here on purpose: the other components in this package (Footer, SecondFactorList)
+    # don't declare them, and the globally-enabled AtomicFusion PropTypes validator would otherwise
+    # reject a null `show` (e.g. before the controller assignment is picked up). The defaults below
+    # keep this safe.
     show = false
     registerUri = ''
-
-    @propTypes {
-        @strict = true
-        show = ${PropTypes.bool}
-        registerUri = ${PropTypes.string}
-    }
 
     renderer = afx`
         <div @if={props.show} class="neos-two-factor__passkey-banner" data-test-id="register-passkey-banner">

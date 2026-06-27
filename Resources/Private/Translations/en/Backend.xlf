@@ -13,10 +13,10 @@
         <source>List of all registered second factors</source>
       </trans-unit>
       <trans-unit id="module.index.passkeyBanner.title" xml:space="preserve">
-        <source>Set up a passkey for faster sign-in</source>
+        <source>Passkey Registration</source>
       </trans-unit>
       <trans-unit id="module.index.passkeyBanner.text" xml:space="preserve">
-        <source>Register a passkey to sign in without a password — one tap with your fingerprint, face, or device PIN.</source>
+        <source>Set up a passkey for faster sign-in without a password.</source>
       </trans-unit>
       <trans-unit id="module.index.passkeyBanner.cta" xml:space="preserve">
         <source>Register a passkey</source>

@@ -3,6 +3,10 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default) < prototype(
     teaserTitle = ''
     teaserText = ''
 
+    # Optional section rendered above the teaser title (e.g. the passkey registration nudge on the
+    # index page). Empty by default, so other pages are unchanged.
+    headerSection = ''
+
     flashMessages = ${[]}
 
     footer = ''
@@ -10,6 +14,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default) < prototype(
     renderer = afx`
         <main>
             <Sandstorm.NeosTwoFactorAuthentication:Component.FlashMessages flashMessages={props.flashMessages}/>
+
+            {props.headerSection}
+
             <legend>{props.teaserTitle}</legend>
 
             <p>
@@ -19,7 +26,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default) < prototype(
             {props.content}
         </main>
 
-        <footer>
+        <footer @if={props.footer}>
             {props.footer}
         </footer>
     `

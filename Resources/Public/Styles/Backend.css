@@ -88,6 +88,48 @@ img.neos-two-factor__qr-code {
     height: unset !important;
 }
 
+/* Passkey registration section — shown above the list when passwordless login is enabled and the
+   current user has no passkey yet. Styled as a section (its <legend> matches the list heading),
+   with a divider separating it from the list below. Prefixed `.neos div.…` so it beats Neos core's
+   responsive reset (`.neos div, .neos p, … { margin: 0; padding: 0 }`, specificity 0,1,1), which
+   otherwise zeroes the padding/margin — same pattern as the method-picker rule below. */
+.neos div.neos-two-factor__passkey-registration {
+    margin-bottom: 12px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid #3f3f3f;
+}
+
+.neos div.neos-two-factor__passkey-registration p {
+    margin: 0 0 12px;
+    font-size: 13px;
+    opacity: .8;
+}
+
+/* "Create second factor" action, shown directly below the list (moved out of the page footer). */
+.neos div.neos-two-factor__list-actions {
+    margin-top: 16px;
+}
+
+/* Credential type tag in the list: "Passkey" (discoverable, accent) vs "Passkey as 2nd factor". */
+.neos-two-factor__badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 18px;
+    white-space: nowrap;
+}
+
+.neos-two-factor__badge--passkey {
+    background-color: #00b5ff;
+    color: #fff;
+}
+
+.neos-two-factor__badge--second-factor {
+    background-color: #3f3f3f;
+    color: #fff;
+}
+
 /* Keyboard focus ring for buttons and button-styled links. Backend.css only loads on this
    package's standalone module page, so .neos-button is already package-scoped. !important
    beats Neos core's `:focus { outline: 0 }` reset. */

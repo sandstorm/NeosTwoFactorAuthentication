@@ -16,12 +16,12 @@
         <target>Liste aller registrierten zweiten Faktoren</target>
       </trans-unit>
       <trans-unit id="module.index.passkeyBanner.title" xml:space="preserve">
-        <source>Set up a passkey for faster sign-in</source>
-        <target>Richten Sie einen Passkey für die schnellere Anmeldung ein</target>
+        <source>Passkey Registration</source>
+        <target>Passkey-Registrierung</target>
       </trans-unit>
       <trans-unit id="module.index.passkeyBanner.text" xml:space="preserve">
-        <source>Register a passkey to sign in without a password — one tap with your fingerprint, face, or device PIN.</source>
-        <target>Registrieren Sie einen Passkey, um sich ohne Passwort anzumelden — mit Fingerabdruck, Gesicht oder Geräte-PIN.</target>
+        <source>Set up a passkey for faster sign-in without a password.</source>
+        <target>Richten Sie einen Passkey für die schnellere Anmeldung ohne Passwort ein.</target>
       </trans-unit>
       <trans-unit id="module.index.passkeyBanner.cta" xml:space="preserve">
         <source>Register a passkey</source>

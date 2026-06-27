@@ -7,11 +7,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner)
     registerUri = ''
 
     renderer = afx`
-        <div @if={props.show} class="neos-two-factor__passkey-banner" data-test-id="register-passkey-banner">
-            <div class="neos-two-factor__passkey-banner-text">
-                <strong>{I18n.id('module.index.passkeyBanner.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</strong>
-                <p>{I18n.id('module.index.passkeyBanner.text').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</p>
-            </div>
+        <div @if={props.show} class="neos-two-factor__passkey-registration" data-test-id="register-passkey-banner">
+            <legend>{I18n.id('module.index.passkeyBanner.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</legend>
+            <p>{I18n.id('module.index.passkeyBanner.text').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</p>
             <a href={props.registerUri} class="neos-button neos-button-primary" data-test-id="register-passkey-cta">
                 {I18n.id('module.index.passkeyBanner.cta').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
             </a>

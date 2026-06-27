@@ -2,29 +2,35 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTw
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
         flashMessages = ${flashMessages}
 
-        teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
-
-        content = Neos.Fusion:Join {
-            passkeyBanner = Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner {
-                show = ${showRegisterPasskeyBanner}
-                registerUri = Neos.Fusion:UriBuilder {
-                    package = 'Sandstorm.NeosTwoFactorAuthentication'
-                    controller = 'Backend'
-                    action = 'newWebAuthn'
-                }
-            }
-            list = Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList {
-                factorsAndPerson = ${factorsAndPerson}
+        # Passkey registration section above the list — only renders when passwordless login is
+        # enabled and the current user has no passkey yet (the component handles that itself).
+        headerSection = Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner {
+            show = ${showRegisterPasskeyBanner}
+            registerUri = Neos.Fusion:UriBuilder {
+                package = 'Sandstorm.NeosTwoFactorAuthentication'
+                controller = 'Backend'
+                action = 'newWebAuthn'
             }
         }
 
-        footer = Sandstorm.NeosTwoFactorAuthentication:Component.Footer {
-            title = ${I18n.id('module.index.create').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
-            primaryAction = Neos.Fusion:UriBuilder {
+        teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+
+        # The list plus the "Create second factor" action directly below it (previously in the footer).
+        content = Neos.Fusion:Component {
+            factorsAndPerson = ${factorsAndPerson}
+            createUri = Neos.Fusion:UriBuilder {
                 package = 'Sandstorm.NeosTwoFactorAuthentication'
                 controller = 'Backend'
                 action = 'new'
             }
+            renderer = afx`
+                <Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList factorsAndPerson={props.factorsAndPerson} />
+                <div class="neos-two-factor__list-actions">
+                    <a href={props.createUri} class="neos-button neos-button-primary">
+                        {I18n.id('module.index.create').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+                    </a>
+                </div>
+            `
         }
     }
 }

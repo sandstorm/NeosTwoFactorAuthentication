@@ -32,7 +32,17 @@ When('I add a new WebAuthn 2FA device with name {string}', async ({ page }, devi
 
 When('I add a new WebAuthn 2nd-factor device with name {string}', async ({ page }, deviceName: string) => {
   const modulePage = new BackendModulePage(page);
-  await modulePage.addWebAuthnDevice(deviceName, false);
+  await modulePage.addWebAuthnDevice(deviceName);
+});
+
+When('I register a passkey', async ({ page }) => {
+  const modulePage = new BackendModulePage(page);
+  await modulePage.registerPasskey();
+});
+
+When('I register a passkey with name {string}', async ({ page }, deviceName: string) => {
+  const modulePage = new BackendModulePage(page);
+  await modulePage.registerPasskey(deviceName);
 });
 
 When('I try to remove the 2FA device with the name {string}',
@@ -76,6 +86,10 @@ Then('There should be {int} enrolled {string} 2FA device(s)',
     await expect(modulePage.locatorForDeviceRowsOfType(typeLabel)).toHaveCount(parseInt(countStr, 10));
   },
 );
+
+Then('I should see a section titled {string}', async ({ page }, title: string) => {
+  await expect(page.locator('legend', { hasText: title })).toBeVisible();
+});
 
 Then('I should see the register-a-passkey banner', async ({ page }) => {
   await expect(new BackendModulePage(page).bannerLocator()).toBeVisible();

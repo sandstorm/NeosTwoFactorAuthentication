@@ -10,6 +10,13 @@ Feature: Touch-only security key as a 2nd factor while passwordless login is ena
   Background:
     Given A user with username "admin", password "password" and role "Neos.Neos:Administrator" exists
 
+  Scenario: The management index is split into passkey, create-second-factor and list sections
+    When I log in with username "admin" and password "password"
+    And I navigate to the 2FA management page
+    Then I should see a section titled "Passkey Registration"
+    And I should see a section titled "Create new second factor"
+    And I should see a section titled "List of all registered second factors"
+
   Scenario: A touch-only security key registers as a 2nd factor, not a passkey
     Given I have a touch-only virtual security key
     When I log in with username "admin" and password "password"

@@ -22,6 +22,11 @@ yes y | ./flow resource:clean || true
 ./flow cr:setup
 ./flow cr:status
 
+# Make the boot idempotent: the DB lives in a persistent named volume, so on a re-boot the event
+# store already holds the demo site and `site:importall` would fail with a ConcurrencyException
+# ("content stream ... already contains events"). Prune first — a harmless no-op on a fresh DB.
+yes y | ./flow site:pruneAll || true
+
 ./flow site:importall --package-key Neos.Demo
 
 ./flow resource:publish --collection static

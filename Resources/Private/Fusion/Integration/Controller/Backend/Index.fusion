@@ -2,34 +2,46 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.index = Sandstorm.NeosTw
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
         flashMessages = ${flashMessages}
 
-        # Passkey registration section above the list — only renders when passwordless login is
-        # enabled and the current user has no passkey yet (the component handles that itself).
+        # Section 1: Passkey Registration — shown whenever passwordless login is enabled. Its CTA
+        # goes straight to the single-button passkey screen (discoverable = true).
         headerSection = Sandstorm.NeosTwoFactorAuthentication:Component.RegisterPasskeyBanner {
-            show = ${showRegisterPasskeyBanner}
+            show = ${showPasskeyRegistration}
             registerUri = Neos.Fusion:UriBuilder {
                 package = 'Sandstorm.NeosTwoFactorAuthentication'
                 controller = 'Backend'
                 action = 'newWebAuthn'
+                arguments = Neos.Fusion:DataStructure {
+                    discoverable = true
+                }
             }
         }
 
-        teaserTitle = ${I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+        # teaserTitle intentionally empty; the index renders its own section headings below.
+        teaserTitle = ''
 
-        # The list plus the "Create second factor" action directly below it (previously in the footer).
         content = Neos.Fusion:Component {
             factorsAndPerson = ${factorsAndPerson}
+            # Section 2: Create new second factor — leads to the method picker (TOTP / passkey as 2nd factor).
             createUri = Neos.Fusion:UriBuilder {
                 package = 'Sandstorm.NeosTwoFactorAuthentication'
                 controller = 'Backend'
                 action = 'new'
             }
             renderer = afx`
-                <Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList factorsAndPerson={props.factorsAndPerson} />
-                <div class="neos-two-factor__list-actions">
-                    <a href={props.createUri} class="neos-button neos-button-primary">
-                        {I18n.id('module.index.create').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
-                    </a>
-                </div>
+                <section class="neos-two-factor__create-section">
+                    <legend>{I18n.id('module.create.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</legend>
+                    <p>{I18n.id('module.create.description').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</p>
+                    <div class="neos-two-factor__list-actions">
+                        <a href={props.createUri} class="neos-button neos-button-primary">
+                            {I18n.id('module.index.create').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+                        </a>
+                    </div>
+                </section>
+
+                <section class="neos-two-factor__list-section">
+                    <legend>{I18n.id('module.index.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}</legend>
+                    <Sandstorm.NeosTwoFactorAuthentication:Component.SecondFactorList factorsAndPerson={props.factorsAndPerson} />
+                </section>
             `
         }
     }

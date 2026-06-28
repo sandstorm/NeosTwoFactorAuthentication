@@ -17,9 +17,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default) < prototype(
 
             {props.headerSection}
 
-            <legend>{props.teaserTitle}</legend>
+            <legend @if={props.teaserTitle}>{props.teaserTitle}</legend>
 
-            <p>
+            <p @if={props.teaserText}>
                 {props.teaserText}
             </p>
 

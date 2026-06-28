@@ -75,12 +75,12 @@
         <target>Verwenden Sie Google Authenticator, Authy, 1Password oder eine andere TOTP-kompatible App.</target>
       </trans-unit>
       <trans-unit id="method.webauthn.label" xml:space="preserve">
-        <source>Passkey</source>
-        <target>Passkey</target>
+        <source>Passkey as second factor</source>
+        <target>Passkey als zweiter Faktor</target>
       </trans-unit>
       <trans-unit id="method.webauthn.description" xml:space="preserve">
-        <source>Use a passkey stored on your phone or computer, or a hardware security key such as a Yubikey.</source>
-        <target>Verwenden Sie einen Passkey auf Ihrem Smartphone oder Computer oder einen Hardware-Sicherheitsschlüssel wie einen Yubikey.</target>
+        <source>Use a passkey or a hardware security key (e.g. a YubiKey) as a second factor — a touch is enough, no PIN required.</source>
+        <target>Verwenden Sie einen Passkey oder einen Hardware-Sicherheitsschlüssel (z. B. einen YubiKey) als zweiten Faktor – eine Berührung genügt, keine PIN erforderlich.</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.intro" xml:space="preserve">
         <source>Press the button below to create a passkey. When prompted, confirm with your fingerprint, face, device PIN, or hardware key.</source>

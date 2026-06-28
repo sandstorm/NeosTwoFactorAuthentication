@@ -8,24 +8,15 @@ import { generateOtp } from './totp.js';
  */
 const METHOD_LINK_NAME = {
   totp: 'Authenticator app',
-  webauthn: 'Passkey',
+  webauthn: 'Passkey as second factor',
 } as const;
 
 /**
- * Click the WebAuthn registration trigger. When passwordless login is enabled the setup screen
- * offers two buttons — "Register passkey" (discoverable) and "Register security key as 2nd factor"
- * (non-discoverable) — each tagged with data-webauthn-discoverable. We click the one matching the
- * requested discoverability. When passwordless login is disabled there is a single button with no
- * such attribute, so we fall back to the lone trigger.
+ * Click the WebAuthn registration trigger. Each setup screen now shows a single button whose
+ * credential type (discoverable passkey vs. non-discoverable 2nd factor) is fixed by the entry
+ * point that led there, so we just click the lone trigger.
  */
-async function clickWebAuthnRegisterTrigger(page: Page, discoverable: boolean): Promise<void> {
-  const specific = page.locator(
-    `[data-webauthn-register] [data-webauthn-trigger][data-webauthn-discoverable="${discoverable}"]`,
-  );
-  if ((await specific.count()) > 0) {
-    await specific.click();
-    return;
-  }
+async function clickWebAuthnRegisterTrigger(page: Page): Promise<void> {
   await page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
 }
 
@@ -177,7 +168,7 @@ export class SecondFactorSetupPage {
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await clickWebAuthnRegisterTrigger(this.page, true);
+    await clickWebAuthnRegisterTrigger(this.page);
   }
 }
 
@@ -237,31 +228,52 @@ export class BackendModulePage {
    * Add a WebAuthn (security key) device through the new method-picker workflow.
    * Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
    */
-  async addWebAuthnDevice(name?: string, discoverable: boolean = true): Promise<void> {
+  /**
+   * Add a security-key SECOND FACTOR (non-discoverable) via the "Create second factor" method
+   * picker. Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
+   * To register a passwordless passkey instead, use registerPasskey().
+   */
+  async addWebAuthnDevice(name?: string): Promise<void> {
     await this.chooseMethod('webauthn');
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await clickWebAuthnRegisterTrigger(this.page, discoverable);
+    await clickWebAuthnRegisterTrigger(this.page);
     // Wait for redirect back to the index (table appears)
     await this.page.locator('.neos-table').waitFor();
   }
 
-  /** The "register a passkey" CTA banner shown when passwordless login is enabled and the user has no passkey yet. */
+  /**
+   * Register a passwordless passkey (discoverable) via the "Passkey Registration" section CTA on
+   * the index page. Only available when passwordless login is enabled. Requires a virtual
+   * authenticator on the browser context (see helpers/webauthn.ts).
+   */
+  async registerPasskey(name?: string): Promise<void> {
+    await this.goto();
+    await this.bannerLocator().locator('[data-test-id="register-passkey-cta"]').click();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await clickWebAuthnRegisterTrigger(this.page);
+    await this.page.locator('.neos-table').waitFor();
+  }
+
+  /** The "Passkey Registration" section, shown on the index whenever passwordless login is enabled. */
   bannerLocator() {
     return this.page.locator('[data-test-id="register-passkey-banner"]');
   }
 
   /**
-   * Follow the banner's call-to-action into the passkey registration wizard and complete it.
-   * Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
+   * Follow the Passkey Registration section's call-to-action into the passkey wizard and complete
+   * it (assumes the index page is already open). Requires a virtual authenticator on the browser
+   * context (see helpers/webauthn.ts).
    */
   async registerPasskeyFromBanner(name?: string): Promise<void> {
     await this.bannerLocator().locator('[data-test-id="register-passkey-cta"]').click();
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await clickWebAuthnRegisterTrigger(this.page, true);
+    await clickWebAuthnRegisterTrigger(this.page);
     await this.page.locator('.neos-table').waitFor();
   }
 

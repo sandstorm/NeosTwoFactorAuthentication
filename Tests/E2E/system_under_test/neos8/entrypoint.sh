@@ -19,6 +19,10 @@ echo "Database is ready."
 
 yes y | ./flow resource:clean || true
 
+# Make the boot idempotent: the DB lives in a persistent named volume, so re-importing the demo
+# site on a re-boot would fail/duplicate. Prune first — a harmless no-op on a fresh DB.
+./flow site:prune --confirmation true || true
+
 ./flow site:import --package-key Neos.Demo
 
 ./flow resource:publish --collection static

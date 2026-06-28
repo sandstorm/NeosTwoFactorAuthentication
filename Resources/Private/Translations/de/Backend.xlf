@@ -51,6 +51,14 @@
         <source>Create second factor</source>
         <target>Zweiten Faktor erstellen</target>
       </trans-unit>
+      <trans-unit id="module.create.title" xml:space="preserve">
+        <source>Create new second factor</source>
+        <target>Neuen zweiten Faktor erstellen</target>
+      </trans-unit>
+      <trans-unit id="module.create.description" xml:space="preserve">
+        <source>Setup a new second factor to secure your Neos account.</source>
+        <target>Richten Sie einen neuen zweiten Faktor ein, um Ihr Neos-Konto zu schützen.</target>
+      </trans-unit>
 
       <trans-unit id="module.index.delete.header" xml:space="preserve">
         <source>Do you really want to delete the second factor?</source>
@@ -116,6 +124,10 @@
       <trans-unit id="module.newWebAuthn.title" xml:space="preserve">
         <source>Register a passkey</source>
         <target>Passkey registrieren</target>
+      </trans-unit>
+      <trans-unit id="module.newWebAuthn.titleSecondFactor" xml:space="preserve">
+        <source>Register a security key as second factor</source>
+        <target>Sicherheitsschlüssel als zweiten Faktor registrieren</target>
       </trans-unit>
     </body>
   </file>

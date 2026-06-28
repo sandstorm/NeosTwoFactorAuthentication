@@ -12,6 +12,24 @@ const METHOD_LINK_NAME = {
 } as const;
 
 /**
+ * Click the WebAuthn registration trigger. When passwordless login is enabled the setup screen
+ * offers two buttons — "Register passkey" (discoverable) and "Register security key as 2nd factor"
+ * (non-discoverable) — each tagged with data-webauthn-discoverable. We click the one matching the
+ * requested discoverability. When passwordless login is disabled there is a single button with no
+ * such attribute, so we fall back to the lone trigger.
+ */
+async function clickWebAuthnRegisterTrigger(page: Page, discoverable: boolean): Promise<void> {
+  const specific = page.locator(
+    `[data-webauthn-register] [data-webauthn-trigger][data-webauthn-discoverable="${discoverable}"]`,
+  );
+  if ((await specific.count()) > 0) {
+    await specific.click();
+    return;
+  }
+  await page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+}
+
+/**
  * The 2FA verification page shown on login when the account already has an
  * enrolled second factor (route: /neos/second-factor-login).
  *
@@ -159,7 +177,7 @@ export class SecondFactorSetupPage {
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    await clickWebAuthnRegisterTrigger(this.page, true);
   }
 }
 
@@ -219,12 +237,12 @@ export class BackendModulePage {
    * Add a WebAuthn (security key) device through the new method-picker workflow.
    * Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
    */
-  async addWebAuthnDevice(name?: string): Promise<void> {
+  async addWebAuthnDevice(name?: string, discoverable: boolean = true): Promise<void> {
     await this.chooseMethod('webauthn');
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    await clickWebAuthnRegisterTrigger(this.page, discoverable);
     // Wait for redirect back to the index (table appears)
     await this.page.locator('.neos-table').waitFor();
   }
@@ -243,7 +261,7 @@ export class BackendModulePage {
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    await clickWebAuthnRegisterTrigger(this.page, true);
     await this.page.locator('.neos-table').waitFor();
   }
 

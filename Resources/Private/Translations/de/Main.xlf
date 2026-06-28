@@ -90,6 +90,14 @@
         <source>Register passkey</source>
         <target>Passkey registrieren</target>
       </trans-unit>
+      <trans-unit id="webauthn.setup.button.passkey" xml:space="preserve">
+        <source>Register passkey</source>
+        <target>Passkey registrieren</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button.secondFactor" xml:space="preserve">
+        <source>Register security key as 2nd factor</source>
+        <target>Sicherheitsschlüssel als 2. Faktor registrieren</target>
+      </trans-unit>
       <trans-unit id="webauthn.setup.success" xml:space="preserve">
         <source>Passkey registered successfully.</source>
         <target>Passkey erfolgreich registriert.</target>

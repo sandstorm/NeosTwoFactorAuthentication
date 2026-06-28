@@ -4,6 +4,8 @@ Sandstorm:
       # Opt-in to passwordless (usernameless) passkey login for this E2E variant.
       # Off by default; this variant exercises the enabled path.
       passwordlessLoginEnabled: true
-      # Passwordless usernameless login requires user verification; the virtual
-      # authenticator used in the E2E suite supports it.
-      userVerification: 'required'
+      # Governs the 2nd-factor (non-discoverable) path only. Passkey registration and passwordless
+      # usernameless login already hard-require user verification in code, so 'discouraged' here
+      # does not weaken them — it lets this variant also exercise registering a touch-only security
+      # key as a plain 2nd factor alongside passkeys.
+      userVerification: 'discouraged'

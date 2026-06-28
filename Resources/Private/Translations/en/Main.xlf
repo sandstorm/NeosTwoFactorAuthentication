@@ -68,6 +68,12 @@
       <trans-unit id="webauthn.setup.button" xml:space="preserve">
         <source>Register passkey</source>
       </trans-unit>
+      <trans-unit id="webauthn.setup.button.passkey" xml:space="preserve">
+        <source>Register passkey</source>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button.secondFactor" xml:space="preserve">
+        <source>Register security key as 2nd factor</source>
+      </trans-unit>
       <trans-unit id="webauthn.setup.success" xml:space="preserve">
         <source>Passkey registered successfully.</source>
       </trans-unit>

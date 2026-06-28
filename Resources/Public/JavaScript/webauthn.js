@@ -129,12 +129,11 @@
         return true;
     }
 
-    async function runRegistration(container) {
+    async function runRegistration(container, trigger, discoverable) {
         clearError(container);
-        var trigger = container.querySelector('[data-webauthn-trigger]');
         if (trigger) trigger.disabled = true;
         try {
-            var options = await postJson(container.dataset.optionsUrl);
+            var options = await postJson(container.dataset.optionsUrl, { discoverable: discoverable });
             var credential = await navigator.credentials.create({
                 publicKey: decodeCreationOptions(options)
             });
@@ -172,8 +171,14 @@
     function init() {
         document.querySelectorAll('[data-webauthn-register]').forEach(function (container) {
             if (!checkSupport(container)) return;
-            var trigger = container.querySelector('[data-webauthn-trigger]');
-            if (trigger) trigger.addEventListener('click', function () { runRegistration(container); });
+            // There may be more than one trigger (e.g. "Register passkey" vs "Register security
+            // key as 2nd factor"); each carries its own data-webauthn-discoverable flag.
+            container.querySelectorAll('[data-webauthn-trigger]').forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    var discoverable = trigger.dataset.webauthnDiscoverable === 'true';
+                    runRegistration(container, trigger, discoverable);
+                });
+            });
         });
 
         document.querySelectorAll('[data-webauthn-login]').forEach(function (container) {

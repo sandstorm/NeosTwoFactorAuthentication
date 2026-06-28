@@ -3,7 +3,7 @@ import { createBdd } from 'playwright-bdd';
 import { BackendModulePage, SecondFactorLoginPage, SecondFactorSetupPage } from '../helpers/2fa-pages.ts';
 import { NeosLoginPage } from "../helpers/general-pages.ts";
 import { createUser, logout } from '../helpers/system.ts';
-import { enableVirtualAuthenticator, armWebAuthnCancellation } from '../helpers/webauthn.ts';
+import { enableVirtualAuthenticator, enableTouchOnlyAuthenticator, armWebAuthnCancellation } from '../helpers/webauthn.ts';
 import { state } from "../helpers/state.ts";
 
 const { Given, When, Then } = createBdd();
@@ -41,6 +41,10 @@ Given('A user with username {string}, password {string} and role {string} with e
 
 Given('I have a virtual security key', async ({ page }) => {
   await enableVirtualAuthenticator(page);
+});
+
+Given('I have a touch-only virtual security key', async ({ page }) => {
+  await enableTouchOnlyAuthenticator(page);
 });
 
 // ── When ──────────────────────────────────────────────────────────────────────

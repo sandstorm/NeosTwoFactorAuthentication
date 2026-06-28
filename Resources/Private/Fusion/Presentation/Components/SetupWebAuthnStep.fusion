@@ -3,6 +3,12 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
     # where to redirect on successful registration
     redirectUrl = '/neos'
 
+    # When passwordless login is enabled the user may register either a passwordless passkey
+    # (discoverable, user-verified) or a plain touch-only security key as a 2nd factor, so we
+    # offer two buttons. When disabled there is only the single 2nd-factor button.
+    # Same source as PasswordlessLoginButton.fusion.
+    passwordlessLoginEnabled = ${Configuration.setting('Sandstorm.NeosTwoFactorAuthentication.webAuthn.passwordlessLoginEnabled')}
+
     # Localized error strings handed to webauthn.js. Keys match the
     # DOMException name thrown by the browser; "result" / "default" /
     # "unsupported" are the fixed fallbacks the script always needs.
@@ -44,7 +50,24 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                     />
                 </div>
                 <div class="neos-actions">
-                    <button type="button"
+                    <Neos.Fusion:Fragment @if={props.passwordlessLoginEnabled}>
+                        <button type="button"
+                            class="neos-button neos-login-btn neos-two-factor__webauthn-button"
+                            data-webauthn-trigger
+                            data-webauthn-discoverable="true"
+                        >
+                            {I18n.id('webauthn.setup.button.passkey').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        </button>
+                        <button type="button"
+                            class="neos-button neos-two-factor__webauthn-button"
+                            data-webauthn-trigger
+                            data-webauthn-discoverable="false"
+                        >
+                            {I18n.id('webauthn.setup.button.secondFactor').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        </button>
+                    </Neos.Fusion:Fragment>
+                    <button @if={!props.passwordlessLoginEnabled}
+                        type="button"
                         class="neos-button neos-login-btn neos-two-factor__webauthn-button"
                         data-webauthn-trigger
                     >

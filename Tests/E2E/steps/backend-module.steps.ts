@@ -30,6 +30,11 @@ When('I add a new WebAuthn 2FA device with name {string}', async ({ page }, devi
   await modulePage.addWebAuthnDevice(deviceName);
 });
 
+When('I add a new WebAuthn 2nd-factor device with name {string}', async ({ page }, deviceName: string) => {
+  const modulePage = new BackendModulePage(page);
+  await modulePage.addWebAuthnDevice(deviceName, false);
+});
+
 When('I try to remove the 2FA device with the name {string}',
   async ({ page }, name: string) => {
     const modulePage = new BackendModulePage(page);

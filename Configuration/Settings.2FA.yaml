@@ -19,18 +19,21 @@ Sandstorm:
       # Optional override for the relying party identifier. If null, the request's
       # hostname is used (which works for localhost and same-origin production deployments).
       relyingPartyId: null
-      # 'required', 'preferred' or 'discouraged'.
-      # 'discouraged' is the most permissive — works with FIDO U2F-only keys (e.g. YubiKey 4)
-      # via the browser's U2F-compat fallback. Set to 'preferred' or 'required' to demand
-      # PIN/biometric on the authenticator; note that 'required' excludes U2F-only keys.
+      # 'required', 'preferred' or 'discouraged'. Governs the SECOND-FACTOR (non-discoverable)
+      # registration and 2FA authentication path ONLY — passwordless passkey registration always
+      # requires user verification by definition, regardless of this value.
+      # 'discouraged' is the most permissive — works with FIDO U2F-only keys (e.g. YubiKey 4) and
+      # no-PIN security keys via touch only. Set to 'preferred' or 'required' to demand
+      # PIN/biometric on the authenticator; note that 'required' excludes touch-only / U2F-only keys.
       userVerification: 'discouraged'
       # Browser ceremony timeout in milliseconds.
       timeout: 60000
       # Opt-in: allow usernameless, passwordless login with a discoverable passkey directly
       # from the Neos login screen (a user-verified passkey is a full multi-factor login on its
-      # own). OFF by default — must be explicitly enabled. When enabled, new WebAuthn
-      # registrations create discoverable credentials so one passkey serves both passwordless
-      # login and 2nd-factor use.
+      # own). OFF by default — must be explicitly enabled. When enabled, the registration screen
+      # offers a choice: register a discoverable passkey (passwordless-capable, user verification
+      # required) OR a plain touch-only security key as a 2nd factor (user verification per
+      # `userVerification` above). When disabled, only the latter is available.
       passwordlessLoginEnabled: false
       # Relying-party hostnames for which the server-side library should accept non-HTTPS
       # requests. The browser already treats *.localhost as a secure context (RFC 6761),

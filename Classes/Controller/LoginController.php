@@ -305,15 +305,19 @@ class LoginController extends ActionController
 
     /**
      * @Flow\SkipCsrfProtection
+     *
+     * @param bool $discoverable whether to register a discoverable passkey (passwordless-capable)
+     *                           rather than a plain second factor; only honoured when passwordless
+     *                           login is enabled.
      */
-    public function webAuthnRegisterOptionsAction(): string
+    public function webAuthnRegisterOptionsAction(bool $discoverable = false): string
     {
         $account = $this->securityContext->getAccount();
         if ($account === null) {
             return $this->jsonError('No authentication in progress', 401);
         }
         $hostname = $this->request->getHttpRequest()->getUri()->getHost();
-        $options = $this->webAuthnService->createRegistrationOptions($account, $hostname);
+        $options = $this->webAuthnService->createRegistrationOptions($account, $hostname, $discoverable);
         $this->secondFactorSessionStorageService->putValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS,
             json_encode($options, JSON_THROW_ON_ERROR)

@@ -88,3 +88,26 @@ export async function armWebAuthnCancellation(page: Page): Promise<void> {
     (window as unknown as { __webauthnCancelNext?: boolean }).__webauthnCancelNext = true;
   });
 }
+
+/**
+ * Install a CDP virtual authenticator that models a no-PIN roaming security key (e.g. a YubiKey
+ * with no FIDO2 PIN set): it can prove user *presence* (a touch) but NOT user *verification*, and
+ * it cannot store a resident/discoverable credential. Used to verify that such a key can still be
+ * registered as a plain 2nd factor even while passwordless login is enabled — the case that
+ * previously failed with "User authentication required." because registration forced UV.
+ */
+export async function enableTouchOnlyAuthenticator(page: Page): Promise<string> {
+  const client = await page.context().newCDPSession(page);
+  await client.send('WebAuthn.enable');
+  const { authenticatorId } = await client.send('WebAuthn.addVirtualAuthenticator', {
+    options: {
+      protocol: 'ctap2',
+      transport: 'usb',
+      hasResidentKey: false,
+      hasUserVerification: false,
+      isUserVerified: false,
+      automaticPresenceSimulation: true,
+    },
+  });
+  return authenticatorId;
+}

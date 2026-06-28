@@ -99,8 +99,14 @@ class WebAuthnService
     /**
      * Build a registration options object that the browser passes to
      * `navigator.credentials.create()`.
+     *
+     * When $discoverable is true (and passwordless login is enabled) the credential is
+     * registered as a resident, user-verified passkey usable for passwordless login. Otherwise
+     * it is registered as a plain second factor: no resident key, and user verification follows
+     * the configured `webAuthn.userVerification` level — so a touch-only security key (no PIN)
+     * keeps working as a 2nd factor even while passwordless login is enabled.
      */
-    public function createRegistrationOptions(Account $account, string $hostname): PublicKeyCredentialCreationOptions
+    public function createRegistrationOptions(Account $account, string $hostname, bool $discoverable = false): PublicKeyCredentialCreationOptions
     {
         $rp = new PublicKeyCredentialRpEntity(
             $this->relyingPartyName ?: 'Neos',
@@ -128,11 +134,14 @@ class WebAuthnService
         $authenticatorSelection = AuthenticatorSelectionCriteria::create()
             ->setUserVerification($this->userVerification);
 
-        // When passwordless login is enabled, register discoverable (resident) credentials
-        // with user verification so a single credential works both for one-tap usernameless
-        // login AND as a strong second factor. When disabled the behaviour is unchanged, so
-        // U2F-only keys (which cannot store a resident credential) keep working as a 2nd factor.
-        if ($this->passwordlessLoginEnabled) {
+        // Register a discoverable (resident), user-verified passkey only when the user opted into
+        // it AND passwordless login is enabled — such a credential works both for one-tap
+        // usernameless login AND as a strong second factor. The guard means a discoverable
+        // credential can never be minted while passwordless login is off. Any other registration
+        // keeps the configured user-verification level and no resident-key requirement, so
+        // touch-only / U2F-only keys keep working as a plain 2nd factor.
+        $registerAsPasskey = $discoverable && $this->passwordlessLoginEnabled;
+        if ($registerAsPasskey) {
             $authenticatorSelection
                 ->setResidentKey(AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED)
                 ->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED);
@@ -148,6 +157,17 @@ class WebAuthnService
             ->setAuthenticatorSelection($authenticatorSelection)
             ->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE)
             ->excludeCredentials(...$excludeCredentials);
+    }
+
+    /**
+     * Whether the given registration options describe a discoverable (resident) passkey. This is
+     * the single source of truth for the stored `discoverable` flag: it reflects exactly what was
+     * requested when the options were created, so it round-trips with the choice made there.
+     */
+    public function isDiscoverableRegistration(PublicKeyCredentialCreationOptions $options): bool
+    {
+        return ($options->authenticatorSelection?->residentKey ?? null)
+            === AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED;
     }
 
     /**
@@ -173,16 +193,16 @@ class WebAuthnService
         $validator = $this->buildAttestationValidator();
         $credentialSource = $validator->check($authenticatorResponse, $options, $request, $this->securedRelyingPartyIds);
 
-        // A credential registered while passwordless login is enabled is created with
-        // `residentKey: required` (see createRegistrationOptions), so a successful registration
-        // is necessarily a discoverable credential — a "Passkey". When passwordless login is
-        // disabled the credential is non-discoverable and usable only as a second factor.
+        // Whether this credential is a discoverable "Passkey" is derived from the options it was
+        // registered with (see isDiscoverableRegistration / createRegistrationOptions): a passkey
+        // registration requested a resident key, a 2nd-factor registration did not. This keeps the
+        // stored flag faithful to the per-registration choice rather than the global setting.
         return $this->secondFactorRepository->createSecondFactorForAccount(
             json_encode($credentialSource->jsonSerialize(), JSON_THROW_ON_ERROR),
             $account,
             SecondFactor::TYPE_PUBLIC_KEY,
             $name,
-            $this->passwordlessLoginEnabled
+            $this->isDiscoverableRegistration($options)
         );
     }
 

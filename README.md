@@ -6,15 +6,12 @@ TOTP tokens (Authenticator apps) and WebAuthn / FIDO2 passkeys — both platform
 
 ## What this package does
 
-https://user-images.githubusercontent.com/12086990/153027757-ac715746-0575-4555-bce1-c44603747945.mov
-
-This package allows all users to register their personal second factor — either a TOTP token
-(Authenticator App) or a **passkey** (WebAuthn / FIDO2: a platform authenticator such as Touch ID or
-Windows Hello, or a hardware key such as a Yubikey). Users can register one of each and pick which to
+This package allows all users to register multiple second factors — either a user- and passwordless **Passkey**, or a second factor in addition to their username and password. Second factors can be **TOTP tokens** (Authenticator App) or **passkeys** (WebAuthn / FIDO2: a platform authenticator such as Touch ID or
+Windows Hello, or a hardware key such as a Yubikey). Users can register multiple and pick which to
 use at login. When passwordless login is enabled (see [Passwordless passkey login](#passwordless-passkey-login)),
 a discoverable passkey can also be used to sign in straight from the login screen **without a
-password**. As an Administrator you are able to delete factors for users again, in case they locked
-themselves out.
+password**. 
+As an Administrator you are able to delete factors for users again, in case they locked themselves out.
 
 The management module distinguishes the two kinds of WebAuthn credential by a badge: a discoverable,
 passwordless-capable credential is shown as **"Passkey"**, a non-discoverable one (usable only as a
@@ -69,6 +66,8 @@ production the backend must be served over HTTPS and this setting should stay em
 
 #### Passwordless passkey login
 
+<video controls src="docs/NeosTwoFactorAuth-PasskeyLogin.mov" title="Video of Login into Neos with Passkey"></video>
+
 A discoverable passkey is inherently multi-factor (something you have + the verification you perform
 on the device), so it can serve as the **only** login step. When enabled, a "Sign in with a passkey"
 button appears on the Neos login screen and a single tap signs the user into the backend — no
@@ -121,7 +120,7 @@ verification — independent of the `userVerification` setting.
 > enabled — turn it off if you need to enrol such a key as a second factor. Bear in mind that
 > resident credentials also occupy a limited number of slots on hardware keys.
 
-![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
+![NeosTwoFactorAuthPackage-ListOfAll2ndFactors](docs/NeosTwoFactorAuth-ListOf2ndFactors.png)
 
 ## Versioning Scheme
 
@@ -145,6 +144,8 @@ Sandstorm:
 ```
 
 With this setting, no user can login into the CMS without setting up a second factor first.
+
+![NeosTwoFactorAuthPackage-Enforce2FASetupScreenOnLogin](docs/NeosTwoFactorAuth-Enforce2FASetupScreen.png)
 
 In addition, you can enforce 2FA for specific authentication providers and/or roles by adding following to your `Settings.yaml`
 

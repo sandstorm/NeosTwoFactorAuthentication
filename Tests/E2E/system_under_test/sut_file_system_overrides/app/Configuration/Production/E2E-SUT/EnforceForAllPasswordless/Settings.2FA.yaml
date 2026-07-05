@@ -1,0 +1,11 @@
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # enforce 2FA for all users AND allow passwordless passkey login — this variant exercises
+    # the combination: a factor-less user forced to set up 2FA can enrol a discoverable,
+    # usernameless passkey right at the enforced-setup gate and then log in passwordlessly.
+    enforceTwoFactorAuthentication: true
+    webAuthn:
+      passwordlessLoginEnabled: true
+      # Governs the 2nd-factor (non-discoverable) path only; passkey registration hard-requires
+      # user verification in code regardless. Kept 'discouraged' so touch-only keys also work.
+      userVerification: 'discouraged'

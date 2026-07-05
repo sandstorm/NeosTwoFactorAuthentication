@@ -55,6 +55,10 @@ jobs:
         working-directory: Tests/E2E
         run: npm run test:${{ matrix.neos }}:passwordless
 
+      - name: Test - enforce-all-passwordless
+        working-directory: Tests/E2E
+        run: npm run test:${{ matrix.neos }}:enforce-all-passwordless
+
       - name: Upload Playwright report
         uses: actions/upload-artifact@v7
         if: ${{ !cancelled() }}

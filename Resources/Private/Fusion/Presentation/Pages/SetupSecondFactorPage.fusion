@@ -4,6 +4,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
     scripts = ${[]}
     username = ''
     flashMessages = ${[]}
+    # Optional prominent notice shown directly below the login heading. Set by the enforced
+    # method-picker page to explain why 2FA setup is required; empty on the method sub-pages.
+    notice = ''
     # rendered inside the .neos-login-body container — pass a Fusion component instance
     body = ''
 
@@ -76,6 +79,8 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Page.SetupSecondFactorPage) < pr
                                 <h1 class="neos-login-heading">
                                     {I18n.id('login.index.title').value('Login to').package('Neos.Neos').source('Main')} <strong>{props.site.name}</strong>
                                 </h1>
+
+                                <p @if.set={props.notice} class="neos-two-factor__enforced-notice" role="note">{props.notice}</p>
 
                                 <div class="neos-login-body neos neos-two-factor__login">
                                     <Sandstorm.NeosTwoFactorAuthentication:Component.LoginFlashMessages flashMessages={props.flashMessages} />

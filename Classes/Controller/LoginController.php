@@ -213,8 +213,13 @@ class LoginController extends ActionController
     /**
      * WebAuthn-specific setup wizard. The page loads JS which calls the
      * register-options and register-verify XHR endpoints.
+     *
+     * @param bool $discoverable whether to register a discoverable, passwordless-capable passkey
+     *                           rather than a plain second factor. Reaches here from the enforced
+     *                           method picker's "Register a passkey" option; only honoured when
+     *                           passwordless login is enabled (enforced server-side in WebAuthnService).
      */
-    public function setupWebAuthnAction(?string $username = null): void
+    public function setupWebAuthnAction(?string $username = null, bool $discoverable = false): void
     {
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
@@ -224,6 +229,7 @@ class LoginController extends ActionController
             'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'username' => $username,
             'site' => $currentSite,
+            'discoverable' => $discoverable,
             'redirectUrl' => $this->interceptedRequestOrBackendUri(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)

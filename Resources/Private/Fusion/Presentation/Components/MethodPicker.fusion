@@ -7,7 +7,11 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker) < protot
     renderer = afx`
         <div class="neos-two-factor__method-picker neos-actions">
             <Neos.Fusion:Loop items={props.items} itemName="item">
+                <div @if.separatorBefore={item.separatorBefore} class="neos-two-factor__or-separator">
+                    <span>{I18n.id('login.or').package('Sandstorm.NeosTwoFactorAuthentication')}</span>
+                </div>
                 <div class="neos-two-factor__method-picker__row">
+                    <h2 @if.heading={item.heading} class="neos-two-factor__method-picker__heading">{item.heading}</h2>
                     <a aria-describedby={item.id} href={item.href} class="btn neos-button neos-login-btn neos-two-factor__method-picker__button">
                         {item.label}
                     </a>

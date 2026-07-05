@@ -20,6 +20,11 @@ Feature: Login flow with 2FA enforced for all users
     Then I should see the 2FA setup page
     And I should see the 2FA method selection
 
+  Scenario: Passwordless passkey registration is not offered when the feature is off
+    When I log in with username "editor" and password "password"
+    Then I should see the 2FA setup page
+    And I should not see the "Register a passkey" 2FA method option
+
   Scenario: User can cancel the enforced 2FA setup and return to the login screen
     When I log in with username "editor" and password "password"
     And I should see the 2FA setup page

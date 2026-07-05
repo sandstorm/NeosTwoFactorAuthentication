@@ -76,6 +76,14 @@ When('I set up a WebAuthn 2FA device with name {string}', async ({ page }, devic
   await page.waitForLoadState('networkidle');
 });
 
+When('I set up a passwordless passkey during enforced setup', async ({ page }) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await setupPage.waitForPage();
+  await setupPage.setupPasswordlessPasskey();
+
+  await page.waitForLoadState('networkidle');
+});
+
 When('I enter a valid TOTP for device {string}', async ({ page }, deviceName: string) => {
   const secret = state.deviceNameSecretMap.get(deviceName);
   if (!secret) throw new Error(`No enrolled TOTP secret found for device "${deviceName}"`);
@@ -147,4 +155,28 @@ Then('I should see the 2FA setup page', async ({ page }) => {
 Then('I should see the 2FA method selection', async ({ page }) => {
   const setupPage = new SecondFactorSetupPage(page);
   expect(await setupPage.isMethodPickerVisible()).toBe(true);
+});
+
+Then('I should see the {string} 2FA method option', async ({ page }, name: string) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await expect(setupPage.methodOption(name)).toBeVisible();
+});
+
+Then('I should not see the {string} 2FA method option', async ({ page }, name: string) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await expect(setupPage.methodOption(name)).toBeHidden();
+});
+
+Then('I should see a separator between the passkey option and the other 2FA methods', async ({ page }) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await expect(setupPage.methodSeparator()).toBeVisible();
+});
+
+Then('I should see the enforced 2FA setup notice', async ({ page }) => {
+  const setupPage = new SecondFactorSetupPage(page);
+  await expect(setupPage.enforcedNotice()).toBeVisible();
+});
+
+Then('I should see a 2FA section heading {string}', async ({ page }, heading: string) => {
+  await expect(page.getByRole('heading', { name: heading, exact: true })).toBeVisible();
 });

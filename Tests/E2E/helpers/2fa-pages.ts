@@ -9,6 +9,7 @@ import { generateOtp } from './totp.js';
 const METHOD_LINK_NAME = {
   totp: 'Authenticator app',
   webauthn: 'Passkey as second factor',
+  passkey: 'Register a passkey',
 } as const;
 
 /**
@@ -116,6 +117,21 @@ export class SecondFactorSetupPage {
     return this.page.locator('.neos-two-factor__method-picker').isVisible();
   }
 
+  /** The method-picker option (link) with the given accessible name. */
+  methodOption(name: string) {
+    return this.page.getByRole('link', { name, exact: true });
+  }
+
+  /** The "or" separator rendered inside the method picker (between option groups). */
+  methodSeparator() {
+    return this.page.locator('.neos-two-factor__method-picker .neos-two-factor__or-separator');
+  }
+
+  /** The enforcement-explanation notice shown above the method picker on the enforced-setup screen. */
+  enforcedNotice() {
+    return this.page.locator('.neos-two-factor__enforced-notice');
+  }
+
   async chooseTotp() {
     await this.page.getByRole('link', { name: METHOD_LINK_NAME.totp, exact: true }).click();
     await this.page.waitForURL('**/neos/second-factor-setup/totp');
@@ -124,6 +140,12 @@ export class SecondFactorSetupPage {
   async chooseWebAuthn() {
     await this.page.getByRole('link', { name: METHOD_LINK_NAME.webauthn, exact: true }).click();
     await this.page.waitForURL('**/neos/second-factor-setup/webauthn');
+  }
+
+  async choosePasskey() {
+    await this.page.getByRole('link', { name: METHOD_LINK_NAME.passkey, exact: true }).click();
+    // The passkey option carries discoverable=true as a query arg, so match with a trailing wildcard.
+    await this.page.waitForURL('**/neos/second-factor-setup/webauthn**');
   }
 
   async getSecret(): Promise<string> {
@@ -165,6 +187,19 @@ export class SecondFactorSetupPage {
    */
   async setupWebAuthnDevice(name?: string) {
     await this.chooseWebAuthn();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await clickWebAuthnRegisterTrigger(this.page);
+  }
+
+  /**
+   * Walk the passwordless-passkey setup workflow from the method picker: pick the
+   * "Register a passkey" option (discoverable=true) and register. Requires a virtual
+   * authenticator on the browser context (see helpers/webauthn.ts).
+   */
+  async setupPasswordlessPasskey(name?: string) {
+    await this.choosePasskey();
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }

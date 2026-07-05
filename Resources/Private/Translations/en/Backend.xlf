@@ -12,6 +12,15 @@
       <trans-unit id="module.index.title" xml:space="preserve">
         <source>List of all registered second factors</source>
       </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.title" xml:space="preserve">
+        <source>Passkey Registration</source>
+      </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.text" xml:space="preserve">
+        <source>Set up a passkey for faster sign-in without a password.</source>
+      </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.cta" xml:space="preserve">
+        <source>Register a passkey</source>
+      </trans-unit>
       <trans-unit id="module.index.list.header.username" xml:space="preserve">
         <source>User</source>
       </trans-unit>
@@ -29,6 +38,12 @@
       </trans-unit>
       <trans-unit id="module.index.create" xml:space="preserve">
         <source>Create second factor</source>
+      </trans-unit>
+      <trans-unit id="module.create.title" xml:space="preserve">
+        <source>Create new second factor</source>
+      </trans-unit>
+      <trans-unit id="module.create.description" xml:space="preserve">
+        <source>Setup a new second factor to secure your Neos account.</source>
       </trans-unit>
 
       <trans-unit id="module.index.delete.header" xml:space="preserve">
@@ -78,7 +93,10 @@
         <source>Choose which second factor you would like to set up:</source>
       </trans-unit>
       <trans-unit id="module.newWebAuthn.title" xml:space="preserve">
-        <source>Register a security key</source>
+        <source>Register a passkey</source>
+      </trans-unit>
+      <trans-unit id="module.newWebAuthn.titleSecondFactor" xml:space="preserve">
+        <source>Register a security key as second factor</source>
       </trans-unit>
     </body>
   </file>

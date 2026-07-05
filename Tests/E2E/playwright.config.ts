@@ -50,6 +50,11 @@ export default defineConfig({
     // After editing the Dockerfile: Re-run `make setup-sut` to pick up the changes.
     command: `echo "starting system under test ${SUT} with context ${FLOW_CONTEXT}"; FLOW_CONTEXT=${FLOW_CONTEXT} docker compose -f ./system_under_test/${SUT}/docker-compose.yaml up`,
     url: 'http://localhost:8081/',
+    // Reuse an already-running SUT instead of erroring when port 8081 is taken.
+    // The SUT cold-boot re-downloads composer packages (~3-4 min) on every start,
+    // so reusing a healthy container keeps the local dev loop fast. In CI nothing
+    // is listening yet, so Playwright still boots a fresh one.
+    reuseExistingServer: true,
     timeout: 600_000,
     stdout: 'pipe',
     stderr: 'pipe',

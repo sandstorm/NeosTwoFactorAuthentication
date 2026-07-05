@@ -72,18 +72,18 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupTotpStep) < proto
             <fieldset>
                 <div class="neos-2fa-control-group neos-actions">
                     <Neos.Fusion.Form:Input
+                        field.name="name"
+                        attributes.id="name"
+                        attributes.placeholder={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        attributes.aria-label={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        attributes.autocomplete="off"
+                    />
+                    <Neos.Fusion.Form:Input
                         field.name="secondFactorFromApp"
                         attributes.required="required"
                         attributes.id="secondFactorFromApp"
                         attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                         attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
-                        attributes.autocomplete="off"
-                    />
-                    <Neos.Fusion.Form:Input
-                        field.name="name"
-                        attributes.id="name"
-                        attributes.placeholder={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
-                        attributes.aria-label={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                         attributes.autocomplete="off"
                     />
                     <Neos.Fusion.Form:Button attributes.class="neos-span5 neos-pull-right neos-button neos-login-btn">

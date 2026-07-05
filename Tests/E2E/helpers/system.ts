@@ -12,10 +12,17 @@ export function createUser(name: string, password: string, roles: string[]) {
 }
 
 export function removeAllUsers() {
-  execSync(
-    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow user:delete --assume-yes '*'"`,
-    { stdio: 'ignore', cwd: dirname('.') }
-  )
+  // `./flow user:delete '*'` exits non-zero when there are no users to delete. A teardown
+  // must not fail just because a scenario created no users (e.g. tests that only check the
+  // logged-out login screen), so swallow that error.
+  try {
+    execSync(
+      `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow user:delete --assume-yes '*'"`,
+      { stdio: 'ignore', cwd: dirname('.') }
+    )
+  } catch {
+    // no users to delete — nothing to clean up
+  }
 }
 
 export async function logout(page: Page) {

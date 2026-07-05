@@ -16,6 +16,15 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newTotp = Sandstorm.Neos
                         <span class="neos-two-factor__step__number">1</span>
                         <span class="neos-two-factor__step__label">{I18n.id('form.step.setup').package('Sandstorm.NeosTwoFactorAuthentication')}</span>
                     </div>
+                    <div class="neos-control-group">
+                        <Neos.Fusion.Form:Input
+                            field.name="name"
+                            attributes.id="name"
+                            attributes.autocomplete="off"
+                            attributes.placeholder={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                            attributes.aria-label={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        />
+                    </div>
                     <div class="neos-two-factor__setup-options">
                         <div class="neos-two-factor__setup-option">
                             <p class="neos-two-factor__setup-option__label">
@@ -108,15 +117,6 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newTotp = Sandstorm.Neos
                             attributes.placeholder={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                             attributes.aria-label={I18n.id('otp-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                             attributes.autocomplete="off"
-                            attributes.class="neos-span6"
-                        />
-                        <Neos.Fusion.Form:Input
-                            field.name="name"
-                            attributes.id="name"
-                            attributes.autocomplete="off"
-                            attributes.class="neos-span6"
-                            attributes.placeholder={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
-                            attributes.aria-label={I18n.id('name-placeholder').package('Sandstorm.NeosTwoFactorAuthentication')}
                         />
                     </div>
 

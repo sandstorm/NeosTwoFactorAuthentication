@@ -58,3 +58,11 @@ Neos:
                 pattern: 'ControllerObjectName'
                 patternOptions:
                   controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\Controller\(LoginController|BackendController)'
+          # Parallel provider for usernameless passwordless passkey login. It has NO request
+          # pattern, so its token is always active and can be authenticated in-request by the
+          # PasswordlessLoginController; and NO entry point, so the existing Neos.Neos:Backend
+          # WebRedirect still serves the login screen. With Neos' `oneToken` strategy, an
+          # authenticated token here logs the (Neos.Neos:Backend) account into the backend.
+          'Sandstorm.NeosTwoFactorAuthentication:PasswordlessWebAuthn':
+            provider: 'Sandstorm\NeosTwoFactorAuthentication\Security\Authentication\WebAuthnPasswordlessProvider'
+            token: 'Sandstorm\NeosTwoFactorAuthentication\Security\Token\WebAuthnPasswordlessToken'

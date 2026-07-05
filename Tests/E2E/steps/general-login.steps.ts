@@ -2,6 +2,7 @@ import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 import { NeosLoginPage, NeosContentPage } from '../helpers/general-pages.ts';
 import { createUser, logout } from '../helpers/system.ts';
+import { armWebAuthnCancellation } from '../helpers/webauthn.ts';
 
 const { Given, When, Then } = createBdd();
 
@@ -26,6 +27,41 @@ When('I log in with username {string} and password {string}',
 
 When('I log out', async ({ page }) => {
   await logout(page);
+});
+
+When('I sign in with a passkey', async ({ page }) => {
+  const loginPage = new NeosLoginPage(page);
+  await loginPage.signInWithPasskey();
+  await page.waitForLoadState('networkidle');
+});
+
+When('I open the login page', async ({ page }) => {
+  await new NeosLoginPage(page).goto();
+});
+
+When('I start a passkey sign-in but cancel it', async ({ page }) => {
+  // Arm the one-shot cancellation before navigating, so the assertion rejects with
+  // NotAllowedError (as if the user dismissed the OS passkey prompt) instead of the
+  // virtual authenticator silently approving it. webauthn.js then reveals the error
+  // tooltip and the page stays on the login screen.
+  await armWebAuthnCancellation(page);
+  await new NeosLoginPage(page).goto();
+  await page.locator('[data-webauthn-passwordless] [data-webauthn-trigger]').click();
+  await page.locator('[data-webauthn-passwordless] [data-webauthn-error]').waitFor({ state: 'visible' });
+});
+
+Then('I should not see the passkey sign-in button', async ({ page }) => {
+  await expect(page.locator('[data-webauthn-passwordless]')).toHaveCount(0);
+});
+
+Then('the passwordless verify endpoint is forbidden', async ({ page }) => {
+  // The endpoint must reject everyone while passwordless login is disabled — server-side,
+  // not just by hiding the button.
+  const response = await page.request.post('/neos/passwordless-webauthn/verify', {
+    data: { assertion: '{}' },
+    failOnStatusCode: false,
+  });
+  expect(response.status()).toBe(403);
 });
 
 When('I open {string} while logged out', async ({ page }, path: string) => {

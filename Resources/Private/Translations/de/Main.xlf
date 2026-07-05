@@ -75,40 +75,76 @@
         <target>Verwenden Sie Google Authenticator, Authy, 1Password oder eine andere TOTP-kompatible App.</target>
       </trans-unit>
       <trans-unit id="method.webauthn.label" xml:space="preserve">
-        <source>Security key (Yubikey / WebAuthn)</source>
-        <target>Sicherheitsschlüssel (Yubikey / WebAuthn)</target>
+        <source>Passkey as second factor</source>
+        <target>Passkey als zweiter Faktor</target>
       </trans-unit>
       <trans-unit id="method.webauthn.description" xml:space="preserve">
-        <source>Use a hardware security key such as a Yubikey, or another FIDO2 authenticator.</source>
-        <target>Verwenden Sie einen Hardware-Sicherheitsschlüssel wie einen Yubikey oder einen anderen FIDO2-Authenticator.</target>
+        <source>Use a passkey or a hardware security key (e.g. a YubiKey) as a second factor — a touch is enough, no PIN required.</source>
+        <target>Verwenden Sie einen Passkey oder einen Hardware-Sicherheitsschlüssel (z. B. einen YubiKey) als zweiten Faktor – eine Berührung genügt, keine PIN erforderlich.</target>
+      </trans-unit>
+      <trans-unit id="method.passkey.label" xml:space="preserve">
+        <source>Register a passkey</source>
+        <target>Passkey einrichten</target>
+      </trans-unit>
+      <trans-unit id="method.passkey.description" xml:space="preserve">
+        <source>Set up a passkey for faster sign-in without a password.</source>
+        <target>Richten Sie einen Passkey für die schnellere Anmeldung ohne Passwort ein.</target>
+      </trans-unit>
+      <trans-unit id="method.passkey.heading" xml:space="preserve">
+        <source>Passkey</source>
+        <target>Passkey</target>
+      </trans-unit>
+      <trans-unit id="method.totp.heading" xml:space="preserve">
+        <source>One-Time-Password 2FA</source>
+        <target>Einmalpasswort-2FA</target>
+      </trans-unit>
+      <trans-unit id="method.webauthn.heading" xml:space="preserve">
+        <source>Passkey 2FA</source>
+        <target>Passkey-2FA</target>
+      </trans-unit>
+      <trans-unit id="setup.enforced.notice" xml:space="preserve">
+        <source>Your security settings require Two Factor Authentication to be enabled. Choose one of the options below now. Further authentication methods can be configured in the Two-Factor Authentication Backend Module.</source>
+        <target>Ihre Sicherheitseinstellungen erfordern die Aktivierung der Zwei-Faktor-Authentifizierung. Wählen Sie jetzt eine der folgenden Optionen. Weitere Authentifizierungsmethoden können im Zwei-Faktor-Authentifizierungsmenü konfiguriert werden.</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.intro" xml:space="preserve">
-        <source>Plug in your security key and press the button below. When prompted, tap your key and enter its PIN if requested.</source>
-        <target>Stecken Sie Ihren Sicherheitsschlüssel ein und drücken Sie unten auf die Schaltfläche. Tippen Sie bei Aufforderung auf den Schlüssel und geben Sie ggf. die PIN ein.</target>
+        <source>Press the button below to create a passkey. When prompted, confirm with your fingerprint, face, device PIN, or hardware key.</source>
+        <target>Drücken Sie unten auf die Schaltfläche, um einen Passkey zu erstellen. Bestätigen Sie bei Aufforderung mit Fingerabdruck, Gesicht, Geräte-PIN oder Hardwareschlüssel.</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.button" xml:space="preserve">
-        <source>Register security key</source>
-        <target>Sicherheitsschlüssel registrieren</target>
+        <source>Register passkey</source>
+        <target>Passkey registrieren</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button.passkey" xml:space="preserve">
+        <source>Register passkey</source>
+        <target>Passkey registrieren</target>
+      </trans-unit>
+      <trans-unit id="webauthn.setup.button.secondFactor" xml:space="preserve">
+        <source>Register security key as 2nd factor</source>
+        <target>Sicherheitsschlüssel als 2. Faktor registrieren</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.success" xml:space="preserve">
-        <source>Security key registered successfully.</source>
-        <target>Sicherheitsschlüssel erfolgreich registriert.</target>
+        <source>Passkey registered successfully.</source>
+        <target>Passkey erfolgreich registriert.</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.error.unsupported" xml:space="preserve">
-        <source>Your browser does not support security keys.</source>
-        <target>Ihr Browser unterstützt keine Sicherheitsschlüssel.</target>
+        <source>Your browser does not support passkeys.</source>
+        <target>Ihr Browser unterstützt keine Passkeys.</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.error.generic" xml:space="preserve">
-        <source>Could not register security key. Please try again.</source>
-        <target>Der Sicherheitsschlüssel konnte nicht registriert werden. Bitte versuchen Sie es erneut.</target>
+        <source>Could not register passkey. Please try again.</source>
+        <target>Der Passkey konnte nicht registriert werden. Bitte versuchen Sie es erneut.</target>
       </trans-unit>
       <trans-unit id="webauthn.login.prompt" xml:space="preserve">
-        <source>Touch your security key to continue.</source>
-        <target>Berühren Sie Ihren Sicherheitsschlüssel, um fortzufahren.</target>
+        <source>Use your passkey to continue.</source>
+        <target>Verwenden Sie Ihren Passkey, um fortzufahren.</target>
       </trans-unit>
       <trans-unit id="webauthn.login.button" xml:space="preserve">
-        <source>Use security key</source>
-        <target>Sicherheitsschlüssel verwenden</target>
+        <source>Use passkey</source>
+        <target>Passkey verwenden</target>
+      </trans-unit>
+      <trans-unit id="passwordless.login.button" xml:space="preserve">
+        <source>Sign in with a passkey</source>
+        <target>Mit einem Passkey anmelden</target>
       </trans-unit>
       <trans-unit id="login.or" xml:space="preserve">
         <source>or</source>
@@ -119,48 +155,48 @@
         <target>Abbrechen und zurück zur Anmeldung</target>
       </trans-unit>
       <trans-unit id="webauthn.login.error.generic" xml:space="preserve">
-        <source>Could not verify your security key. Please try again.</source>
-        <target>Der Sicherheitsschlüssel konnte nicht überprüft werden. Bitte versuchen Sie es erneut.</target>
+        <source>Could not verify your passkey. Please try again.</source>
+        <target>Der Passkey konnte nicht überprüft werden. Bitte versuchen Sie es erneut.</target>
       </trans-unit>
       <trans-unit id="webauthn.login.error.result" xml:space="preserve">
-        <source>Security key verification failed</source>
-        <target>Verifizierung des Sicherheitsschlüssels fehlgeschlagen</target>
+        <source>Passkey verification failed</source>
+        <target>Verifizierung des Passkeys fehlgeschlagen</target>
       </trans-unit>
       <trans-unit id="webauthn.setup.error.result" xml:space="preserve">
-        <source>Security key registration failed</source>
-        <target>Registrierung des Sicherheitsschlüssels fehlgeschlagen</target>
+        <source>Passkey registration failed</source>
+        <target>Registrierung des Passkeys fehlgeschlagen</target>
       </trans-unit>
       <trans-unit id="webauthn.error.unsupportedBrowser" xml:space="preserve">
-        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
-        <target>Ihr Browser oder Gerät unterstützt keine Sicherheitsschlüssel. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
+        <source>Your browser or device does not support passkeys. Use a supported browser, or choose another login method.</source>
+        <target>Ihr Browser oder Gerät unterstützt keine Passkeys. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.notAllowed" xml:space="preserve">
-        <source>The request was cancelled or timed out. Connect your security key and tap it when the browser prompts you, then try again.</source>
-        <target>Die Anfrage wurde abgebrochen oder ist abgelaufen. Verbinden Sie Ihren Sicherheitsschlüssel und berühren Sie ihn, sobald der Browser Sie dazu auffordert, und versuchen Sie es dann erneut.</target>
+        <source>The request was cancelled or timed out. Confirm with your passkey when the browser prompts you, then try again.</source>
+        <target>Die Anfrage wurde abgebrochen oder ist abgelaufen. Bestätigen Sie mit Ihrem Passkey, sobald der Browser Sie dazu auffordert, und versuchen Sie es dann erneut.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.invalidState" xml:space="preserve">
-        <source>This security key is already registered. Use a different key, or sign in with this one instead.</source>
-        <target>Dieser Sicherheitsschlüssel ist bereits registriert. Verwenden Sie einen anderen Schlüssel oder melden Sie sich mit diesem an.</target>
+        <source>This passkey is already registered. Use a different one, or sign in with it instead.</source>
+        <target>Dieser Passkey ist bereits registriert. Verwenden Sie einen anderen oder melden Sie sich mit diesem an.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.notSupported" xml:space="preserve">
-        <source>Your browser or device does not support security keys. Use a supported browser, or choose another login method.</source>
-        <target>Ihr Browser oder Gerät unterstützt keine Sicherheitsschlüssel. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
+        <source>Your browser or device does not support passkeys. Use a supported browser, or choose another login method.</source>
+        <target>Ihr Browser oder Gerät unterstützt keine Passkeys. Verwenden Sie einen unterstützten Browser oder wählen Sie eine andere Anmeldemethode.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.security" xml:space="preserve">
-        <source>The page origin is not allowed for security keys. Make sure you are on the correct, secure (https) address.</source>
-        <target>Die Herkunft der Seite ist für Sicherheitsschlüssel nicht zulässig. Stellen Sie sicher, dass Sie sich auf der korrekten, sicheren (https) Adresse befinden.</target>
+        <source>The page origin is not allowed for passkeys. Make sure you are on the correct, secure (https) address.</source>
+        <target>Die Herkunft der Seite ist für Passkeys nicht zulässig. Stellen Sie sicher, dass Sie sich auf der korrekten, sicheren (https) Adresse befinden.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.abort" xml:space="preserve">
         <source>The request was aborted before it could finish. Please try again.</source>
         <target>Die Anfrage wurde abgebrochen, bevor sie abgeschlossen werden konnte. Bitte versuchen Sie es erneut.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.constraint" xml:space="preserve">
-        <source>Your authenticator could not meet the requirements for this login. Try a different security key.</source>
-        <target>Ihr Authentifikator konnte die Anforderungen für diese Anmeldung nicht erfüllen. Verwenden Sie einen anderen Sicherheitsschlüssel.</target>
+        <source>Your authenticator could not meet the requirements for this login. Try a different passkey.</source>
+        <target>Ihr Authentifikator konnte die Anforderungen für diese Anmeldung nicht erfüllen. Verwenden Sie einen anderen Passkey.</target>
       </trans-unit>
       <trans-unit id="webauthn.error.unknown" xml:space="preserve">
-        <source>An unexpected error occurred while communicating with your security key. Please try again.</source>
-        <target>Bei der Kommunikation mit Ihrem Sicherheitsschlüssel ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.</target>
+        <source>An unexpected error occurred while communicating with your passkey. Please try again.</source>
+        <target>Bei der Kommunikation mit Ihrem Passkey ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es erneut.</target>
       </trans-unit>
     </body>
   </file>

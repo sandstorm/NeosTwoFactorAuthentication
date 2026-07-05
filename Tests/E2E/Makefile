@@ -6,8 +6,8 @@ NEOS9_COMPOSE = $(E2E_DIR)/system_under_test/neos9/docker-compose.yaml
 
 .SILENT:
 .PHONY: help setup setup-sut setup-test generate-bdd-files test test-neos8 test-neos9 \
-	test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider \
-	test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider \
+	test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-passwordless test-neos8-enforce-all-passwordless \
+	test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-passwordless test-neos9-enforce-all-passwordless \
 	start-sut-neos8 start-sut-neos9 log-sut-neos8 log-sut-neos9 enter-sut-neos8 enter-sut-neos9 sut-down
 
 # COLORS
@@ -57,10 +57,10 @@ generate-bdd-files:
 test: test-neos8 test-neos9
 
 ## Run all neos8 E2E tests
-test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider
+test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-passwordless test-neos8-enforce-all-passwordless
 
 ## Run all neos9 E2E tests
-test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider
+test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-passwordless test-neos9-enforce-all-passwordless
 
 ## Run neos8 E2E tests with default 2FA settings
 test-neos8-defaults:
@@ -93,6 +93,22 @@ test-neos9-enforce-role:
 ## Run neos9 E2E tests with 2FA enforced for a provider
 test-neos9-enforce-provider:
 	cd $(E2E_DIR) && npm run test:neos9:enforce-provider
+
+## Run neos8 E2E tests for passwordless passkey login
+test-neos8-passwordless:
+	cd $(E2E_DIR) && npm run test:neos8:passwordless
+
+## Run neos8 E2E tests with 2FA enforced for all users AND passwordless enabled
+test-neos8-enforce-all-passwordless:
+	cd $(E2E_DIR) && npm run test:neos8:enforce-all-passwordless
+
+## Run neos9 E2E tests for passwordless passkey login
+test-neos9-passwordless:
+	cd $(E2E_DIR) && npm run test:neos9:passwordless
+
+## Run neos9 E2E tests with 2FA enforced for all users AND passwordless enabled
+test-neos9-enforce-all-passwordless:
+	cd $(E2E_DIR) && npm run test:neos9:enforce-all-passwordless
 
 ## Start the neos8 SUT containers
 start-sut-neos8:

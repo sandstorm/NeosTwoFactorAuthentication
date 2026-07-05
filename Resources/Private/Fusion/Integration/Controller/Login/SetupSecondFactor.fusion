@@ -4,11 +4,34 @@ Sandstorm.NeosTwoFactorAuthentication.LoginController.setupSecondFactor = Sandst
     scripts = ${scripts}
     username = ${username}
     flashMessages = ${flashMessages}
+    notice = ${I18n.id('setup.enforced.notice').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
 
     body = Sandstorm.NeosTwoFactorAuthentication:Component.MethodPicker {
         items = Neos.Fusion:DataStructure {
+            # Passwordless passkey (discoverable, usernameless) — only offered when the feature is
+            # enabled. Registering here satisfies the enforced 2FA gate AND makes the account
+            # passwordless-login capable. Links to the WebAuthn setup screen with discoverable=true.
+            passkey = Neos.Fusion:DataStructure {
+                @if.passwordlessEnabled = ${Configuration.setting('Sandstorm.NeosTwoFactorAuthentication.webAuthn.passwordlessLoginEnabled')}
+                id = 'method.passkey'
+                heading = ${I18n.id('method.passkey.heading').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                label = ${I18n.id('method.passkey.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                description = ${I18n.id('method.passkey.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
+                href = Neos.Fusion:UriBuilder {
+                    package = 'Sandstorm.NeosTwoFactorAuthentication'
+                    controller = 'Login'
+                    action = 'setupWebAuthn'
+                    arguments = Neos.Fusion:DataStructure {
+                        discoverable = true
+                    }
+                }
+            }
             totp = Neos.Fusion:DataStructure {
+                # Render the "or" divider before this item only when the passkey option sits above it,
+                # separating the passwordless passkey (option 1) from the second-factor methods (2 + 3).
+                separatorBefore = ${Configuration.setting('Sandstorm.NeosTwoFactorAuthentication.webAuthn.passwordlessLoginEnabled')}
                 id = 'method.totp'
+                heading = ${I18n.id('method.totp.heading').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                 label = ${I18n.id('method.totp.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                 description = ${I18n.id('method.totp.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                 href = Neos.Fusion:UriBuilder {
@@ -19,6 +42,7 @@ Sandstorm.NeosTwoFactorAuthentication.LoginController.setupSecondFactor = Sandst
             }
             webauthn = Neos.Fusion:DataStructure {
                 id = 'method.webauthn'
+                heading = ${I18n.id('method.webauthn.heading').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                 label = ${I18n.id('method.webauthn.label').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                 description = ${I18n.id('method.webauthn.description').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
                 href = Neos.Fusion:UriBuilder {

@@ -70,6 +70,12 @@ class WebAuthnService
     protected $securedRelyingPartyIds = [];
 
     /**
+     * @Flow\InjectConfiguration(path="webAuthn.passwordlessLoginEnabled")
+     * @var bool
+     */
+    protected $passwordlessLoginEnabled = false;
+
+    /**
      * `lazy=false` so the real adapter (not a DependencyProxy) is passed into the
      * web-auth validator constructors, which strict-type-hint the interface.
      *
@@ -93,8 +99,14 @@ class WebAuthnService
     /**
      * Build a registration options object that the browser passes to
      * `navigator.credentials.create()`.
+     *
+     * When $discoverable is true (and passwordless login is enabled) the credential is
+     * registered as a resident, user-verified passkey usable for passwordless login. Otherwise
+     * it is registered as a plain second factor: no resident key, and user verification follows
+     * the configured `webAuthn.userVerification` level — so a touch-only security key (no PIN)
+     * keeps working as a 2nd factor even while passwordless login is enabled.
      */
-    public function createRegistrationOptions(Account $account, string $hostname): PublicKeyCredentialCreationOptions
+    public function createRegistrationOptions(Account $account, string $hostname, bool $discoverable = false): PublicKeyCredentialCreationOptions
     {
         $rp = new PublicKeyCredentialRpEntity(
             $this->relyingPartyName ?: 'Neos',
@@ -122,6 +134,19 @@ class WebAuthnService
         $authenticatorSelection = AuthenticatorSelectionCriteria::create()
             ->setUserVerification($this->userVerification);
 
+        // Register a discoverable (resident), user-verified passkey only when the user opted into
+        // it AND passwordless login is enabled — such a credential works both for one-tap
+        // usernameless login AND as a strong second factor. The guard means a discoverable
+        // credential can never be minted while passwordless login is off. Any other registration
+        // keeps the configured user-verification level and no resident-key requirement, so
+        // touch-only / U2F-only keys keep working as a plain 2nd factor.
+        $registerAsPasskey = $discoverable && $this->passwordlessLoginEnabled;
+        if ($registerAsPasskey) {
+            $authenticatorSelection
+                ->setResidentKey(AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED)
+                ->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED);
+        }
+
         return PublicKeyCredentialCreationOptions::create(
             $rp,
             $userEntity,
@@ -132,6 +157,17 @@ class WebAuthnService
             ->setAuthenticatorSelection($authenticatorSelection)
             ->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE)
             ->excludeCredentials(...$excludeCredentials);
+    }
+
+    /**
+     * Whether the given registration options describe a discoverable (resident) passkey. This is
+     * the single source of truth for the stored `discoverable` flag: it reflects exactly what was
+     * requested when the options were created, so it round-trips with the choice made there.
+     */
+    public function isDiscoverableRegistration(PublicKeyCredentialCreationOptions $options): bool
+    {
+        return ($options->authenticatorSelection?->residentKey ?? null)
+            === AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED;
     }
 
     /**
@@ -157,11 +193,16 @@ class WebAuthnService
         $validator = $this->buildAttestationValidator();
         $credentialSource = $validator->check($authenticatorResponse, $options, $request, $this->securedRelyingPartyIds);
 
+        // Whether this credential is a discoverable "Passkey" is derived from the options it was
+        // registered with (see isDiscoverableRegistration / createRegistrationOptions): a passkey
+        // registration requested a resident key, a 2nd-factor registration did not. This keeps the
+        // stored flag faithful to the per-registration choice rather than the global setting.
         return $this->secondFactorRepository->createSecondFactorForAccount(
             json_encode($credentialSource->jsonSerialize(), JSON_THROW_ON_ERROR),
             $account,
             SecondFactor::TYPE_PUBLIC_KEY,
-            $name
+            $name,
+            $this->isDiscoverableRegistration($options)
         );
     }
 
@@ -214,6 +255,84 @@ class WebAuthnService
             $userHandle,
             $this->securedRelyingPartyIds
         );
+    }
+
+    /**
+     * Build request options for a usernameless (passwordless) login: no allowed
+     * credentials, so the browser offers any discoverable credential for this
+     * relying party, and user verification is required (a verified passkey is a
+     * full multi-factor authentication on its own).
+     */
+    public function createPasswordlessAuthenticationOptions(string $hostname): PublicKeyCredentialRequestOptions
+    {
+        return PublicKeyCredentialRequestOptions::create(random_bytes(32))
+            ->setTimeout($this->timeoutMs)
+            ->setRpId($this->relyingPartyId ?: $hostname)
+            ->setUserVerification(PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED);
+    }
+
+    /**
+     * Verify a usernameless assertion and resolve the Neos backend account it belongs to.
+     *
+     * The assertion carries both the credential id and a user handle. We look the credential
+     * up by its id first (proving we actually stored it), then let the library verify the
+     * assertion against that credential's stored user handle, and finally map the user handle
+     * (the account's persistence identifier) back to the Flow account. Only Neos backend
+     * accounts may use this login path.
+     *
+     * @throws \Throwable when validation fails or no matching backend account exists
+     */
+    public function verifyPasswordlessAssertion(
+        string $assertionResponseJson,
+        PublicKeyCredentialRequestOptions $options,
+        ServerRequestInterface $request
+    ): Account {
+        $publicKeyCredentialLoader = $this->buildCredentialLoader();
+        $publicKeyCredential = $publicKeyCredentialLoader->load($assertionResponseJson);
+        $authenticatorResponse = $publicKeyCredential->getResponse();
+        if (!$authenticatorResponse instanceof AuthenticatorAssertionResponse) {
+            throw new \RuntimeException('Response is not an AuthenticatorAssertionResponse', 1751200000);
+        }
+
+        $rawId = $publicKeyCredential->getRawId();
+        $credentialSource = $this->credentialSourceRepository->findOneByCredentialId($rawId);
+        if ($credentialSource === null) {
+            throw new \RuntimeException('Unknown passkey credential', 1751200001);
+        }
+
+        $userHandle = $credentialSource->getUserHandle();
+        $validator = $this->buildAssertionValidator();
+        $validator->check(
+            $rawId,
+            $authenticatorResponse,
+            $options,
+            $request,
+            $userHandle,
+            $this->securedRelyingPartyIds
+        );
+
+        return $this->resolveBackendAccountByUserHandle($userHandle);
+    }
+
+    /**
+     * Map a passkey user handle (the account's persistence identifier) back to its Flow account,
+     * guarding that it is a Neos backend account. Extracted so this security-critical mapping can
+     * be unit-tested without WebAuthn crypto.
+     *
+     * @throws \RuntimeException when no matching Neos backend account exists
+     */
+    public function resolveBackendAccountByUserHandle(string $userHandle): Account
+    {
+        $account = $this->persistenceManager->getObjectByIdentifier($userHandle, Account::class);
+        if (!$account instanceof Account) {
+            throw new \RuntimeException('No account found for the passkey user handle', 1751200002);
+        }
+        // Guard: only Neos backend accounts may authenticate passwordlessly through this path.
+        if ($account->getAuthenticationProviderName() !== 'Neos.Neos:Backend') {
+            throw new \RuntimeException('Passkey does not belong to a Neos backend account', 1751200003);
+        }
+
+        return $account;
     }
 
     private function buildUserEntity(Account $account): PublicKeyCredentialUserEntity

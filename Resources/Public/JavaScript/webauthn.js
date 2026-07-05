@@ -129,12 +129,11 @@
         return true;
     }
 
-    async function runRegistration(container) {
+    async function runRegistration(container, trigger, discoverable) {
         clearError(container);
-        var trigger = container.querySelector('[data-webauthn-trigger]');
         if (trigger) trigger.disabled = true;
         try {
-            var options = await postJson(container.dataset.optionsUrl);
+            var options = await postJson(container.dataset.optionsUrl, { discoverable: discoverable });
             var credential = await navigator.credentials.create({
                 publicKey: decodeCreationOptions(options)
             });
@@ -172,8 +171,14 @@
     function init() {
         document.querySelectorAll('[data-webauthn-register]').forEach(function (container) {
             if (!checkSupport(container)) return;
-            var trigger = container.querySelector('[data-webauthn-trigger]');
-            if (trigger) trigger.addEventListener('click', function () { runRegistration(container); });
+            // There may be more than one trigger (e.g. "Register passkey" vs "Register security
+            // key as 2nd factor"); each carries its own data-webauthn-discoverable flag.
+            container.querySelectorAll('[data-webauthn-trigger]').forEach(function (trigger) {
+                trigger.addEventListener('click', function () {
+                    var discoverable = trigger.dataset.webauthnDiscoverable === 'true';
+                    runRegistration(container, trigger, discoverable);
+                });
+            });
         });
 
         document.querySelectorAll('[data-webauthn-login]').forEach(function (container) {
@@ -185,6 +190,16 @@
                 // Users who prefer TOTP just dismiss the browser prompt and type their code.
                 setTimeout(function () { runAuthentication(container); }, 200);
             }
+        });
+
+        // Passwordless (usernameless) login on the main login screen. The assertion ceremony
+        // is identical to the 2nd-factor login (options -> get -> verify -> redirect), so we
+        // reuse runAuthentication. Click-only (no auto-trigger): the OS passkey prompt must
+        // not pop up on every visit to the login page — the user opts in by clicking.
+        document.querySelectorAll('[data-webauthn-passwordless]').forEach(function (container) {
+            if (!checkSupport(container)) return;
+            var trigger = container.querySelector('[data-webauthn-trigger]');
+            if (trigger) trigger.addEventListener('click', function () { runAuthentication(container); });
         });
     }
 

@@ -213,8 +213,13 @@ class LoginController extends ActionController
     /**
      * WebAuthn-specific setup wizard. The page loads JS which calls the
      * register-options and register-verify XHR endpoints.
+     *
+     * @param bool $discoverable whether to register a discoverable, passwordless-capable passkey
+     *                           rather than a plain second factor. Reaches here from the enforced
+     *                           method picker's "Register a passkey" option; only honoured when
+     *                           passwordless login is enabled (enforced server-side in WebAuthnService).
      */
-    public function setupWebAuthnAction(?string $username = null): void
+    public function setupWebAuthnAction(?string $username = null, bool $discoverable = false): void
     {
         $currentDomain = $this->domainRepository->findOneByActiveRequest();
         $currentSite = $currentDomain !== null ? $currentDomain->getSite() : $this->siteRepository->findDefault();
@@ -224,6 +229,7 @@ class LoginController extends ActionController
             'scripts' => array_filter($this->getNeosSettings()['userInterface']['backendLoginForm']['scripts']),
             'username' => $username,
             'site' => $currentSite,
+            'discoverable' => $discoverable,
             'redirectUrl' => $this->interceptedRequestOrBackendUri(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
@@ -305,15 +311,19 @@ class LoginController extends ActionController
 
     /**
      * @Flow\SkipCsrfProtection
+     *
+     * @param bool $discoverable whether to register a discoverable passkey (passwordless-capable)
+     *                           rather than a plain second factor; only honoured when passwordless
+     *                           login is enabled.
      */
-    public function webAuthnRegisterOptionsAction(): string
+    public function webAuthnRegisterOptionsAction(bool $discoverable = false): string
     {
         $account = $this->securityContext->getAccount();
         if ($account === null) {
             return $this->jsonError('No authentication in progress', 401);
         }
         $hostname = $this->request->getHttpRequest()->getUri()->getHost();
-        $options = $this->webAuthnService->createRegistrationOptions($account, $hostname);
+        $options = $this->webAuthnService->createRegistrationOptions($account, $hostname, $discoverable);
         $this->secondFactorSessionStorageService->putValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS,
             json_encode($options, JSON_THROW_ON_ERROR)

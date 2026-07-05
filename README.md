@@ -1,21 +1,30 @@
 # Neos Backend 2FA
 
-Extend the Neos backend login to support second factors. We support TOTP tokens (Authenticator apps)
-and WebAuthn / FIDO2 hardware security keys (e.g. Yubikey).
+Extend the Neos backend login to support second factors and passwordless passkey login. We support
+TOTP tokens (Authenticator apps) and WebAuthn / FIDO2 passkeys — both platform authenticators
+(Touch ID, Windows Hello) and hardware security keys (e.g. Yubikey).
 
 ## What this package does
 
 https://user-images.githubusercontent.com/12086990/153027757-ac715746-0575-4555-bce1-c44603747945.mov
 
 This package allows all users to register their personal second factor — either a TOTP token
-(Authenticator App) or a hardware security key (Yubikey / WebAuthn). Users can register one of each
-and pick which to use at login. As an Administrator you are able to delete factors for users again,
-in case they locked themselves out.
+(Authenticator App) or a **passkey** (WebAuthn / FIDO2: a platform authenticator such as Touch ID or
+Windows Hello, or a hardware key such as a Yubikey). Users can register one of each and pick which to
+use at login. When passwordless login is enabled (see [Passwordless passkey login](#passwordless-passkey-login)),
+a discoverable passkey can also be used to sign in straight from the login screen **without a
+password**. As an Administrator you are able to delete factors for users again, in case they locked
+themselves out.
 
-### Security keys (WebAuthn / FIDO2)
+The management module distinguishes the two kinds of WebAuthn credential by a badge: a discoverable,
+passwordless-capable credential is shown as **"Passkey"**, a non-discoverable one (usable only as a
+second factor, e.g. a U2F-only key) as **"Passkey as 2nd factor"**.
+
+### Passkeys (WebAuthn / FIDO2)
 
 Browsers expose WebAuthn only over `https://` or on `localhost`. Make sure the Neos backend is served
-over HTTPS in production, otherwise the security-key flow will fail.
+over HTTPS in production, otherwise the passkey flow will fail. Note that an IP address (e.g.
+`127.0.0.1`) cannot be used as the relying-party id — use `localhost` for local development.
 
 Configure the relying party identifier when your backend hostname differs from the registered domain:
 
@@ -35,6 +44,57 @@ Sandstorm:
       timeout: 60000
 ```
 
+##### Local development over plain HTTP
+
+WebAuthn requires a secure context. The browser treats `localhost` as secure, but the verification
+library is stricter: it only exempts the **exact** host `localhost` from the HTTPS requirement, and
+rejects any other host served over `http://` (including `localhost` subdomains such as
+`myproject.localhost`) with `Invalid scheme. HTTPS required.`.
+
+If your local backend runs over plain HTTP on a host other than `localhost`, list that host under
+`securedRelyingPartyIds` to skip the HTTPS check for it:
+
+```yml
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    webAuthn:
+      # LOCAL DEVELOPMENT ONLY — never add a real production hostname here.
+      # Relying-party ids listed here are treated as secured even without HTTPS.
+      securedRelyingPartyIds:
+        - 'myproject.localhost'
+```
+
+Keep this scoped to a development context (e.g. `Configuration/Development/Settings.yaml`). In
+production the backend must be served over HTTPS and this setting should stay empty (the default).
+
+#### Passwordless passkey login
+
+A discoverable passkey is inherently multi-factor (something you have + the verification you perform
+on the device), so it can serve as the **only** login step. When enabled, a "Sign in with a passkey"
+button appears on the Neos login screen and a single tap signs the user into the backend — no
+username, no password.
+
+This is **disabled by default** and must be turned on explicitly. The gate is enforced server-side
+(the endpoints reject requests while disabled):
+
+```yml
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    webAuthn:
+      # Default false. When true: the login screen shows "Sign in with a passkey", and credentials
+      # registered from then on are created as discoverable (resident) credentials with user
+      # verification required — i.e. real "Passkeys". When false, WebAuthn credentials are
+      # registered as non-discoverable "Passkey as 2nd factor" and the login button is not shown.
+      passwordlessLoginEnabled: true
+```
+
+Notes:
+- A passkey usable for passwordless login must be **discoverable** (resident) and user-verifying.
+  Credentials registered while this setting was off, or on U2F-only keys (e.g. YubiKey 4), are
+  non-discoverable and remain usable only as a second factor.
+- The management module shows a "Register a passkey" banner nudging users who have no discoverable
+  credential yet, so they can opt into faster sign-in.
+
 #### Attestation
 
 There is no setting for attestation. We always request the `none` conveyance preference, so the
@@ -45,11 +105,21 @@ attestation statement types are not supported yet.
 
 #### Authenticator compatibility
 
-| Authenticator                         | `userVerification: discouraged` | `userVerification: required` |
-| ------------------------------------- | ------------------------------- | ---------------------------- |
-| YubiKey 5 / FIDO2 keys                | ✅ touch                        | ✅ PIN + touch               |
-| YubiKey 4 / older U2F-only keys       | ✅ touch (U2F-compat)           | ❌ not supported             |
-| Platform authenticators (Touch ID, Windows Hello) | ✅ biometric              | ✅ biometric                 |
+The first two columns describe registering a credential **as a second factor** (the effect of the
+`userVerification` setting). The last column describes whether the authenticator can be used for
+**passwordless login**, which always requires a discoverable (resident) credential with user
+verification — independent of the `userVerification` setting.
+
+| Authenticator                                     | 2nd factor — `userVerification: discouraged` | 2nd factor — `userVerification: required` | Passwordless passkey         |
+| ------------------------------------------------- | -------------------------------------------- | ----------------------------------------- | ---------------------------- |
+| YubiKey 5 / FIDO2 keys                            | ✅ touch                                      | ✅ PIN + touch                            | ✅ resident key + PIN/touch  |
+| YubiKey 4 / older U2F-only keys                   | ✅ touch (U2F-compat)                         | ❌ not supported                          | ❌ no resident credentials   |
+| Platform authenticators (Touch ID, Windows Hello) | ✅ biometric                                  | ✅ biometric                              | ✅ resident key + biometric  |
+
+> When `passwordlessLoginEnabled` is on, **every** new registration requires a resident key + user
+> verification, so U2F-only keys (e.g. YubiKey 4) can no longer be registered at all while it is
+> enabled — turn it off if you need to enrol such a key as a second factor. Bear in mind that
+> resident credentials also occupy a limited number of slots on hardware keys.
 
 ![Screenshot 2022-02-08 at 17 11 01](https://user-images.githubusercontent.com/12086990/153028043-93e9220e-cc22-4879-9edb-3e156c9accc8.png)
 
@@ -191,11 +261,37 @@ Thx to @Sebobo @Benjamin-K for creating a list of supported and testet apps!
 
     ```
 
+- **Passwordless passkey login** is a separate, opt-in mechanism that does *primary* authentication —
+  the middleware above is only a post-login gate. Because a Flow provider name maps to exactly one
+  token class, we did not try to make the username/password provider also accept a passkey. Instead
+  we added a parallel authentication provider + token (`WebAuthnPasswordlessProvider` /
+  `WebAuthnPasswordlessToken`), registered with **no request pattern** and **no entry point**.
+  - `PasswordlessLoginController` verifies the WebAuthn assertion, resolves the `Neos.Neos:Backend`
+    account from the assertion's user handle (the account's persistence id), sets the parallel token
+    to `AUTHENTICATION_SUCCESSFUL`, calls `securityContext->refreshTokens()` to persist it to the
+    session, and marks the package's 2FA session status `AUTHENTICATED`.
+  - It survives the redirect to `/neos` because `AuthenticationProviderManager` only re-runs
+    providers for tokens that are `AUTHENTICATION_NEEDED`, and the Neos backend uses
+    `authenticationStrategy: oneToken` — so a single authenticated token authenticates the request.
+    `UserService::getCurrentUser()` resolves the Neos user from the *account's party* regardless of
+    which provider authenticated it, so roles and the backend UI work normally.
+  - A user-verified passkey is inherently multi-factor, so the 2FA gate is satisfied in one tap
+    (passwordless login sets the 2FA session status `AUTHENTICATED`, which is check #5 above).
+  - The "Sign in with a passkey" button is injected into the core Neos login screen by overriding
+    `Neos.Neos:Component.Login.Form` (`renderer.@process`) plus a `Views.yaml` entry. The core login
+    is rendered by a plain `FusionView` that does not apply `fusion.autoInclude` and has no script
+    hook, so the (gated) button also emits its own `<script>` to load the ceremony JS. The XHR
+    endpoints are reachable thanks to a `Policy.yaml` grant.
+
 ## When updating Neos, those part will likely crash:
 
 - the login screen for the second factor is a hard copy of the login screen from the `Neos.Neos` package
   - just replaced the username/password form with the form for the second factor
   - maybe has to be replaced when neos gets updated
+- the passwordless "Sign in with a passkey" button is injected into the **core** Neos login screen via
+  a `Views.yaml` override (pointing at `resource://Neos.Neos/Private/Fusion/Backend`) plus a
+  `@process` on `Neos.Neos:Component.Login.Form`. If Neos restructures its login Fusion or view
+  configuration, this injection may need to be re-aligned.
 - hopefully the rest of this package is solid enough to survive the next mayor Neos versions ;)
 
 ## Why not ...?
@@ -264,6 +360,7 @@ make test-neos8-defaults    # default configuration only
 make test-neos8-enforce-all # enforceTwoFactorAuthentication: true
 make test-neos8-enforce-role
 make test-neos8-enforce-provider
+make test-neos8-passwordless # webAuthn.passwordlessLoginEnabled: true
 
 make test-neos9             # same targets for neos9 / PHP 8.5
 
@@ -303,6 +400,7 @@ The `FLOW_CONTEXT` environment variable is passed into the docker compose enviro
 | `@enforce-for-all` | `Production/E2E-SUT/EnforceForAll` | `enforceTwoFactorAuthentication: true` |
 | `@enforce-for-role` | `Production/E2E-SUT/EnforceForRole` | Enforcement scoped to `Neos.Neos:Administrator` |
 | `@enforce-for-provider` | `Production/E2E-SUT/EnforceForProvider` | Enforcement scoped to an authentication provider |
+| `@passwordless` | `Production/E2E-SUT/Passwordless` | `webAuthn.passwordlessLoginEnabled: true` — passwordless passkey login |
 
 #### Test isolation
 

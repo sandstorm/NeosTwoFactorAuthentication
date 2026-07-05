@@ -2,9 +2,12 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newWebAuthn = Sandstorm.
     body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
         flashMessages = ${flashMessages}
 
-        teaserTitle = ${I18n.id('module.newWebAuthn.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
+        teaserTitle = ${discoverable
+            ? I18n.id('module.newWebAuthn.title').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()
+            : I18n.id('module.newWebAuthn.titleSecondFactor').package('Sandstorm.NeosTwoFactorAuthentication').source('Backend').translate()}
 
         content = Neos.Fusion:Component {
+            discoverable = ${discoverable}
             redirectUrl = Neos.Fusion:UriBuilder {
                 package = 'Sandstorm.NeosTwoFactorAuthentication'
                 controller = 'Backend'
@@ -17,6 +20,7 @@ Sandstorm.NeosTwoFactorAuthentication.BackendController.newWebAuthn = Sandstorm.
                 <Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep
                     flashMessages={flashMessages}
                     redirectUrl={props.redirectUrl}
+                    discoverable={props.discoverable}
                 />
             `
         }

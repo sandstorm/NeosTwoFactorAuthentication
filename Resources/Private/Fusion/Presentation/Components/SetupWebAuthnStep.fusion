@@ -3,6 +3,12 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
     # where to redirect on successful registration
     redirectUrl = '/neos'
 
+    # Whether this screen registers a discoverable, passwordless-capable passkey (true) or a plain
+    # second factor (false). The credential type is decided by the entry point that led here — the
+    # "Passkey Registration" section passes true, the "Create second factor" picker passes false —
+    # so this screen always shows a single button.
+    discoverable = false
+
     # Localized error strings handed to webauthn.js. Keys match the
     # DOMException name thrown by the browser; "result" / "default" /
     # "unsupported" are the fixed fallbacks the script always needs.
@@ -47,8 +53,11 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                     <button type="button"
                         class="neos-button neos-login-btn neos-two-factor__webauthn-button"
                         data-webauthn-trigger
+                        data-webauthn-discoverable={props.discoverable ? 'true' : 'false'}
                     >
-                        {I18n.id('webauthn.setup.button').package('Sandstorm.NeosTwoFactorAuthentication')}
+                        {props.discoverable
+                            ? I18n.id('webauthn.setup.button.passkey').package('Sandstorm.NeosTwoFactorAuthentication')
+                            : I18n.id('webauthn.setup.button.secondFactor').package('Sandstorm.NeosTwoFactorAuthentication')}
                     </button>
                 </div>
                 <div class="neos-tooltip neos-bottom neos-in neos-tooltip-error" data-webauthn-error style="display: none">

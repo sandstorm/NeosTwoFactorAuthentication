@@ -87,6 +87,12 @@ class BackendController extends AbstractModuleController
     protected $persistenceManager;
 
     /**
+     * @Flow\InjectConfiguration(path="webAuthn.passwordlessLoginEnabled")
+     * @var bool
+     */
+    protected $passwordlessLoginEnabled = false;
+
+    /**
      * used to list all second factors of the current user
      */
     public function indexAction()
@@ -111,10 +117,21 @@ class BackendController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'factorsAndPerson' => $factorsAndPerson,
+            'showPasskeyRegistration' => $this->showPasskeyRegistration(),
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),
         ]);
+    }
+
+    /**
+     * Whether to show the "Passkey Registration" section. Shown whenever passwordless login is
+     * enabled — a user may register several passwordless passkeys (e.g. a platform passkey plus a
+     * hardware key as backup), so the section stays available even after the first one.
+     */
+    protected function showPasskeyRegistration(): bool
+    {
+        return $this->passwordlessLoginEnabled;
     }
 
     /**
@@ -160,8 +177,13 @@ class BackendController extends AbstractModuleController
     /**
      * WebAuthn setup wizard. The JS on the page talks to LoginController's
      * webAuthnRegister(Options|Verify)Action XHR endpoints.
+     *
+     * @param bool $discoverable whether to register a discoverable passkey (reached from the
+     *                           "Passkey Registration" section) or a plain second factor (reached
+     *                           from the "Create second factor" method picker). The screen renders
+     *                           a single button accordingly.
      */
-    public function newWebAuthnAction(): void
+    public function newWebAuthnAction(bool $discoverable = false): void
     {
         $account = $this->securityContext->getAccount();
         $currentUser = $this->partyService->getAssignedPartyOfAccount($account);
@@ -169,6 +191,7 @@ class BackendController extends AbstractModuleController
         $this->view->assignMultiple([
             'currentUser' => $currentUser instanceof User ? $currentUser : null,
             'accountIdentifier' => $account->getAccountIdentifier(),
+            'discoverable' => $discoverable,
             'flashMessages' => $this->flashMessageService
                 ->getFlashMessageContainerForRequest($this->request)
                 ->getMessagesAndFlush(),

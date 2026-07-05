@@ -13,6 +13,7 @@ class SecondFactorSessionStorageService
     const SESSION_OBJECT_AUTH_STATUS = 'authenticationStatus';
     const SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS = 'webAuthnRegistrationOptions';
     const SESSION_OBJECT_WEBAUTHN_AUTHENTICATION_OPTIONS = 'webAuthnAuthenticationOptions';
+    const SESSION_OBJECT_WEBAUTHN_PASSWORDLESS_OPTIONS = 'webAuthnPasswordlessOptions';
 
     /**
      * @Flow\Inject
@@ -38,7 +39,10 @@ class SecondFactorSessionStorageService
     {
         $storageObject = $this->sessionManager->getCurrentSession()->getData(self::SESSION_OBJECT_ID);
 
-        return $storageObject[self::SESSION_OBJECT_AUTH_STATUS];
+        // The container may exist without an auth status: the passwordless login flow writes its
+        // options into the same container (via putValue) before any status is set. Treat a missing
+        // status as "not yet authenticated" instead of returning null and violating the return type.
+        return $storageObject[self::SESSION_OBJECT_AUTH_STATUS] ?? AuthenticationStatus::AUTHENTICATION_NEEDED;
     }
 
     /**
@@ -46,8 +50,13 @@ class SecondFactorSessionStorageService
      */
     public function initializeTwoFactorSessionObject(): void
     {
-        if (!$this->sessionManager->getCurrentSession()->hasKey(self::SESSION_OBJECT_ID)) {
-            self::setAuthenticationStatus(AuthenticationStatus::AUTHENTICATION_NEEDED);
+        // Gate on the auth status key, not merely the container's presence: the passwordless login
+        // flow populates the same container with its options (via putValue) before any status is
+        // written, so checking hasKey(SESSION_OBJECT_ID) would wrongly treat it as initialized and
+        // leave the status unset.
+        $data = $this->sessionManager->getCurrentSession()->getData(self::SESSION_OBJECT_ID) ?: [];
+        if (!isset($data[self::SESSION_OBJECT_AUTH_STATUS])) {
+            $this->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATION_NEEDED);
         }
     }
 
@@ -65,14 +74,27 @@ class SecondFactorSessionStorageService
         $session->putData(self::SESSION_OBJECT_ID, $data);
     }
 
-    /**
-     * @throws SessionNotStartedException
-     */
     public function getValue(string $key): mixed
     {
         $session = $this->sessionManager->getCurrentSession();
+        if (!$session->isStarted()) {
+            return null;
+        }
         $data = $session->getData(self::SESSION_OBJECT_ID) ?: [];
         return $data[$key] ?? null;
+    }
+
+    /**
+     * Start the current session if it has not been started yet. Needed for the passwordless
+     * login flow, which runs for a not-yet-authenticated visitor (so, unlike the 2nd-factor
+     * flow, there is no session started by the preceding password authentication).
+     */
+    public function startSessionIfNotStarted(): void
+    {
+        $session = $this->sessionManager->getCurrentSession();
+        if (!$session->isStarted()) {
+            $session->start();
+        }
     }
 
     /**

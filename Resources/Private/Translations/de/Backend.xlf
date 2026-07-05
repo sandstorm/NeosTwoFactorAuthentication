@@ -15,6 +15,18 @@
         <source>List of all registered second factors</source>
         <target>Liste aller registrierten zweiten Faktoren</target>
       </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.title" xml:space="preserve">
+        <source>Passkey Registration</source>
+        <target>Passkey-Registrierung</target>
+      </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.text" xml:space="preserve">
+        <source>Set up a passkey for faster sign-in without a password.</source>
+        <target>Richten Sie einen Passkey für die schnellere Anmeldung ohne Passwort ein.</target>
+      </trans-unit>
+      <trans-unit id="module.index.passkeyBanner.cta" xml:space="preserve">
+        <source>Register a passkey</source>
+        <target>Passkey registrieren</target>
+      </trans-unit>
       <trans-unit id="module.index.list.header.username" xml:space="preserve">
         <source>User</source>
         <target>Nutzer</target>
@@ -38,6 +50,14 @@
       <trans-unit id="module.index.create" xml:space="preserve">
         <source>Create second factor</source>
         <target>Zweiten Faktor erstellen</target>
+      </trans-unit>
+      <trans-unit id="module.create.title" xml:space="preserve">
+        <source>Create new second factor</source>
+        <target>Neuen zweiten Faktor erstellen</target>
+      </trans-unit>
+      <trans-unit id="module.create.description" xml:space="preserve">
+        <source>Setup a new second factor to secure your Neos account.</source>
+        <target>Richten Sie einen neuen zweiten Faktor ein, um Ihr Neos-Konto zu schützen.</target>
       </trans-unit>
 
       <trans-unit id="module.index.delete.header" xml:space="preserve">
@@ -102,8 +122,12 @@
         <target>Wählen Sie, welchen zweiten Faktor Sie einrichten möchten:</target>
       </trans-unit>
       <trans-unit id="module.newWebAuthn.title" xml:space="preserve">
-        <source>Register a security key</source>
-        <target>Sicherheitsschlüssel registrieren</target>
+        <source>Register a passkey</source>
+        <target>Passkey registrieren</target>
+      </trans-unit>
+      <trans-unit id="module.newWebAuthn.titleSecondFactor" xml:space="preserve">
+        <source>Register a security key as second factor</source>
+        <target>Sicherheitsschlüssel als zweiten Faktor registrieren</target>
       </trans-unit>
     </body>
   </file>

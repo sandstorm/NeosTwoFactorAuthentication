@@ -1,0 +1,10 @@
+# Append the passwordless passkey button to the core Neos backend login form.
+# Uses Neos.Fusion:Join (not afx interpolation) so the already-rendered form HTML is
+# concatenated verbatim instead of being HTML-escaped. The button component renders nothing
+# unless passwordless login is enabled, so when the feature is off the login screen is unchanged.
+prototype(Neos.Neos:Component.Login.Form) {
+    renderer.@process.appendPasswordlessPasskey = Neos.Fusion:Join {
+        loginForm = ${value}
+        passwordlessButton = Sandstorm.NeosTwoFactorAuthentication:Component.PasswordlessLoginButton
+    }
+}

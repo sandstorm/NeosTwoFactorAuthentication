@@ -8,8 +8,18 @@ import { generateOtp } from './totp.js';
  */
 const METHOD_LINK_NAME = {
   totp: 'Authenticator app',
-  webauthn: 'Security key (Yubikey / WebAuthn)',
+  webauthn: 'Passkey as second factor',
+  passkey: 'Register a passkey',
 } as const;
+
+/**
+ * Click the WebAuthn registration trigger. Each setup screen now shows a single button whose
+ * credential type (discoverable passkey vs. non-discoverable 2nd factor) is fixed by the entry
+ * point that led there, so we just click the lone trigger.
+ */
+async function clickWebAuthnRegisterTrigger(page: Page): Promise<void> {
+  await page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+}
 
 /**
  * The 2FA verification page shown on login when the account already has an
@@ -107,6 +117,21 @@ export class SecondFactorSetupPage {
     return this.page.locator('.neos-two-factor__method-picker').isVisible();
   }
 
+  /** The method-picker option (link) with the given accessible name. */
+  methodOption(name: string) {
+    return this.page.getByRole('link', { name, exact: true });
+  }
+
+  /** The "or" separator rendered inside the method picker (between option groups). */
+  methodSeparator() {
+    return this.page.locator('.neos-two-factor__method-picker .neos-two-factor__or-separator');
+  }
+
+  /** The enforcement-explanation notice shown above the method picker on the enforced-setup screen. */
+  enforcedNotice() {
+    return this.page.locator('.neos-two-factor__enforced-notice');
+  }
+
   async chooseTotp() {
     await this.page.getByRole('link', { name: METHOD_LINK_NAME.totp, exact: true }).click();
     await this.page.waitForURL('**/neos/second-factor-setup/totp');
@@ -115,6 +140,12 @@ export class SecondFactorSetupPage {
   async chooseWebAuthn() {
     await this.page.getByRole('link', { name: METHOD_LINK_NAME.webauthn, exact: true }).click();
     await this.page.waitForURL('**/neos/second-factor-setup/webauthn');
+  }
+
+  async choosePasskey() {
+    await this.page.getByRole('link', { name: METHOD_LINK_NAME.passkey, exact: true }).click();
+    // The passkey option carries discoverable=true as a query arg, so match with a trailing wildcard.
+    await this.page.waitForURL('**/neos/second-factor-setup/webauthn**');
   }
 
   async getSecret(): Promise<string> {
@@ -159,7 +190,20 @@ export class SecondFactorSetupPage {
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    await clickWebAuthnRegisterTrigger(this.page);
+  }
+
+  /**
+   * Walk the passwordless-passkey setup workflow from the method picker: pick the
+   * "Register a passkey" option (discoverable=true) and register. Requires a virtual
+   * authenticator on the browser context (see helpers/webauthn.ts).
+   */
+  async setupPasswordlessPasskey(name?: string) {
+    await this.choosePasskey();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await clickWebAuthnRegisterTrigger(this.page);
   }
 }
 
@@ -219,13 +263,52 @@ export class BackendModulePage {
    * Add a WebAuthn (security key) device through the new method-picker workflow.
    * Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
    */
+  /**
+   * Add a security-key SECOND FACTOR (non-discoverable) via the "Create second factor" method
+   * picker. Requires a virtual authenticator on the browser context (see helpers/webauthn.ts).
+   * To register a passwordless passkey instead, use registerPasskey().
+   */
   async addWebAuthnDevice(name?: string): Promise<void> {
     await this.chooseMethod('webauthn');
     if (name) {
       await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
     }
-    await this.page.locator('[data-webauthn-register] [data-webauthn-trigger]').click();
+    await clickWebAuthnRegisterTrigger(this.page);
     // Wait for redirect back to the index (table appears)
+    await this.page.locator('.neos-table').waitFor();
+  }
+
+  /**
+   * Register a passwordless passkey (discoverable) via the "Passkey Registration" section CTA on
+   * the index page. Only available when passwordless login is enabled. Requires a virtual
+   * authenticator on the browser context (see helpers/webauthn.ts).
+   */
+  async registerPasskey(name?: string): Promise<void> {
+    await this.goto();
+    await this.bannerLocator().locator('[data-test-id="register-passkey-cta"]').click();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await clickWebAuthnRegisterTrigger(this.page);
+    await this.page.locator('.neos-table').waitFor();
+  }
+
+  /** The "Passkey Registration" section, shown on the index whenever passwordless login is enabled. */
+  bannerLocator() {
+    return this.page.locator('[data-test-id="register-passkey-banner"]');
+  }
+
+  /**
+   * Follow the Passkey Registration section's call-to-action into the passkey wizard and complete
+   * it (assumes the index page is already open). Requires a virtual authenticator on the browser
+   * context (see helpers/webauthn.ts).
+   */
+  async registerPasskeyFromBanner(name?: string): Promise<void> {
+    await this.bannerLocator().locator('[data-test-id="register-passkey-cta"]').click();
+    if (name) {
+      await this.page.fill('[data-webauthn-register] [data-webauthn-name]', name);
+    }
+    await clickWebAuthnRegisterTrigger(this.page);
     await this.page.locator('.neos-table').waitFor();
   }
 
@@ -268,8 +351,14 @@ export class BackendModulePage {
     return this.page.locator('.neos-table tbody tr').filter({ hasText: name });
   }
 
-  /** Locator for table rows of a given type, e.g. "OTP code" or "Security Key". */
+  /**
+   * Locator for table rows of a given type, e.g. "OTP code", "Passkey" or
+   * "Passkey as 2nd factor". Matches the type cell exactly so "Passkey" does not also
+   * match "Passkey as 2nd factor" (substring matching would conflate the two).
+   */
   locatorForDeviceRowsOfType(typeLabel: string) {
-    return this.page.locator('.neos-table tbody tr').filter({ hasText: typeLabel });
+    return this.page.locator('.neos-table tbody tr').filter({
+      has: this.page.getByRole('cell', { name: typeLabel, exact: true }),
+    });
   }
 }

@@ -8,7 +8,19 @@ privilegeTargets:
     'Sandstorm.NeosTwoFactorAuthentication:BackendModule':
       matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\BackendController->(.*)Action())'
 
+    # Passwordless login must work for not-yet-authenticated users, so it has to be exempt from
+    # the Neos.Neos:AllControllerActions privilege (which requires a backend role). The actions
+    # are still hard-gated at runtime by the `webAuthn.passwordlessLoginEnabled` setting.
+    'Sandstorm.NeosTwoFactorAuthentication:PasswordlessLogin':
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\PasswordlessLoginController->(options|verify)Action())'
+
 roles:
+  'Neos.Flow:Everybody':
+    privileges:
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:PasswordlessLogin'
+        permission: GRANT
+
   'Neos.Neos:AbstractEditor':
     privileges:
       -

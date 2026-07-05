@@ -60,6 +60,17 @@ class SecondFactor
     protected DateTime|null $creationDate;
 
     /**
+     * Whether this credential is a discoverable (resident) credential — a "Passkey" that can be
+     * used for passwordless login. Non-discoverable credentials work only as a second factor
+     * ("Passkey as 2nd factor"). Only meaningful for TYPE_PUBLIC_KEY; TOTP factors are never
+     * discoverable. Legacy rows registered before passkey support default to false.
+     *
+     * @var bool
+     * @ORM\Column(options={"default": false})
+     */
+    protected bool $discoverable = false;
+
+    /**
      * @return Account
      */
     public function getAccount(): Account
@@ -84,12 +95,29 @@ class SecondFactor
     }
 
     /**
-     * Used in Fusion rendering
+     * Used in Fusion rendering. For WebAuthn credentials the label distinguishes a
+     * passwordless-capable "Passkey" (discoverable) from a "Passkey as 2nd factor"
+     * (non-discoverable, e.g. a legacy security key or one registered while passwordless
+     * login was disabled).
+     *
      * @return string
      */
     public function getTypeAsName(): string
     {
+        if ($this->type === self::TYPE_PUBLIC_KEY) {
+            return $this->discoverable ? 'Passkey' : 'Passkey as 2nd factor';
+        }
         return self::typeToString($this->getType());
+    }
+
+    public function isDiscoverable(): bool
+    {
+        return $this->discoverable;
+    }
+
+    public function setDiscoverable(bool $discoverable): void
+    {
+        $this->discoverable = $discoverable;
     }
 
     /**
@@ -175,7 +203,7 @@ class SecondFactor
             case self::TYPE_TOTP:
                 return 'OTP code';
             case self::TYPE_PUBLIC_KEY:
-                return 'Security Key';
+                return 'Passkey';
             default:
                 throw new InvalidArgumentException('Unsupported second factor type with index ' . $type);
         }

@@ -39,7 +39,10 @@ class SecondFactorSessionStorageService
     {
         $storageObject = $this->sessionManager->getCurrentSession()->getData(self::SESSION_OBJECT_ID);
 
-        return $storageObject[self::SESSION_OBJECT_AUTH_STATUS];
+        // The container may exist without an auth status: the passwordless login flow writes its
+        // options into the same container (via putValue) before any status is set. Treat a missing
+        // status as "not yet authenticated" instead of returning null and violating the return type.
+        return $storageObject[self::SESSION_OBJECT_AUTH_STATUS] ?? AuthenticationStatus::AUTHENTICATION_NEEDED;
     }
 
     /**
@@ -47,8 +50,13 @@ class SecondFactorSessionStorageService
      */
     public function initializeTwoFactorSessionObject(): void
     {
-        if (!$this->sessionManager->getCurrentSession()->hasKey(self::SESSION_OBJECT_ID)) {
-            self::setAuthenticationStatus(AuthenticationStatus::AUTHENTICATION_NEEDED);
+        // Gate on the auth status key, not merely the container's presence: the passwordless login
+        // flow populates the same container with its options (via putValue) before any status is
+        // written, so checking hasKey(SESSION_OBJECT_ID) would wrongly treat it as initialized and
+        // leave the status unset.
+        $data = $this->sessionManager->getCurrentSession()->getData(self::SESSION_OBJECT_ID) ?: [];
+        if (!isset($data[self::SESSION_OBJECT_AUTH_STATUS])) {
+            $this->setAuthenticationStatus(AuthenticationStatus::AUTHENTICATION_NEEDED);
         }
     }
 

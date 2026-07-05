@@ -52,3 +52,12 @@ Feature: Passwordless passkey login
     And I log out
     And I start a passkey sign-in but cancel it
     Then I should see the login page
+
+  # Regression: starting a passwordless ceremony seeds `webAuthnPasswordlessOptions` into the
+  # session (without an authentication status). Abandoning it and then logging in normally used
+  # to crash the SecondFactorMiddleware with a 500 (getAuthenticationStatus returning null).
+  Scenario: Abandoning a passwordless ceremony does not break a later password login
+    Given I have a virtual security key
+    And I start a passkey sign-in but cancel it
+    When I log in with username "admin" and password "password"
+    Then I should see the Neos content page

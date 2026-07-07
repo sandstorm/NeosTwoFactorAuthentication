@@ -66,7 +66,7 @@ production the backend must be served over HTTPS and this setting should stay em
 
 #### Passwordless passkey login
 
-<video controls src="docs/NeosTwoFactorAuth-PasskeyLogin.mov" title="Video of Login into Neos with Passkey"></video>
+[Demo Video](https://github.com/user-attachments/assets/29907363-ccda-4417-b501-e36921869e47)
 
 A discoverable passkey is inherently multi-factor (something you have + the verification you perform
 on the device), so it can serve as the **only** login step. When enabled, a "Sign in with a passkey"

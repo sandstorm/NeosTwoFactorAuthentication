@@ -19,12 +19,12 @@
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
+    "playwright-bdd": "^9.2.0",
     "prettier": "^3.8.4",
     "typescript": "^6.0.2"
   },
   "dependencies": {
     "@playwright/test": "^1.58.2",
-    "otplib": "^13.4.0",
-    "playwright-bdd": "^8.0.0"
+    "otplib": "^13.4.0"
   }
 }

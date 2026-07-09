@@ -15,7 +15,6 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\AuthenticationStatus;
 use Sandstorm\NeosTwoFactorAuthentication\Security\Token\WebAuthnPasswordlessToken;
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\WebAuthnService;
-use Webauthn\PublicKeyCredentialRequestOptions;
 
 /**
  * XHR endpoints for usernameless, passwordless passkey login from the Neos login screen.
@@ -71,12 +70,13 @@ class PasswordlessLoginController extends ActionController
         $this->secondFactorSessionStorageService->startSessionIfNotStarted();
         $hostname = $this->request->getHttpRequest()->getUri()->getHost();
         $options = $this->webAuthnService->createPasswordlessAuthenticationOptions($hostname);
+        $optionsJson = $this->webAuthnService->optionsToJson($options);
         $this->secondFactorSessionStorageService->putValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_PASSWORDLESS_OPTIONS,
-            json_encode($options, JSON_THROW_ON_ERROR)
+            $optionsJson
         );
         $this->response->setContentType('application/json');
-        return json_encode($options, JSON_THROW_ON_ERROR);
+        return $optionsJson;
     }
 
     /**
@@ -98,7 +98,7 @@ class PasswordlessLoginController extends ActionController
         if (!is_string($serialized)) {
             return $this->jsonError('No passwordless login in progress', 400);
         }
-        $options = PublicKeyCredentialRequestOptions::createFromString($serialized);
+        $options = $this->webAuthnService->requestOptionsFromJson($serialized);
 
         try {
             $account = $this->webAuthnService->verifyPasswordlessAssertion(

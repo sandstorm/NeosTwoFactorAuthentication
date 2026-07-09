@@ -7,21 +7,31 @@ use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Psr\Log\LoggerInterface;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
-use Webauthn\PublicKeyCredentialSource;
-use Webauthn\PublicKeyCredentialSourceRepository;
+use Webauthn\CredentialRecord;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
- * Adapter implementing the web-auth library's credential repository on top of
- * our generic {@see SecondFactorRepository}.
+ * Repository for stored WebAuthn credentials, backed by our generic {@see SecondFactorRepository}.
  *
- * Each row of TYPE_PUBLIC_KEY stores a JSON-serialized PublicKeyCredentialSource
- * in the `secret` column.
+ * Each row of TYPE_PUBLIC_KEY stores a JSON-serialized credential (written by
+ * {@see WebAuthnService}) in the `secret` column. Under web-auth/webauthn-lib v5 these are read
+ * back via the Symfony serializer as {@see CredentialRecord} objects.
+ *
+ * In v4 this class implemented the library's `PublicKeyCredentialSourceRepository` interface and the
+ * ceremony validators called it back to look up and save credentials. v5 removed that interface —
+ * the validators no longer touch a repository — so this is now plain application code that
+ * {@see WebAuthnService} drives directly (look up before `check()`, save the counter bump after).
  *
  * @Flow\Scope("singleton")
  */
-class PublicKeyCredentialSourceRepositoryAdapter implements PublicKeyCredentialSourceRepository
+class PublicKeyCredentialSourceRepositoryAdapter
 {
+    /**
+     * @Flow\Inject
+     * @var WebAuthnSerializerProvider
+     */
+    protected $serializerProvider;
+
     /**
      * @Flow\Inject
      * @var SecondFactorRepository
@@ -40,10 +50,10 @@ class PublicKeyCredentialSourceRepositoryAdapter implements PublicKeyCredentialS
      */
     protected $persistenceManager;
 
-    public function findOneByCredentialId(string $publicKeyCredentialId): ?PublicKeyCredentialSource
+    public function findOneByCredentialId(string $publicKeyCredentialId): ?CredentialRecord
     {
         foreach ($this->iterateAllWebAuthnFactors() as [$factor, $source]) {
-            if ($source->getPublicKeyCredentialId() === $publicKeyCredentialId) {
+            if ($source->publicKeyCredentialId === $publicKeyCredentialId) {
                 return $source;
             }
         }
@@ -51,42 +61,47 @@ class PublicKeyCredentialSourceRepositoryAdapter implements PublicKeyCredentialS
     }
 
     /**
-     * @return PublicKeyCredentialSource[]
+     * @return CredentialRecord[]
      */
     public function findAllForUserEntity(PublicKeyCredentialUserEntity $publicKeyCredentialUserEntity): array
     {
-        $userHandle = $publicKeyCredentialUserEntity->getId();
+        $userHandle = $publicKeyCredentialUserEntity->id;
         $sources = [];
         foreach ($this->iterateAllWebAuthnFactors() as [$factor, $source]) {
-            if ($source->getUserHandle() === $userHandle) {
+            if ($source->userHandle === $userHandle) {
                 $sources[] = $source;
             }
         }
         return $sources;
     }
 
-    public function saveCredentialSource(PublicKeyCredentialSource $publicKeyCredentialSource): void
+    /**
+     * Persist an updated credential (e.g. the counter bump returned by the assertion ceremony).
+     * In v5 the library no longer saves credentials itself, so {@see WebAuthnService} calls this
+     * after a successful `check()`.
+     */
+    public function saveCredential(CredentialRecord $credentialRecord): void
     {
-        // Update path: find the existing factor for this credential and bump the counter.
         foreach ($this->iterateAllWebAuthnFactors() as [$factor, $source]) {
-            if ($source->getPublicKeyCredentialId() === $publicKeyCredentialSource->getPublicKeyCredentialId()) {
-                $factor->setCredentialData($publicKeyCredentialSource->jsonSerialize());
+            if ($source->publicKeyCredentialId === $credentialRecord->publicKeyCredentialId) {
+                $factor->setSecret($this->serializerProvider->getSerializer()->serialize($credentialRecord, 'json'));
                 $this->secondFactorRepository->update($factor);
                 return;
             }
         }
         // No existing factor — initial registration is handled explicitly by
-        // WebAuthnService::persistNewCredential() so we ignore this branch.
+        // WebAuthnService::verifyAndPersistRegistration() so we ignore this branch.
     }
 
     /**
-     * @return \Generator<array{0: SecondFactor, 1: PublicKeyCredentialSource}>
+     * @return \Generator<array{0: SecondFactor, 1: CredentialRecord}>
      */
     private function iterateAllWebAuthnFactors(): \Generator
     {
+        $serializer = $this->serializerProvider->getSerializer();
         foreach ($this->secondFactorRepository->findAllByType(SecondFactor::TYPE_PUBLIC_KEY) as $factor) {
             try {
-                $source = PublicKeyCredentialSource::createFromArray($factor->getCredentialData());
+                $source = $serializer->deserialize($factor->getSecret(), CredentialRecord::class, 'json');
             } catch (\Throwable $exception) {
                 // A single corrupt/truncated credential row must not break the lookup for all
                 // other users. Skip it and log so the broken factor can be investigated.

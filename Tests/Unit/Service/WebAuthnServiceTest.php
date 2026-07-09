@@ -7,7 +7,9 @@ use Neos\Flow\Security\Account;
 use Neos\Flow\Tests\UnitTestCase;
 use Sandstorm\NeosTwoFactorAuthentication\Service\PublicKeyCredentialSourceRepositoryAdapter;
 use Sandstorm\NeosTwoFactorAuthentication\Service\WebAuthnService;
+use Sandstorm\NeosTwoFactorAuthentication\Service\WebAuthnSerializerProvider;
 use Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\PublicKeyCredentialRequestOptions;
 
 /**
  * Unit tests for the security-critical mapping from a passkey user handle to a Neos backend
@@ -178,5 +180,31 @@ class WebAuthnServiceTest extends UnitTestCase
 
         self::assertTrue($this->service->isDiscoverableRegistration($passkeyOptions));
         self::assertFalse($this->service->isDiscoverableRegistration($secondFactorOptions));
+    }
+
+    /**
+     * The controllers stash options in the session as JSON and hand them back to verify against.
+     * Under v5 that (de)serialization goes through the Symfony serializer (createFromString is
+     * gone), so a request-options object must survive a serialize -> deserialize round trip
+     * unchanged.
+     *
+     * @test
+     */
+    public function requestOptionsRoundTripThroughTheJsonHelpers(): void
+    {
+        $service = new WebAuthnService();
+        $this->inject($service, 'serializerProvider', new WebAuthnSerializerProvider());
+
+        $options = PublicKeyCredentialRequestOptions::create(
+            random_bytes(32),
+            rpId: 'neos.example.com',
+            userVerification: PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED,
+        );
+
+        $restored = $service->requestOptionsFromJson($service->optionsToJson($options));
+
+        self::assertSame($options->rpId, $restored->rpId);
+        self::assertSame($options->userVerification, $restored->userVerification);
+        self::assertSame($options->challenge, $restored->challenge);
     }
 }

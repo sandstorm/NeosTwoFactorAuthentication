@@ -27,8 +27,6 @@ use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorReposito
 use Sandstorm\NeosTwoFactorAuthentication\Service\SecondFactorSessionStorageService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\TOTPService;
 use Sandstorm\NeosTwoFactorAuthentication\Service\WebAuthnService;
-use Webauthn\PublicKeyCredentialCreationOptions;
-use Webauthn\PublicKeyCredentialRequestOptions;
 
 class LoginController extends ActionController
 {
@@ -324,12 +322,13 @@ class LoginController extends ActionController
         }
         $hostname = $this->request->getHttpRequest()->getUri()->getHost();
         $options = $this->webAuthnService->createRegistrationOptions($account, $hostname, $discoverable);
+        $optionsJson = $this->webAuthnService->optionsToJson($options);
         $this->secondFactorSessionStorageService->putValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_REGISTRATION_OPTIONS,
-            json_encode($options, JSON_THROW_ON_ERROR)
+            $optionsJson
         );
         $this->response->setContentType('application/json');
-        return json_encode($options, JSON_THROW_ON_ERROR);
+        return $optionsJson;
     }
 
     /**
@@ -345,7 +344,7 @@ class LoginController extends ActionController
         if (!is_string($serialized)) {
             return $this->jsonError('No registration in progress', 400);
         }
-        $options = PublicKeyCredentialCreationOptions::createFromString($serialized);
+        $options = $this->webAuthnService->creationOptionsFromJson($serialized);
         $account = $this->securityContext->getAccount();
         if ($account === null) {
             return $this->jsonError('No authentication in progress', 401);
@@ -385,12 +384,13 @@ class LoginController extends ActionController
             return $this->jsonError('No authentication in progress', 401);
         }
         $options = $this->webAuthnService->createAuthenticationOptions($account);
+        $optionsJson = $this->webAuthnService->optionsToJson($options);
         $this->secondFactorSessionStorageService->putValue(
             SecondFactorSessionStorageService::SESSION_OBJECT_WEBAUTHN_AUTHENTICATION_OPTIONS,
-            json_encode($options, JSON_THROW_ON_ERROR)
+            $optionsJson
         );
         $this->response->setContentType('application/json');
-        return json_encode($options, JSON_THROW_ON_ERROR);
+        return $optionsJson;
     }
 
     /**
@@ -404,7 +404,7 @@ class LoginController extends ActionController
         if (!is_string($serialized)) {
             return $this->jsonError('No authentication in progress', 400);
         }
-        $options = PublicKeyCredentialRequestOptions::createFromString($serialized);
+        $options = $this->webAuthnService->requestOptionsFromJson($serialized);
         $account = $this->securityContext->getAccount();
         if ($account === null) {
             return $this->jsonError('No authentication in progress', 401);

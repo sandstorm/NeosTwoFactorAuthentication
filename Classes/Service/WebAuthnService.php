@@ -12,28 +12,27 @@ use Neos\Flow\Security\Account;
 use Psr\Http\Message\ServerRequestInterface;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Model\SecondFactor;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
-use Webauthn\AttestationStatement\AttestationObjectLoader;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\FidoU2FAttestationStatementSupport;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
-use Webauthn\AuthenticationExtensions\ExtensionOutputCheckerHandler;
 use Webauthn\AuthenticatorAssertionResponse;
 use Webauthn\AuthenticatorAssertionResponseValidator;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
 use Webauthn\AuthenticatorSelectionCriteria;
+use Webauthn\CeremonyStep\CeremonyStepManagerFactory;
+use Webauthn\CredentialRecord;
+use Webauthn\PublicKeyCredential;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Webauthn\PublicKeyCredentialDescriptor;
-use Webauthn\PublicKeyCredentialLoader;
 use Webauthn\PublicKeyCredentialParameters;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Webauthn\PublicKeyCredentialRpEntity;
-use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
 
 /**
  * Implements the WebAuthn registration and authentication ceremonies on top of
- * the web-auth/webauthn-lib library.
+ * the web-auth/webauthn-lib library (v5).
  *
  * @Flow\Scope("singleton")
  */
@@ -76,10 +75,16 @@ class WebAuthnService
     protected $passwordlessLoginEnabled = false;
 
     /**
-     * `lazy=false` so the real adapter (not a DependencyProxy) is passed into the
-     * web-auth validator constructors, which strict-type-hint the interface.
+     * @Flow\Inject
+     * @var WebAuthnSerializerProvider
+     */
+    protected $serializerProvider;
+
+    /**
+     * Our own credential repository. In v5 the ceremony validators no longer call back into a
+     * repository, so we look credentials up and persist counter bumps through this ourselves.
      *
-     * @Flow\Inject(lazy=false)
+     * @Flow\Inject
      * @var PublicKeyCredentialSourceRepositoryAdapter
      */
     protected $credentialSourceRepository;
@@ -117,22 +122,19 @@ class WebAuthnService
 
         // Exclude already-registered credentials so the browser refuses to register the same key twice.
         $excludeCredentials = array_map(
-            fn(PublicKeyCredentialSource $src): PublicKeyCredentialDescriptor => $src->getPublicKeyCredentialDescriptor(),
+            fn(CredentialRecord $src): PublicKeyCredentialDescriptor => $src->getPublicKeyCredentialDescriptor(),
             $this->credentialSourceRepository->findAllForUserEntity($userEntity)
         );
 
         $challenge = random_bytes(32);
 
         $publicKeyCredentialParametersList = [
-            new PublicKeyCredentialParameters('public-key', ECDSA\ES256::ID),
-            new PublicKeyCredentialParameters('public-key', ECDSA\ES384::ID),
-            new PublicKeyCredentialParameters('public-key', ECDSA\ES512::ID),
-            new PublicKeyCredentialParameters('public-key', RSA\RS256::ID),
-            new PublicKeyCredentialParameters('public-key', EdDSA\Ed25519::ID),
+            PublicKeyCredentialParameters::create('public-key', ECDSA\ES256::ID),
+            PublicKeyCredentialParameters::create('public-key', ECDSA\ES384::ID),
+            PublicKeyCredentialParameters::create('public-key', ECDSA\ES512::ID),
+            PublicKeyCredentialParameters::create('public-key', RSA\RS256::ID),
+            PublicKeyCredentialParameters::create('public-key', EdDSA\Ed25519::ID),
         ];
-
-        $authenticatorSelection = AuthenticatorSelectionCriteria::create()
-            ->setUserVerification($this->userVerification);
 
         // Register a discoverable (resident), user-verified passkey only when the user opted into
         // it AND passwordless login is enabled — such a credential works both for one-tap
@@ -140,23 +142,29 @@ class WebAuthnService
         // credential can never be minted while passwordless login is off. Any other registration
         // keeps the configured user-verification level and no resident-key requirement, so
         // touch-only / U2F-only keys keep working as a plain 2nd factor.
-        $registerAsPasskey = $discoverable && $this->passwordlessLoginEnabled;
-        if ($registerAsPasskey) {
-            $authenticatorSelection
-                ->setResidentKey(AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED)
-                ->setUserVerification(AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED);
+        $residentKey = AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_NO_PREFERENCE;
+        $userVerification = $this->userVerification;
+        if ($discoverable && $this->passwordlessLoginEnabled) {
+            $residentKey = AuthenticatorSelectionCriteria::RESIDENT_KEY_REQUIREMENT_REQUIRED;
+            $userVerification = AuthenticatorSelectionCriteria::USER_VERIFICATION_REQUIREMENT_REQUIRED;
         }
+
+        // v5 options objects are immutable — configured via named constructor arguments, not setters.
+        $authenticatorSelection = AuthenticatorSelectionCriteria::create(
+            userVerification: $userVerification,
+            residentKey: $residentKey,
+        );
 
         return PublicKeyCredentialCreationOptions::create(
             $rp,
             $userEntity,
             $challenge,
-            $publicKeyCredentialParametersList
-        )
-            ->setTimeout($this->timeoutMs)
-            ->setAuthenticatorSelection($authenticatorSelection)
-            ->setAttestation(PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE)
-            ->excludeCredentials(...$excludeCredentials);
+            pubKeyCredParams: $publicKeyCredentialParametersList,
+            authenticatorSelection: $authenticatorSelection,
+            attestation: PublicKeyCredentialCreationOptions::ATTESTATION_CONVEYANCE_PREFERENCE_NONE,
+            excludeCredentials: $excludeCredentials,
+            timeout: $this->timeoutMs,
+        );
     }
 
     /**
@@ -183,22 +191,24 @@ class WebAuthnService
         ServerRequestInterface $request,
         string $name = ''
     ): SecondFactor {
-        $publicKeyCredentialLoader = $this->buildCredentialLoader();
-        $publicKeyCredential = $publicKeyCredentialLoader->load($attestationResponseJson);
-        $authenticatorResponse = $publicKeyCredential->getResponse();
+        $publicKeyCredential = $this->serializerProvider->getSerializer()
+            ->deserialize($attestationResponseJson, PublicKeyCredential::class, 'json');
+        $authenticatorResponse = $publicKeyCredential->response;
         if (!$authenticatorResponse instanceof AuthenticatorAttestationResponse) {
             throw new \RuntimeException('Response is not an AuthenticatorAttestationResponse', 1747750000);
         }
 
-        $validator = $this->buildAttestationValidator();
-        $credentialSource = $validator->check($authenticatorResponse, $options, $request, $this->securedRelyingPartyIds);
+        $validator = AuthenticatorAttestationResponseValidator::create(
+            $this->buildCeremonyStepManagerFactory()->creationCeremony()
+        );
+        $credentialRecord = $validator->check($authenticatorResponse, $options, $request->getUri()->getHost());
 
         // Whether this credential is a discoverable "Passkey" is derived from the options it was
         // registered with (see isDiscoverableRegistration / createRegistrationOptions): a passkey
         // registration requested a resident key, a 2nd-factor registration did not. This keeps the
         // stored flag faithful to the per-registration choice rather than the global setting.
         return $this->secondFactorRepository->createSecondFactorForAccount(
-            json_encode($credentialSource->jsonSerialize(), JSON_THROW_ON_ERROR),
+            $this->serializerProvider->getSerializer()->serialize($credentialRecord, 'json'),
             $account,
             SecondFactor::TYPE_PUBLIC_KEY,
             $name,
@@ -214,20 +224,22 @@ class WebAuthnService
     {
         $userEntity = $this->buildUserEntity($account);
         $allowedCredentials = array_map(
-            fn(PublicKeyCredentialSource $src): PublicKeyCredentialDescriptor => $src->getPublicKeyCredentialDescriptor(),
+            fn(CredentialRecord $src): PublicKeyCredentialDescriptor => $src->getPublicKeyCredentialDescriptor(),
             $this->credentialSourceRepository->findAllForUserEntity($userEntity)
         );
 
-        return PublicKeyCredentialRequestOptions::create(random_bytes(32))
-            ->setTimeout($this->timeoutMs)
-            ->setRpId($this->relyingPartyId)
-            ->setUserVerification($this->userVerification)
-            ->allowCredentials(...$allowedCredentials);
+        return PublicKeyCredentialRequestOptions::create(
+            random_bytes(32),
+            rpId: $this->relyingPartyId,
+            allowCredentials: $allowedCredentials,
+            userVerification: $this->userVerification,
+            timeout: $this->timeoutMs,
+        );
     }
 
     /**
      * Verify the assertion response returned by the browser. On success returns
-     * the updated credential source (counter bumped) and the matching SecondFactor.
+     * the updated credential (counter bumped) which is also persisted.
      *
      * @throws \Throwable when validation fails
      */
@@ -236,25 +248,37 @@ class WebAuthnService
         PublicKeyCredentialRequestOptions $options,
         Account $account,
         ServerRequestInterface $request
-    ): PublicKeyCredentialSource {
-        $publicKeyCredentialLoader = $this->buildCredentialLoader();
-        $publicKeyCredential = $publicKeyCredentialLoader->load($assertionResponseJson);
-        $authenticatorResponse = $publicKeyCredential->getResponse();
+    ): CredentialRecord {
+        $publicKeyCredential = $this->serializerProvider->getSerializer()
+            ->deserialize($assertionResponseJson, PublicKeyCredential::class, 'json');
+        $authenticatorResponse = $publicKeyCredential->response;
         if (!$authenticatorResponse instanceof AuthenticatorAssertionResponse) {
             throw new \RuntimeException('Response is not an AuthenticatorAssertionResponse', 1747750001);
         }
 
-        $userHandle = $this->buildUserHandle($account);
-        $validator = $this->buildAssertionValidator();
+        // In v5 check() takes the stored credential itself, so we look it up first.
+        $credentialSource = $this->credentialSourceRepository->findOneByCredentialId($publicKeyCredential->rawId);
+        if ($credentialSource === null) {
+            throw new \RuntimeException('Unknown credential', 1747750002);
+        }
 
-        return $validator->check(
-            $publicKeyCredential->getRawId(),
+        $userHandle = $this->buildUserHandle($account);
+        $validator = AuthenticatorAssertionResponseValidator::create(
+            $this->buildCeremonyStepManagerFactory()->requestCeremony()
+        );
+
+        $updatedCredential = $validator->check(
+            $credentialSource,
             $authenticatorResponse,
             $options,
-            $request,
-            $userHandle,
-            $this->securedRelyingPartyIds
+            $request->getUri()->getHost(),
+            $userHandle
         );
+
+        // v5 no longer persists the credential itself; save the bumped counter ourselves.
+        $this->credentialSourceRepository->saveCredential($updatedCredential);
+
+        return $updatedCredential;
     }
 
     /**
@@ -265,10 +289,12 @@ class WebAuthnService
      */
     public function createPasswordlessAuthenticationOptions(string $hostname): PublicKeyCredentialRequestOptions
     {
-        return PublicKeyCredentialRequestOptions::create(random_bytes(32))
-            ->setTimeout($this->timeoutMs)
-            ->setRpId($this->relyingPartyId ?: $hostname)
-            ->setUserVerification(PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED);
+        return PublicKeyCredentialRequestOptions::create(
+            random_bytes(32),
+            rpId: $this->relyingPartyId ?: $hostname,
+            userVerification: PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_REQUIRED,
+            timeout: $this->timeoutMs,
+        );
     }
 
     /**
@@ -287,29 +313,33 @@ class WebAuthnService
         PublicKeyCredentialRequestOptions $options,
         ServerRequestInterface $request
     ): Account {
-        $publicKeyCredentialLoader = $this->buildCredentialLoader();
-        $publicKeyCredential = $publicKeyCredentialLoader->load($assertionResponseJson);
-        $authenticatorResponse = $publicKeyCredential->getResponse();
+        $publicKeyCredential = $this->serializerProvider->getSerializer()
+            ->deserialize($assertionResponseJson, PublicKeyCredential::class, 'json');
+        $authenticatorResponse = $publicKeyCredential->response;
         if (!$authenticatorResponse instanceof AuthenticatorAssertionResponse) {
             throw new \RuntimeException('Response is not an AuthenticatorAssertionResponse', 1751200000);
         }
 
-        $rawId = $publicKeyCredential->getRawId();
+        $rawId = $publicKeyCredential->rawId;
         $credentialSource = $this->credentialSourceRepository->findOneByCredentialId($rawId);
         if ($credentialSource === null) {
             throw new \RuntimeException('Unknown passkey credential', 1751200001);
         }
 
-        $userHandle = $credentialSource->getUserHandle();
-        $validator = $this->buildAssertionValidator();
-        $validator->check(
-            $rawId,
+        $userHandle = $credentialSource->userHandle;
+        $validator = AuthenticatorAssertionResponseValidator::create(
+            $this->buildCeremonyStepManagerFactory()->requestCeremony()
+        );
+        $updatedCredential = $validator->check(
+            $credentialSource,
             $authenticatorResponse,
             $options,
-            $request,
-            $userHandle,
-            $this->securedRelyingPartyIds
+            $request->getUri()->getHost(),
+            $userHandle
         );
+
+        // Persist the bumped counter so replay protection stays effective across logins.
+        $this->credentialSourceRepository->saveCredential($updatedCredential);
 
         return $this->resolveBackendAccountByUserHandle($userHandle);
     }
@@ -335,9 +365,31 @@ class WebAuthnService
         return $account;
     }
 
+    /**
+     * Serialize registration/authentication options for transport to the browser and for storage
+     * in the session across the options -> verify round trip. Centralised here so the controllers
+     * do not touch webauthn-lib serialization directly.
+     */
+    public function optionsToJson(PublicKeyCredentialCreationOptions|PublicKeyCredentialRequestOptions $options): string
+    {
+        return $this->serializerProvider->getSerializer()->serialize($options, 'json');
+    }
+
+    public function creationOptionsFromJson(string $json): PublicKeyCredentialCreationOptions
+    {
+        return $this->serializerProvider->getSerializer()
+            ->deserialize($json, PublicKeyCredentialCreationOptions::class, 'json');
+    }
+
+    public function requestOptionsFromJson(string $json): PublicKeyCredentialRequestOptions
+    {
+        return $this->serializerProvider->getSerializer()
+            ->deserialize($json, PublicKeyCredentialRequestOptions::class, 'json');
+    }
+
     private function buildUserEntity(Account $account): PublicKeyCredentialUserEntity
     {
-        return new PublicKeyCredentialUserEntity(
+        return PublicKeyCredentialUserEntity::create(
             $account->getAccountIdentifier(),
             $this->buildUserHandle($account),
             $account->getAccountIdentifier()
@@ -355,36 +407,25 @@ class WebAuthnService
         return $id;
     }
 
-    private function buildCredentialLoader(): PublicKeyCredentialLoader
+    /**
+     * Build the ceremony-step configuration shared by the attestation and assertion validators.
+     *
+     * In v4 the algorithm manager, attestation support, extension handler and secured relying party
+     * ids were passed piecemeal to the validator constructors (and the origin/host came from the
+     * PSR request). v5 collects all of this into a CeremonyStepManager. We deliberately leave
+     * allowed-origins unset and configure `securedRelyingPartyId` instead, so origin validation
+     * stays host-based (dynamic multi-domain) exactly as before; the request host is passed to
+     * check() per call.
+     */
+    private function buildCeremonyStepManagerFactory(): CeremonyStepManagerFactory
     {
-        $attestationManager = $this->buildAttestationStatementSupportManager();
-        $attestationObjectLoader = new AttestationObjectLoader($attestationManager);
-        return new PublicKeyCredentialLoader($attestationObjectLoader);
-    }
-
-    private function buildAttestationValidator(): AuthenticatorAttestationResponseValidator
-    {
-        return new AuthenticatorAttestationResponseValidator(
-            $this->buildAttestationStatementSupportManager(),
-            $this->credentialSourceRepository,
-            null,
-            new ExtensionOutputCheckerHandler()
-        );
-    }
-
-    private function buildAttestationStatementSupportManager(): AttestationStatementSupportManager
-    {
-        $manager = new AttestationStatementSupportManager();
-        $manager->add(new NoneAttestationStatementSupport());
+        $attestationStatementSupportManager = AttestationStatementSupportManager::create();
+        $attestationStatementSupportManager->add(NoneAttestationStatementSupport::create());
         // FidoU2F is needed for U2F-only authenticators (e.g. YubiKey 4) registered via
         // the browser's U2F-compat fallback — they return `fido-u2f` attestation regardless
         // of the requested `attestation: none` conveyance preference.
-        $manager->add(new FidoU2FAttestationStatementSupport());
-        return $manager;
-    }
+        $attestationStatementSupportManager->add(FidoU2FAttestationStatementSupport::create());
 
-    private function buildAssertionValidator(): AuthenticatorAssertionResponseValidator
-    {
         $algorithmManager = CoseAlgorithmManager::create()
             ->add(new ECDSA\ES256())
             ->add(new ECDSA\ES384())
@@ -392,11 +433,11 @@ class WebAuthnService
             ->add(new RSA\RS256())
             ->add(new EdDSA\Ed25519());
 
-        return new AuthenticatorAssertionResponseValidator(
-            $this->credentialSourceRepository,
-            null,
-            new ExtensionOutputCheckerHandler(),
-            $algorithmManager
-        );
+        $factory = new CeremonyStepManagerFactory();
+        $factory->setAttestationStatementSupportManager($attestationStatementSupportManager);
+        $factory->setAlgorithmManager($algorithmManager);
+        $factory->setSecuredRelyingPartyId($this->securedRelyingPartyIds);
+
+        return $factory;
     }
 }

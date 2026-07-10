@@ -4,6 +4,8 @@ Extend the Neos backend login to support second factors and passwordless passkey
 TOTP tokens (Authenticator apps) and WebAuthn / FIDO2 passkeys — both platform authenticators
 (Touch ID, Windows Hello) and hardware security keys (e.g. Yubikey).
 
+> ⚠️ **Security Notice:** Versions prior to `4.0.0` are affected by a security vulnerability in the underlying `web-authn-lib` dependency used for WebAuthn/FIDO2 second-factor authentication. This has been fixed in v4. **Please upgrade to v4 or later immediately** — see [PR #56](https://github.com/sandstorm/NeosTwoFactorAuthentication/pull/56) for details.
+
 ## What this package does
 
 This package allows all users to register multiple second factors — either a user- and passwordless **Passkey**, or a second factor in addition to their username and password. Second factors can be **TOTP tokens** (Authenticator App) or **passkeys** (WebAuthn / FIDO2: a platform authenticator such as Touch ID or
@@ -124,11 +126,12 @@ verification — independent of the `userVerification` setting.
 
 ## Versioning Scheme
 
-| Package Version | Neos / Flow Version | Released? | Supported | Remarks       |
-| --------------- | ------------------- | --------- | --------- |---------------|
-| 3.x             | 9.x, 8.x.           | ✅        | ✅        | `main` branch |
-| 2.x             | 9.x, 8.x, 7.x       | ✅        |           | `main` branch |
-| 1.x             | 9.x, 8.x, 7.x, 3.x  | ✅        |           |               |
+| Package Version | Neos / Flow Version | Supported | Remarks       |
+| --------------- | ------------------- | --------- |---------------|
+| 4.x             | 9.x, 8.x.           | ✅        | `main` branch |
+| 3.x             | 9.x, 8.x.           |           |               |
+| 2.x             | 9.x, 8.x, 7.x       |           |               |
+| 1.x             | 9.x, 8.x, 7.x, 3.x  |           |               |
 
 ## Settings
 

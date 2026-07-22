@@ -25,7 +25,7 @@ RUN \
 # Install Neos base distribution
 ARG NEOS_VERSION
 RUN rm -rf /app \
-  && composer create-project neos/neos-base-distribution:^${NEOS_VERSION} /app
+  && composer create-project --stability dev neos/neos-base-distribution:^${NEOS_VERSION} /app
 
 # Add config files
 # NOTE: must run AFTER `create-project`, since that does `rm -rf /app` and would

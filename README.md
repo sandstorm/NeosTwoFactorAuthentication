@@ -6,6 +6,12 @@ TOTP tokens (Authenticator apps) and WebAuthn / FIDO2 passkeys — both platform
 
 > ⚠️ **Security Notice:** Versions prior to `4.0.0` are affected by a security vulnerability in the underlying `web-authn-lib` dependency used for WebAuthn/FIDO2 second-factor authentication. This has been fixed in v4. **Please upgrade to v4 or later immediately** — see [PR #56](https://github.com/sandstorm/NeosTwoFactorAuthentication/pull/56) for details.
 
+## Installation
+
+```
+composer require sandstorm/neostwofactorauthentication
+```
+
 ## What this package does
 
 This package allows all users to register multiple second factors — either a user- and passwordless **Passkey**, or a second factor in addition to their username and password. Second factors can be **TOTP tokens** (Authenticator App) or **passkeys** (WebAuthn / FIDO2: a platform authenticator such as Touch ID or

@@ -12,7 +12,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.CancelLoginButton) < p
             <Neos.Fusion.Form:Button
                 attributes.type="submit"
                 attributes.formnovalidate="true"
-                attributes.class="neos-two-factor__cancel-login__button"
+                attributes.class="neos-button neos-two-factor__cancel-login__button"
                 attributes.aria-label={I18n.id('login.cancel').value('Cancel and return to login').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
             >
                 {I18n.id('login.cancel').value('Cancel and return to login').package('Sandstorm.NeosTwoFactorAuthentication').translate()}

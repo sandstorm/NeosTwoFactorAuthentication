@@ -62,6 +62,10 @@
         <source>Your password has been set. You can log in now.</source>
         <target>Ihr Passwort wurde gesetzt. Sie können sich jetzt anmelden.</target>
       </trans-unit>
+      <trans-unit id="password.set.successUsernameChanged" xml:space="preserve">
+        <source>Your password has been set. Your username is now {0} - use it to log in.</source>
+        <target>Ihr Passwort wurde gesetzt. Ihr Benutzername lautet jetzt {0} - melden Sie sich damit an.</target>
+      </trans-unit>
       <trans-unit id="password.error.mismatch" xml:space="preserve">
         <source>The passwords do not match.</source>
         <target>Die Passwörter stimmen nicht überein.</target>
@@ -81,6 +85,10 @@
       <trans-unit id="email.confirm.success" xml:space="preserve">
         <source>Thank you, your email address has been confirmed.</source>
         <target>Vielen Dank, Ihre E-Mail-Adresse wurde bestätigt.</target>
+      </trans-unit>
+      <trans-unit id="email.confirm.successUsernameChanged" xml:space="preserve">
+        <source>Thank you, your email address has been confirmed. Your username is now {0} - please log in again with it.</source>
+        <target>Vielen Dank, Ihre E-Mail-Adresse wurde bestätigt. Ihr Benutzername lautet jetzt {0} - bitte melden Sie sich damit erneut an.</target>
       </trans-unit>
       <trans-unit id="email.validated" xml:space="preserve">
         <source>validated</source>
@@ -189,6 +197,14 @@
       <trans-unit id="flash.emailMarkedValidated" xml:space="preserve">
         <source>The email address has been marked as validated.</source>
         <target>Die E-Mail-Adresse wurde als validiert markiert.</target>
+      </trans-unit>
+      <trans-unit id="flash.usernameChanged" xml:space="preserve">
+        <source>The username {0} has been changed to {1}, the user has been logged out.</source>
+        <target>Der Benutzername {0} wurde in {1} geändert, der*die Benutzer*in wurde abgemeldet.</target>
+      </trans-unit>
+      <trans-unit id="flash.usernameNotChanged" xml:space="preserve">
+        <source>The username {0} has not been changed to {1}: the name is already taken.</source>
+        <target>Der Benutzername {0} wurde nicht in {1} geändert: Der Name ist bereits vergeben.</target>
       </trans-unit>
       <trans-unit id="flash.secondFactorsReset" xml:space="preserve">
         <source>{0} second factor(s) have been removed.</source>
@@ -335,8 +351,8 @@
         <target>Eine Änderung der E-Mail-Adresse setzt die Validierung zurück und sendet eine Bestätigungs-Mail.</target>
       </trans-unit>
       <trans-unit id="module.edit.emailChangeHintUsernameIsEmail" xml:space="preserve">
-        <source>Changing the email address resets its validation and sends a confirmation mail. The username is NOT changed.</source>
-        <target>Eine Änderung der E-Mail-Adresse setzt die Validierung zurück und sendet eine Bestätigungs-Mail. Der Benutzername wird NICHT geändert.</target>
+        <source>Changing the email address resets its validation and sends a confirmation mail. Once the new address is confirmed, it becomes the username and the user is logged out.</source>
+        <target>Eine Änderung der E-Mail-Adresse setzt die Validierung zurück und sendet eine Bestätigungs-Mail. Sobald die neue Adresse bestätigt ist, wird sie zum Benutzernamen und der*die Benutzer*in wird abgemeldet.</target>
       </trans-unit>
       <trans-unit id="module.edit.activeHint" xml:space="preserve">
         <source>Inactive users cannot log in.</source>
@@ -469,6 +485,18 @@
       <trans-unit id="mail.testMail.body" xml:space="preserve">
         <source>this is a test mail - the mail configuration works.</source>
         <target>dies ist eine Test-Mail - die Mail-Konfiguration funktioniert.</target>
+      </trans-unit>
+      <trans-unit id="mail.usernameChanged.subject" xml:space="preserve">
+        <source>Your username has changed</source>
+        <target>Ihr Benutzername wurde geändert</target>
+      </trans-unit>
+      <trans-unit id="mail.usernameChanged.body" xml:space="preserve">
+        <source>your email address has been confirmed. From now on, log in with the username {0} (previously: {1}).</source>
+        <target>Ihre E-Mail-Adresse wurde bestätigt. Melden Sie sich ab sofort mit dem Benutzernamen {0} an (bisher: {1}).</target>
+      </trans-unit>
+      <trans-unit id="mail.usernameChanged.loggedOut" xml:space="preserve">
+        <source>For security reasons, you have been logged out everywhere.</source>
+        <target>Aus Sicherheitsgründen wurden Sie überall abgemeldet.</target>
       </trans-unit>
     </body>
   </file>

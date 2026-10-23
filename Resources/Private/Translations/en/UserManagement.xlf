@@ -47,6 +47,9 @@
       <trans-unit id="password.set.success" xml:space="preserve">
         <source>Your password has been set. You can log in now.</source>
       </trans-unit>
+      <trans-unit id="password.set.successUsernameChanged" xml:space="preserve">
+        <source>Your password has been set. Your username is now {0} - use it to log in.</source>
+      </trans-unit>
       <trans-unit id="password.error.mismatch" xml:space="preserve">
         <source>The passwords do not match.</source>
       </trans-unit>
@@ -61,6 +64,9 @@
       </trans-unit>
       <trans-unit id="email.confirm.success" xml:space="preserve">
         <source>Thank you, your email address has been confirmed.</source>
+      </trans-unit>
+      <trans-unit id="email.confirm.successUsernameChanged" xml:space="preserve">
+        <source>Thank you, your email address has been confirmed. Your username is now {0} - please log in again with it.</source>
       </trans-unit>
       <trans-unit id="email.validated" xml:space="preserve">
         <source>validated</source>
@@ -142,6 +148,12 @@
       </trans-unit>
       <trans-unit id="flash.emailMarkedValidated" xml:space="preserve">
         <source>The email address has been marked as validated.</source>
+      </trans-unit>
+      <trans-unit id="flash.usernameChanged" xml:space="preserve">
+        <source>The username {0} has been changed to {1}, the user has been logged out.</source>
+      </trans-unit>
+      <trans-unit id="flash.usernameNotChanged" xml:space="preserve">
+        <source>The username {0} has not been changed to {1}: the name is already taken.</source>
       </trans-unit>
       <trans-unit id="flash.secondFactorsReset" xml:space="preserve">
         <source>{0} second factor(s) have been removed.</source>
@@ -252,7 +264,7 @@
         <source>Changing the email address resets its validation and sends a confirmation mail.</source>
       </trans-unit>
       <trans-unit id="module.edit.emailChangeHintUsernameIsEmail" xml:space="preserve">
-        <source>Changing the email address resets its validation and sends a confirmation mail. The username is NOT changed.</source>
+        <source>Changing the email address resets its validation and sends a confirmation mail. Once the new address is confirmed, it becomes the username and the user is logged out.</source>
       </trans-unit>
       <trans-unit id="module.edit.activeHint" xml:space="preserve">
         <source>Inactive users cannot log in.</source>
@@ -352,6 +364,15 @@
       </trans-unit>
       <trans-unit id="mail.testMail.body" xml:space="preserve">
         <source>this is a test mail - the mail configuration works.</source>
+      </trans-unit>
+      <trans-unit id="mail.usernameChanged.subject" xml:space="preserve">
+        <source>Your username has changed</source>
+      </trans-unit>
+      <trans-unit id="mail.usernameChanged.body" xml:space="preserve">
+        <source>your email address has been confirmed. From now on, log in with the username {0} (previously: {1}).</source>
+      </trans-unit>
+      <trans-unit id="mail.usernameChanged.loggedOut" xml:space="preserve">
+        <source>For security reasons, you have been logged out everywhere.</source>
       </trans-unit>
     </body>
   </file>

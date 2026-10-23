@@ -1,0 +1,5 @@
+# inherits Production/E2E-SUT/UserManagement
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    userManagement:
+      usernameIsEmail: true

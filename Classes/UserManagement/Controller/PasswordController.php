@@ -11,6 +11,7 @@ use Neos\Neos\Validation\Validator\PasswordValidator;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\PasswordResetRequestHandler;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserActionTokenService;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserCommandService;
+use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\Dto\UsernameChange;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\UserActionType;
 
 /**
@@ -78,11 +79,11 @@ class PasswordController extends AbstractPublicController
         }
 
         $this->tokenService->consume($userActionToken);
-        $this->userCommandService->setPasswordWithToken($userActionToken->getAccount(), $password);
+        $newUsername = UsernameChange::firstNewUsername($this->userCommandService->setPasswordWithToken($userActionToken->getAccount(), $password));
 
         // no auto-login: the user logs in regularly, so 2FA stays in force
         $this->addFlashMessage(
-            $this->translate('password.set.success'),
+            $newUsername !== null ? $this->translate('password.set.successUsernameChanged', [$newUsername]) : $this->translate('password.set.success'),
             '',
             Message::SEVERITY_OK
         );

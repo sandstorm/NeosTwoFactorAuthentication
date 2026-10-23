@@ -79,8 +79,12 @@ class UserManagementCommandController extends CommandController
             $this->outputLine('<error>%s</error>', [$e->getMessage()]);
             $this->quit(1);
         }
-        if ($validated) {
-            $this->userCommandService->markEmailValidated($user);
+        $usernameChanges = $validated ? $this->userCommandService->markEmailValidated($user) : [];
+        foreach ($usernameChanges as $usernameChange) {
+            $this->outputLine(
+                $usernameChange->changed ? 'Username %s changed to %s.' : '<error>Username %s not changed to %s, the name is taken.</error>',
+                [$usernameChange->oldUsername, $usernameChange->newUsername]
+            );
         }
         $this->persistenceManager->persistAll();
         $this->outputLine('<success>Primary email of %s set to %s (%s).</success>', [$username, $email, $validated ? 'validated' : 'not validated']);

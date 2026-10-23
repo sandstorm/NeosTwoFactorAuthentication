@@ -11,7 +11,7 @@ Sandstorm:
       # Forgot password only sends a mail to validated (approved) primary email addresses.
       requireValidatedEmail: true
       # On create, the account identifier is the email address; the username field is hidden.
-      # Changing the email later does NOT rename the account identifier.
+      # Changing the email later renames accounts named after the old email once the new one is validated.
       usernameIsEmail: false
       # ISO 8601 durations
       tokenLifetime:

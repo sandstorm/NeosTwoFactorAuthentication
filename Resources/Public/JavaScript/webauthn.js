@@ -170,6 +170,8 @@
 
     function init() {
         document.querySelectorAll('[data-webauthn-register]').forEach(function (container) {
+            // the container is a form only so Enter triggers the (submit) button's click - never submit it
+            container.addEventListener('submit', function (event) { event.preventDefault(); });
             if (!checkSupport(container)) return;
             // There may be more than one trigger (e.g. "Register passkey" vs "Register security
             // key as 2nd factor"); each carries its own data-webauthn-discoverable flag.

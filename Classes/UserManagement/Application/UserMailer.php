@@ -12,6 +12,7 @@ use Neos\Fusion\View\FusionView;
 use Neos\Neos\Domain\Model\User;
 use Neos\SymfonyMailer\Service\MailerService;
 use Psr\Http\Message\ResponseInterface;
+use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\Dto\UsernameChange;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\UserActionType;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
@@ -70,6 +71,18 @@ class UserMailer
         $this->send($recipient, $user, 'emailVerification', [
             'uri' => $this->buildUri(self::CONFIRM_EMAIL_PATH . $token),
             'expiresAt' => $expiresAt,
+            'name' => $user->getName()->getFullName(),
+        ]);
+    }
+
+    /**
+     * @param list<UsernameChange> $usernameChanges
+     */
+    public function sendUsernameChanged(string $recipient, User $user, array $usernameChanges): void
+    {
+        $this->send($recipient, $user, 'usernameChanged', [
+            'oldUsernames' => implode(', ', array_map(fn (UsernameChange $change) => $change->oldUsername, $usernameChanges)),
+            'newUsername' => $usernameChanges[0]->newUsername,
             'name' => $user->getName()->getFullName(),
         ]);
     }

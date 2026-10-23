@@ -36,9 +36,9 @@ Sandstorm:
       # `userVerification` above). When disabled, only the latter is available.
       passwordlessLoginEnabled: false
       # Relying-party hostnames for which the server-side library should accept non-HTTPS
-      # requests. The browser already treats *.localhost as a secure context (RFC 6761),
-      # but the PHP validator only special-cases the literal 'localhost' — list any
-      # additional dev hostnames here.
+      # requests. The browser already treats localhost and *.localhost as a secure context
+      # (RFC 6761), but the PHP validator (webauthn-lib v5) requires HTTPS for every host not
+      # listed here - including 'localhost' itself. List your plain-http dev hostnames here.
       #
       # Leave empty in production!
       securedRelyingPartyIds: []

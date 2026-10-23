@@ -1,0 +1,22 @@
+# Variables: oldUsernames, newUsername, name
+Sandstorm.NeosTwoFactorAuthentication.UserManagement.Mail.usernameChanged {
+    subject = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate {
+        id = 'mail.usernameChanged.subject'
+    }
+
+    html = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.HtmlLayout {
+        content = afx`
+            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="mail.greeting" arguments={[String.htmlSpecialChars(name)]} /></p>
+            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="mail.usernameChanged.body" arguments={[String.htmlSpecialChars(newUsername), String.htmlSpecialChars(oldUsernames)]} /></p>
+            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="mail.usernameChanged.loggedOut" /></p>
+        `
+    }
+
+    text = ${Array.join([
+        I18n.id('mail.greeting').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').arguments([name]).translate(),
+        '',
+        I18n.id('mail.usernameChanged.body').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').arguments([newUsername, oldUsernames]).translate(),
+        '',
+        I18n.id('mail.usernameChanged.loggedOut').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()
+    ], String.chr(10))}
+}

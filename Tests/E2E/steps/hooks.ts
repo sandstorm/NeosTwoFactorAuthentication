@@ -16,7 +16,7 @@ AfterScenario(async ({ page }) => {
 });
 
 // user management scenarios read mails and are subject to the forgot-password throttle
-BeforeScenario({ tags: '@user-management' }, async () => {
+BeforeScenario({ tags: '@user-management or @username-is-email' }, async () => {
   await deleteAllMails();
   clearUserManagementThrottle();
 });

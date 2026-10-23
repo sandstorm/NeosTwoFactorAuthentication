@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application;
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Account;
 use Neos\Flow\Security\AccountRepository;
+use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Neos\Domain\Model\User;
 use Neos\Neos\Domain\Service\UserService;
 use Neos\Party\Domain\Model\ElectronicAddress;
 use Neos\Party\Domain\Model\PersonName;
+use Psr\Log\LoggerInterface;
 use Sandstorm\NeosTwoFactorAuthentication\Domain\Repository\SecondFactorRepository;
+use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\Dto\UsernameChange;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\UserActionType;
 
 /**
@@ -45,6 +49,18 @@ class UserCommandService
 
     #[Flow\Inject]
     protected SecondFactorRepository $secondFactorRepository;
+
+    #[Flow\Inject]
+    protected SecurityContext $securityContext;
+
+    #[Flow\Inject]
+    protected Neos8PersonalWorkspaceMigrator $neos8PersonalWorkspaceMigrator;
+
+    #[Flow\Inject]
+    protected PersistenceManagerInterface $persistenceManager;
+
+    #[Flow\Inject(name: 'Neos.Flow:SecurityLogger', lazy: false)]
+    protected LoggerInterface $securityLogger;
 
     #[Flow\InjectConfiguration(path: 'userManagement.usernameIsEmail')]
     protected bool $usernameIsEmail = false;
@@ -105,6 +121,9 @@ class UserCommandService
     }
 
     /**
+     * With `usernameIsEmail`, a previous email that accounts are named after stays on the user (not primary) until
+     * the new one is validated - see {@see self::markEmailValidated()}.
+     *
      * @return bool whether the email changed (it is then no longer approved)
      * @throws UserManagementException
      */
@@ -128,7 +147,7 @@ class UserCommandService
             $electronicAddress = $this->createEmailAddress($email);
             $user->addElectronicAddress($electronicAddress);
             $user->setPrimaryElectronicAddress($electronicAddress);
-            if ($primaryEmail !== null) {
+            if ($primaryEmail !== null && !($this->usernameIsEmail && $this->isUsernameOfAccount($user, $primaryEmail->getIdentifier()))) {
                 $user->removeElectronicAddress($primaryEmail);
             }
         }
@@ -164,22 +183,57 @@ class UserCommandService
     /**
      * Sets the password via a mailed token: consumes the token, invalidates all other password links of the
      * account, approves the email (the link proves inbox access) and destroys the user's sessions.
+     *
+     * @return list<UsernameChange>
      */
-    public function setPasswordWithToken(Account $account, string $password): void
+    public function setPasswordWithToken(Account $account, string $password): array
     {
         $user = $this->requireUserOfAccount($account);
         $this->setPassword($user, $password);
-        $this->markEmailValidated($user);
+        return $this->markEmailValidated($user);
     }
 
-    public function markEmailValidated(User $user): void
+    /**
+     * With `usernameIsEmail`, accounts named after a previous email of the user follow the validated email: they
+     * are renamed, logged out and (on Neos 8) their personal workspace is migrated. The user gets a mail.
+     *
+     * @return list<UsernameChange>
+     */
+    public function markEmailValidated(User $user): array
     {
         $primaryEmail = $this->simpleUserFinder->getPrimaryEmail($user);
-        if ($primaryEmail !== null && !$primaryEmail->isApproved()) {
-            $primaryEmail->setApproved(true);
-            // ElectronicAddress has no repository, it is persisted via cascade from the user
-            $this->userService->updateUser($user);
+        if ($primaryEmail === null || $primaryEmail->isApproved()) {
+            return [];
         }
+        $primaryEmail->setApproved(true);
+
+        $email = $primaryEmail->getIdentifier();
+        $usernameChanges = [];
+        // a copy, addresses are removed in the loop
+        foreach ($user->getElectronicAddresses()->toArray() as $previousEmail) {
+            if ($previousEmail === $primaryEmail
+                || $previousEmail->getType() !== SimpleUserFinder::EMAIL_ADDRESS_TYPE
+                || !$this->isUsernameOfAccount($user, $previousEmail->getIdentifier())
+            ) {
+                continue;
+            }
+            // kept by updateUser() - removed even if usernameIsEmail was switched off in the meantime
+            $user->removeElectronicAddress($previousEmail);
+            if (!$this->usernameIsEmail) {
+                continue;
+            }
+            foreach ($this->simpleUserFinder->getManagedAccounts($user) as $account) {
+                $username = SimpleUserFinder::normalizeEmail($account->getAccountIdentifier());
+                if ($username === SimpleUserFinder::normalizeEmail($previousEmail->getIdentifier()) && $username !== SimpleUserFinder::normalizeEmail($email)) {
+                    $usernameChanges[] = $this->renameAccount($user, $account, $email);
+                }
+            }
+        }
+        // ElectronicAddress has no repository, it is persisted via cascade from the user
+        $this->userService->updateUser($user);
+
+        $this->sendUsernameChangedMail($email, $user, $usernameChanges);
+        return $usernameChanges;
     }
 
     public function deleteUser(User $user): void
@@ -264,6 +318,57 @@ class UserCommandService
             throw new \RuntimeException('Account ' . $account->getAccountIdentifier() . ' has no Neos user.', 1760000107);
         }
         return $user;
+    }
+
+    private function isUsernameOfAccount(User $user, string $email): bool
+    {
+        foreach ($this->simpleUserFinder->getManagedAccounts($user) as $account) {
+            if (SimpleUserFinder::normalizeEmail($account->getAccountIdentifier()) === SimpleUserFinder::normalizeEmail($email)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function renameAccount(User $user, Account $account, string $newUsername): UsernameChange
+    {
+        $oldUsername = $account->getAccountIdentifier();
+        $existingAccount = $this->accountRepository->findByAccountIdentifierAndAuthenticationProviderName($newUsername, $account->getAuthenticationProviderName());
+        if (($existingAccount !== null && $existingAccount !== $account) || !$this->neos8PersonalWorkspaceMigrator->canMigrate($oldUsername, $newUsername)) {
+            $this->securityLogger->warning(sprintf('Sandstorm/NeosTwoFactorAuthentication: username "%s" not changed to "%s", the name is taken.', $oldUsername, $newUsername));
+            return new UsernameChange($oldUsername, $newUsername, false);
+        }
+
+        // sessions are tagged with the account identifier - after the rename they could no longer be destroyed
+        $this->securityContext->destroySessionsForAccount($account, 'Username changed');
+        $this->neos8PersonalWorkspaceMigrator->renameWithWorkspace($oldUsername, $newUsername, function () use ($account, $newUsername) {
+            $account->setAccountIdentifier($newUsername);
+            $this->accountRepository->update($account);
+            // inside the workspace transaction on Neos 8
+            $this->persistenceManager->persistAll();
+        });
+        // createUser() sets the username as alias
+        if ($user->getName()->getAlias() === $oldUsername) {
+            $user->getName()->setAlias($newUsername);
+        }
+        return new UsernameChange($oldUsername, $newUsername, true);
+    }
+
+    /**
+     * @param list<UsernameChange> $usernameChanges
+     */
+    private function sendUsernameChangedMail(string $recipient, User $user, array $usernameChanges): void
+    {
+        $changed = array_values(array_filter($usernameChanges, fn (UsernameChange $change) => $change->changed));
+        if ($changed === []) {
+            return;
+        }
+        // the username already changed - a failing mail must not undo that
+        try {
+            $this->userMailer->sendUsernameChanged($recipient, $user, $changed);
+        } catch (\Throwable $e) {
+            $this->securityLogger->error('Sandstorm/NeosTwoFactorAuthentication: could not send username changed mail: ' . $e->getMessage());
+        }
     }
 
     /**

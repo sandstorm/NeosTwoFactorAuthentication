@@ -65,6 +65,11 @@
     font-size: 14px;
 }
 
+/* "Save roles" and "Log in as this user" are separate forms below each other */
+.neos-user-management__account > .neos-user-management__form {
+    margin-bottom: 8px;
+}
+
 .neos-user-management__actions {
     display: flex;
     flex-wrap: wrap;
@@ -87,12 +92,12 @@
     opacity: 0.8;
 }
 
-/* form fields side by side, wrapping on narrow screens */
+/* form fields side by side, wrapping on narrow screens - 4 columns of equal width at most */
 .neos-user-management__row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
     gap: 0 24px;
-    max-width: 960px;
+    max-width: 1104px;
 }
 
 .neos-user-management .neos-user-management__row input,
@@ -116,6 +121,11 @@
 
 .neos-user-management__fieldset {
     margin: 16px 0;
+}
+
+/* the password is ignored when the mail is sent */
+.neos-user-management__fieldset:has(#sendPasswordMail:checked) .neos-user-management__password-fields {
+    display: none;
 }
 
 .neos-user-management__visually-hidden {

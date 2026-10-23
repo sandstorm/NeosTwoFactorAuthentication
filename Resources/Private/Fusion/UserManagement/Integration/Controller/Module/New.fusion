@@ -42,8 +42,8 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.new = Sand
                         <span></span>
                         <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.sendPasswordMail" />
                     </label>
-                    <p class="neos-user-management__hint"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.passwordHint" /></p>
-                    <div class="neos-user-management__row">
+                    <p class="neos-user-management__hint neos-user-management__password-fields"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.passwordHint" /></p>
+                    <div class="neos-user-management__row neos-user-management__password-fields">
                         <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.password" for="password">
                             <Neos.Fusion.Form:Password field.name="password" attributes.id="password" attributes.autocomplete="new-password" />
                         </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>

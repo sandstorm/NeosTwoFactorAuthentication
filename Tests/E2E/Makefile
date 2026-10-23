@@ -6,8 +6,8 @@ NEOS9_COMPOSE = $(E2E_DIR)/system_under_test/neos9/docker-compose.yaml
 
 .SILENT:
 .PHONY: help setup setup-sut setup-test generate-bdd-files test test-neos8 test-neos9 \
-	test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-passwordless test-neos8-enforce-all-passwordless test-neos8-user-management \
-	test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-passwordless test-neos9-enforce-all-passwordless test-neos9-user-management \
+	test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-passwordless test-neos8-enforce-all-passwordless test-neos8-user-management test-neos8-username-is-email \
+	test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-passwordless test-neos9-enforce-all-passwordless test-neos9-user-management test-neos9-username-is-email \
 	start-sut-neos8 start-sut-neos9 log-sut-neos8 log-sut-neos9 enter-sut-neos8 enter-sut-neos9 sut-down
 
 # COLORS
@@ -57,10 +57,10 @@ generate-bdd-files:
 test: test-neos8 test-neos9
 
 ## Run all neos8 E2E tests
-test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-passwordless test-neos8-enforce-all-passwordless test-neos8-user-management
+test-neos8: test-neos8-defaults test-neos8-enforce-all test-neos8-enforce-role test-neos8-enforce-provider test-neos8-passwordless test-neos8-enforce-all-passwordless test-neos8-user-management test-neos8-username-is-email
 
 ## Run all neos9 E2E tests
-test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-passwordless test-neos9-enforce-all-passwordless test-neos9-user-management
+test-neos9: test-neos9-defaults test-neos9-enforce-all test-neos9-enforce-role test-neos9-enforce-provider test-neos9-passwordless test-neos9-enforce-all-passwordless test-neos9-user-management test-neos9-username-is-email
 
 ## Run neos8 E2E tests with default 2FA settings
 test-neos8-defaults:
@@ -106,6 +106,10 @@ test-neos8-enforce-all-passwordless:
 test-neos8-user-management:
 	cd $(E2E_DIR) && npm run test:neos8:user-management
 
+## Run the user management tests with usernameIsEmail against Neos 8
+test-neos8-username-is-email:
+	cd $(E2E_DIR) && npm run test:neos8:username-is-email
+
 ## Run neos9 E2E tests for passwordless passkey login
 test-neos9-passwordless:
 	cd $(E2E_DIR) && npm run test:neos9:passwordless
@@ -117,6 +121,10 @@ test-neos9-enforce-all-passwordless:
 ## Run the user management tests against Neos 9
 test-neos9-user-management:
 	cd $(E2E_DIR) && npm run test:neos9:user-management
+
+## Run the user management tests with usernameIsEmail against Neos 9
+test-neos9-username-is-email:
+	cd $(E2E_DIR) && npm run test:neos9:username-is-email
 
 ## Start the neos8 SUT containers
 start-sut-neos8:

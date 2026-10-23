@@ -142,7 +142,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param list<string> $roleIdentifiers
+     * @param array<string> $roleIdentifiers
      */
     public function createAction(
         string $firstName,
@@ -183,7 +183,7 @@ class ModuleController extends AbstractModuleController
                 $lastName,
                 $email,
                 $username,
-                $roleIdentifiers,
+                array_values($roleIdentifiers),
                 $authenticationProviderName,
                 $sendPasswordMail ? null : $password
             );
@@ -242,7 +242,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param list<string> $roleIdentifiers
+     * @param array<string> $roleIdentifiers
      */
     public function updateAccountRolesAction(string $userId, string $accountId, array $roleIdentifiers = []): void
     {
@@ -257,7 +257,7 @@ class ModuleController extends AbstractModuleController
             $this->addTranslatedFlashMessage('error.doNotLockYourselfOut', [], Message::SEVERITY_WARNING);
             $this->redirect('edit', null, null, ['userId' => $userId]);
         }
-        $this->userCommandService->setRolesForAccount($account, $roleIdentifiers);
+        $this->userCommandService->setRolesForAccount($account, array_values($roleIdentifiers));
         $this->addTranslatedFlashMessage('flash.rolesUpdated', [$account->getAccountIdentifier()]);
         $this->redirect('edit', null, null, ['userId' => $userId]);
     }
@@ -302,8 +302,13 @@ class ModuleController extends AbstractModuleController
     public function markEmailValidatedAction(string $userId): void
     {
         $user = $this->requireEditableUser($userId);
-        $this->userCommandService->markEmailValidated($user);
+        $usernameChanges = $this->userCommandService->markEmailValidated($user);
         $this->addTranslatedFlashMessage('flash.emailMarkedValidated');
+        foreach ($usernameChanges as $usernameChange) {
+            $usernameChange->changed
+                ? $this->addTranslatedFlashMessage('flash.usernameChanged', [$usernameChange->oldUsername, $usernameChange->newUsername])
+                : $this->addTranslatedFlashMessage('flash.usernameNotChanged', [$usernameChange->oldUsername, $usernameChange->newUsername], Message::SEVERITY_WARNING);
+        }
         $this->redirect('edit', null, null, ['userId' => $userId]);
     }
 
@@ -332,7 +337,7 @@ class ModuleController extends AbstractModuleController
     /**
      * Confirmation page for deleting one or several (bulk) users.
      *
-     * @param list<string> $userIds
+     * @param array<string> $userIds
      */
     public function confirmDeleteAction(array $userIds = []): void
     {
@@ -348,7 +353,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param list<string> $userIds
+     * @param array<string> $userIds
      */
     public function deleteAction(array $userIds = []): void
     {

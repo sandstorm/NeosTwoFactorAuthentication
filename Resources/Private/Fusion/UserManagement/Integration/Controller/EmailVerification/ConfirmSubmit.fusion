@@ -1,6 +1,6 @@
 Sandstorm.NeosTwoFactorAuthentication.UserManagement.EmailVerificationController.confirmSubmit = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.PublicPage {
     body = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.PublicMessage {
         testId = ${confirmed ? 'email-confirmed' : 'link-invalid'}
-        text = ${I18n.id(confirmed ? 'email.confirm.success' : 'link.invalid').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+        text = ${I18n.id(confirmed ? (newUsername ? 'email.confirm.successUsernameChanged' : 'email.confirm.success') : 'link.invalid').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').arguments([newUsername]).translate()}
     }
 }

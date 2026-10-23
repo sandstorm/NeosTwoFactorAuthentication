@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
 import { createBdd } from 'playwright-bdd';
 import { firstLinkInMailTo, linksInMail, waitForMailsTo, mailsTo } from '../helpers/mailpit.ts';
-import { sendPasswordMailViaCli, setEmail } from '../helpers/system.ts';
+import { sendPasswordMailViaCli, setEmail, workspaceNames } from '../helpers/system.ts';
 import { state } from '../helpers/state.ts';
 
 const { Given, When, Then } = createBdd();
@@ -89,6 +89,20 @@ Then('I should see that the link is invalid', async ({ page }) => {
 Then('I should see that my email address is confirmed', async ({ page }) => {
   await expect(page.locator('[data-test-id="email-confirmed"]')).toBeVisible();
 });
+
+// Neos 8 names the personal workspace after the username ("user-" + letters and digits); Neos 9 finds it by user id
+Then(
+  'the personal workspace of {string} should be moved to {string}',
+  async ({}, oldUsername: string, newUsername: string) => {
+    if (process.env.SUT !== 'neos8') {
+      return;
+    }
+    const workspaceName = (username: string) => 'user-' + username.replace(/[^a-z0-9]/gi, '');
+    const names = workspaceNames();
+    expect(names).toContain(workspaceName(newUsername));
+    expect(names).not.toContain(workspaceName(oldUsername));
+  },
+);
 
 // ── Backend module ────────────────────────────────────────────────────────────
 

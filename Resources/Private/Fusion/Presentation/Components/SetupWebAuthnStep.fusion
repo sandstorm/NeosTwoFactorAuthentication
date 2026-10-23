@@ -25,8 +25,9 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
         UnknownError = ${I18n.id('webauthn.error.unknown').package('Sandstorm.NeosTwoFactorAuthentication').translate()}
     }
 
+    # a form so Enter in the name field triggers the registration - webauthn.js prevents the actual submit
     renderer = afx`
-        <div
+        <form
             class="neos-two-factor__webauthn-step"
             data-webauthn-register
             data-options-url="/neos/second-factor-webauthn/register-options"
@@ -50,7 +51,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                     />
                 </div>
                 <div class="neos-actions">
-                    <button type="button"
+                    <button type="submit"
                         class="neos-button neos-login-btn neos-two-factor__webauthn-button"
                         data-webauthn-trigger
                         data-webauthn-discoverable={props.discoverable ? 'true' : 'false'}
@@ -71,6 +72,6 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:Component.SetupWebAuthnStep) < p
                     </div>
                 </Neos.Fusion:Loop>
             </fieldset>
-        </div>
+        </form>
     `
 }

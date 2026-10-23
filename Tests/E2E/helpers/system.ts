@@ -60,3 +60,11 @@ export function clearUserManagementThrottle() {
     { stdio: 'ignore', cwd: dirname('.') }
   )
 }
+
+// Neos 8 only: the names of all workspaces (personal ones are named after the username)
+export function workspaceNames(): string {
+  return execSync(
+    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow workspace:list"`,
+    { encoding: 'utf8', cwd: dirname('.') }
+  );
+}

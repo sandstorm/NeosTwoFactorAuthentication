@@ -52,12 +52,9 @@ Sandstorm:
 ##### Local development over plain HTTP
 
 WebAuthn requires a secure context. The browser treats `localhost` as secure, but the verification
-library is stricter: it only exempts the **exact** host `localhost` from the HTTPS requirement, and
-rejects any other host served over `http://` (including `localhost` subdomains such as
-`myproject.localhost`) with `Invalid scheme. HTTPS required.`.
-
-If your local backend runs over plain HTTP on a host other than `localhost`, list that host under
-`securedRelyingPartyIds` to skip the HTTPS check for it:
+library (webauthn-lib v5) is stricter: it rejects **every** host served over `http://` - including
+`localhost` itself - with `Invalid scheme. HTTPS required.` (HTTP 400 on `register-verify` /
+login verification), unless the host is listed under `securedRelyingPartyIds`:
 
 ```yml
 Sandstorm:
@@ -66,6 +63,7 @@ Sandstorm:
       # LOCAL DEVELOPMENT ONLY — never add a real production hostname here.
       # Relying-party ids listed here are treated as secured even without HTTPS.
       securedRelyingPartyIds:
+        - 'localhost'
         - 'myproject.localhost'
 ```
 
@@ -142,6 +140,12 @@ self-service flows to the backend login:
   (default: valid for 7 days). Setting a password via a link also validates the email address.
 - **Email validation** – the user's *primary* email (Neos.Party `ElectronicAddress`, `approved` = validated). Changing
   it resets the validation and sends a confirmation mail; admins can also mark it as validated.
+- **Username follows the email** (`usernameIsEmail: true`) – new accounts are named after the email. When the email
+  changes, accounts named after the old address are renamed once the new one is validated (by link, by an admin or
+  via CLI), not before - until then the old address stays on the user as a non-primary address. The user is logged
+  out everywhere and gets a mail with the new username. If another account already has that name, the rename is
+  skipped (admin flash message, security log). On Neos 8, the personal workspace (`user-<username>`) is migrated
+  with its unpublished changes; Neos 9 finds it by user id, so nothing to do there.
 - **Backend module** `Administration > User Management` replacing the core user module: search, bulk delete,
   create, edit (name, email, roles per account, active, password), send reset / initial password / confirmation
   mails, reset second factors, impersonate, and a "send test mail to me" button to check the mail setup.
@@ -528,6 +532,7 @@ The `FLOW_CONTEXT` environment variable is passed into the docker compose enviro
 | `@enforce-for-provider` | `Production/E2E-SUT/EnforceForProvider` | Enforcement scoped to an authentication provider |
 | `@passwordless` | `Production/E2E-SUT/Passwordless` | `webAuthn.passwordlessLoginEnabled: true` — passwordless passkey login |
 | `@user-management` | `Production/E2E-SUT/UserManagement` | User management enabled — mails are read from the SUT's Mailpit (`localhost:8025`) |
+| `@username-is-email` | `Production/E2E-SUT/UserManagement/UsernameIsEmail` | User management with `usernameIsEmail: true` — the username follows a validated email change |
 
 #### Test isolation
 

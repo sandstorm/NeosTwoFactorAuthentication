@@ -7,6 +7,7 @@ namespace Sandstorm\NeosTwoFactorAuthentication\UserManagement\Controller;
 use Neos\Flow\Annotations as Flow;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserActionTokenService;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserCommandService;
+use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\Dto\UsernameChange;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\UserActionType;
 
 /**
@@ -34,12 +35,16 @@ class EmailVerificationController extends AbstractPublicController
     {
         $this->assignLoginLayout();
         $userActionToken = $this->tokenService->findValid($token, [UserActionType::VERIFY_EMAIL]);
+        $usernameChanges = [];
         if ($userActionToken !== null) {
             $this->tokenService->consume($userActionToken);
-            $this->userCommandService->markEmailValidated(
+            $usernameChanges = $this->userCommandService->markEmailValidated(
                 $this->userCommandService->requireUserOfAccount($userActionToken->getAccount())
             );
         }
-        $this->view->assign('confirmed', $userActionToken !== null);
+        $this->view->assignMultiple([
+            'confirmed' => $userActionToken !== null,
+            'newUsername' => UsernameChange::firstNewUsername($usernameChanges),
+        ]);
     }
 }

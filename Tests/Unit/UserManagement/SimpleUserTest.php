@@ -60,6 +60,15 @@ class SimpleUserTest extends UnitTestCase
     }
 
     /**
+     * @test
+     */
+    public function initialPasswordMakesSenseOnlyForAnAccountWithoutPassword(): void
+    {
+        self::assertFalse($this->user([$this->account('a', true)])->hasAccountWithoutPassword());
+        self::assertTrue($this->user([$this->account('a', true), $this->account('b', true, hasPassword: false)])->hasAccountWithoutPassword());
+    }
+
+    /**
      * @param list<SimpleAccount> $accounts
      */
     private function user(array $accounts): SimpleUser
@@ -70,8 +79,8 @@ class SimpleUserTest extends UnitTestCase
     /**
      * @param list<string> $roles
      */
-    private function account(string $identifier, bool $active, array $roles = [], int $secondFactors = 0, ?\DateTime $lastLogin = null): SimpleAccount
+    private function account(string $identifier, bool $active, array $roles = [], int $secondFactors = 0, ?\DateTime $lastLogin = null, bool $hasPassword = true): SimpleAccount
     {
-        return new SimpleAccount('id-' . $identifier, $identifier, 'Neos.Neos:Backend', $roles, $active, null, $lastLogin, $secondFactors);
+        return new SimpleAccount('id-' . $identifier, $identifier, 'Neos.Neos:Backend', $roles, $active, null, $lastLogin, $secondFactors, $hasPassword);
     }
 }

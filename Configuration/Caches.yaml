@@ -1,0 +1,4 @@
+# State of the forgot-password throttle (symfony/rate-limiter). Local file system by default - with several Neos
+# containers, use a shared backend (e.g. Neos\Cache\Backend\RedisBackend), see README "Running several Neos containers".
+Sandstorm_NeosTwoFactorAuthentication_Throttle:
+  backend: Neos\Cache\Backend\FileBackend

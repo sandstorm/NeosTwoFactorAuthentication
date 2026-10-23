@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Security\Account;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\UserActionType;
+use \DateTimeImmutable;
 
 /**
  * A single-use, expiring token mailed to a user as part of a link. Only the SHA-256 hash of the token is

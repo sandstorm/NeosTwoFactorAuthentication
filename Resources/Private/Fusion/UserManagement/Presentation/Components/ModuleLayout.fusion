@@ -16,7 +16,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.EmailBa
     approved = false
     renderer = afx`
         <span class={['neos-user-management__badge', props.approved ? 'neos-user-management__badge--ok' : 'neos-user-management__badge--warning']}>
-            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id={props.approved ? 'email.validated' : 'email.notValidated'} />
+            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id={props.approved ? 'email.validated' : 'email.notValidated'} />
         </span>
     `
 }

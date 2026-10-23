@@ -18,6 +18,8 @@ Sandstorm:
         resetPassword: 'PT24H'
         initialPassword: 'P7D'
         verifyEmail: 'P7D'
+      # Forgot-password throttle (symfony/rate-limiter, sliding window). The limiter state is kept in the Flow cache
+      # Sandstorm_NeosTwoFactorAuthentication_Throttle.
       throttle:
         perIdentifier:
           limit: 3
@@ -25,6 +27,9 @@ Sandstorm:
         perIp:
           limit: 10
           window: 'PT15M'
+        # symfony/lock store DSN, see Symfony\Component\Lock\Store\StoreFactory - e.g. 'flock' (local file
+        # system) or 'redis://redis:6379'
+        lockStore: 'flock'
       # Mirrors the core user module (Neos\Neos\Validation\Validator\PasswordValidator, minimum 1).
       passwordPolicy:
         minimumLength: 1

@@ -17,14 +17,14 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.index = Sa
                     />
                     <Neos.Fusion.Form:Select field.name="authenticationProviderName" @if={Array.length(providers) > 1}>
                         <Neos.Fusion.Form:Select.Option option.value="">
-                            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.allProviders" />
+                            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.index.allProviders" />
                         </Neos.Fusion.Form:Select.Option>
                         <Neos.Fusion:Loop items={providers} itemName="provider">
                             <Neos.Fusion.Form:Select.Option option.value={provider}>{provider}</Neos.Fusion.Form:Select.Option>
                         </Neos.Fusion:Loop>
                     </Neos.Fusion.Form:Select>
                     <Neos.Fusion.Form:Button attributes.class="neos-button">
-                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.searchSubmit" />
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.index.searchSubmit" />
                     </Neos.Fusion.Form:Button>
                 </Neos.Fusion.Form:Form>
 
@@ -39,14 +39,14 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.index = Sa
                 <table class="neos-table neos-user-management__table">
                     <thead>
                         <tr>
-                            <th><span class="neos-user-management__visually-hidden"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.select" /></span></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.name" /></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.username" /></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.email" /></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.roles" /></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.active" /></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.secondFactors" /></th>
-                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.lastLogin" /></th>
+                            <th><span class="neos-user-management__visually-hidden"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.index.select" /></span></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.name" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.username" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.email" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.roles" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.active" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.secondFactors" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.lastLogin" /></th>
                             <th>&nbsp;</th>
                         </tr>
                     </thead>
@@ -56,14 +56,14 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.index = Sa
                         </Neos.Fusion:Loop>
                     </tbody>
                 </table>
-                <p @if={Array.length(users) == 0}><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.noUsers" /></p>
+                <p @if={Array.length(users) == 0}><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.index.noUsers" /></p>
 
                 <div class="neos-footer">
                     <a href={newUri} class="neos-button neos-button-primary" data-test-id="new-user">
-                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.newUser" />
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.index.newUser" />
                     </a>
                     <Neos.Fusion.Form:Button attributes.class="neos-button neos-button-danger" attributes.data-test-id="delete-selected">
-                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.deleteSelected" />
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.index.deleteSelected" />
                     </Neos.Fusion.Form:Button>
                 </div>
             </Neos.Fusion.Form:Form>
@@ -98,7 +98,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.UserRow
                 <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.EmailBadge @if={props.user.primaryEmail} approved={props.user.emailApproved} />
             </td>
             <td>{Array.join(props.user.roleIdentifiers, ', ')}</td>
-            <td><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id={props.user.active ? 'yes' : 'no'} /></td>
+            <td><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id={props.user.active ? 'yes' : 'no'} /></td>
             <td>{props.user.secondFactorCount}</td>
             <td>{props.user.lastSuccessfulAuthentication ? Date.format(props.user.lastSuccessfulAuthentication, 'Y-m-d H:i') : '-'}</td>
             <td>

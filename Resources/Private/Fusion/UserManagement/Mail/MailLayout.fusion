@@ -34,6 +34,3 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.Button) < pr
         <p style="font-size: 13px; color: #666; word-break: break-all;">{String.htmlSpecialChars(props.href)}</p>
     `
 }
-
-# Translation shorthand for mails
-prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.T) < prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.T)

@@ -4,29 +4,31 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.new = Sand
     }
     content = afx`
         <div class="neos-user-management">
-            <legend><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.new.title" /></legend>
+            <legend><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.title" /></legend>
             <Neos.Fusion.Form:Form form.target.action="create" form.data={formValues} attributes.class="neos-user-management__form">
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.firstName" for="firstName">
-                    <Neos.Fusion.Form:Input field.name="firstName" attributes.id="firstName" attributes.required={true} />
-                </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.lastName" for="lastName">
-                    <Neos.Fusion.Form:Input field.name="lastName" attributes.id="lastName" attributes.required={true} />
-                </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.email" for="email"
-                    hint={usernameIsEmail ? I18n.id('module.new.usernameIsEmailHint').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate() : ''}
-                >
-                    <Neos.Fusion.Form:Input field.name="email" attributes.id="email" attributes.type="email" attributes.required={true} />
-                </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.username" for="username" @if={!usernameIsEmail}>
-                    <Neos.Fusion.Form:Input field.name="username" attributes.id="username" attributes.required={true} attributes.autocomplete="off" />
-                </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.authenticationProvider" for="authenticationProviderName" @if={Array.length(providers) > 1}>
-                    <Neos.Fusion.Form:Select field.name="authenticationProviderName" attributes.id="authenticationProviderName">
-                        <Neos.Fusion:Loop items={providers} itemName="provider">
-                            <Neos.Fusion.Form:Select.Option option.value={provider}>{provider}</Neos.Fusion.Form:Select.Option>
-                        </Neos.Fusion:Loop>
-                    </Neos.Fusion.Form:Select>
-                </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                <div class="neos-user-management__row">
+                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.firstName" for="firstName">
+                        <Neos.Fusion.Form:Input field.name="firstName" attributes.id="firstName" attributes.required={true} />
+                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.lastName" for="lastName">
+                        <Neos.Fusion.Form:Input field.name="lastName" attributes.id="lastName" attributes.required={true} />
+                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.email" for="email"
+                        hint={usernameIsEmail ? I18n.id('module.new.usernameIsEmailHint').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate() : ''}
+                    >
+                        <Neos.Fusion.Form:Input field.name="email" attributes.id="email" attributes.type="email" attributes.required={true} />
+                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.username" for="username" @if={!usernameIsEmail}>
+                        <Neos.Fusion.Form:Input field.name="username" attributes.id="username" attributes.required={true} attributes.autocomplete="off" />
+                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.authenticationProvider" for="authenticationProviderName" @if={Array.length(providers) > 1}>
+                        <Neos.Fusion.Form:Select field.name="authenticationProviderName" attributes.id="authenticationProviderName">
+                            <Neos.Fusion:Loop items={providers} itemName="provider">
+                                <Neos.Fusion.Form:Select.Option option.value={provider}>{provider}</Neos.Fusion.Form:Select.Option>
+                            </Neos.Fusion:Loop>
+                        </Neos.Fusion.Form:Select>
+                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                </div>
                 <Neos.Fusion.Form:Hidden field.name="authenticationProviderName" @if={Array.length(providers) <= 1} />
 
                 <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.roles">
@@ -34,25 +36,27 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.new = Sand
                 </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
 
                 <fieldset class="neos-user-management__fieldset">
-                    <legend><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.password" /></legend>
+                    <legend><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="field.password" /></legend>
                     <label class="neos-checkbox neos-user-management__checkbox" for="sendPasswordMail">
                         <Neos.Fusion.Form:Checkbox field.name="sendPasswordMail" field.value="1" attributes.id="sendPasswordMail" attributes.checked={formValues.sendPasswordMail ? true : false} attributes.data-test-id="send-password-mail" />
                         <span></span>
-                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.new.sendPasswordMail" />
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.sendPasswordMail" />
                     </label>
-                    <p class="neos-user-management__hint"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.new.passwordHint" /></p>
-                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.password" for="password">
-                        <Neos.Fusion.Form:Password field.name="password" attributes.id="password" attributes.autocomplete="new-password" />
-                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
-                    <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.passwordConfirmation" for="passwordConfirmation">
-                        <Neos.Fusion.Form:Password field.name="passwordConfirmation" attributes.id="passwordConfirmation" attributes.autocomplete="new-password" />
-                    </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                    <p class="neos-user-management__hint"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.passwordHint" /></p>
+                    <div class="neos-user-management__row">
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.password" for="password">
+                            <Neos.Fusion.Form:Password field.name="password" attributes.id="password" attributes.autocomplete="new-password" />
+                        </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField labelId="field.passwordConfirmation" for="passwordConfirmation">
+                            <Neos.Fusion.Form:Password field.name="passwordConfirmation" attributes.id="passwordConfirmation" attributes.autocomplete="new-password" />
+                        </Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormField>
+                    </div>
                 </fieldset>
 
                 <div class="neos-footer">
-                    <a href={indexUri} class="neos-button"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="cancel" /></a>
+                    <a href={indexUri} class="neos-button"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="cancel" /></a>
                     <Neos.Fusion.Form:Button attributes.class="neos-button neos-button-primary" attributes.data-test-id="create-user">
-                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.new.submit" />
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.new.submit" />
                     </Neos.Fusion.Form:Button>
                 </div>
             </Neos.Fusion.Form:Form>

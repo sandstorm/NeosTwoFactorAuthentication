@@ -254,6 +254,7 @@ class SimpleUserFinder
             $account->getExpirationDate(),
             $account->getLastSuccessfulAuthenticationDate(),
             $this->secondFactorRepository->countByAccount($account),
+            $account->getCredentialsSource() !== UserCommandService::NO_PASSWORD_CREDENTIALS,
         );
     }
 }

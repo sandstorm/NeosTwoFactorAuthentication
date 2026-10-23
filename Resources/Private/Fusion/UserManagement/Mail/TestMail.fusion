@@ -1,13 +1,13 @@
 # Variables: name
 Sandstorm.NeosTwoFactorAuthentication.UserManagement.Mail.testMail {
-    subject = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.T {
+    subject = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate {
         id = 'mail.testMail.subject'
     }
 
     html = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.HtmlLayout {
         content = afx`
-            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.T id="mail.greeting" arguments={[String.htmlSpecialChars(name)]} /></p>
-            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.T id="mail.testMail.body" /></p>
+            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="mail.greeting" arguments={[String.htmlSpecialChars(name)]} /></p>
+            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="mail.testMail.body" /></p>
         `
     }
 

@@ -9,7 +9,6 @@ use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Neos\Domain\Model\User;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\SimpleUserFinder;
-use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\Throttle;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserActionTokenService;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserCommandService;
 use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserManagementException;
@@ -32,12 +31,9 @@ class UserManagementCommandController extends CommandController
     protected UserActionTokenService $tokenService;
 
     #[Flow\Inject]
-    protected Throttle $throttle;
-
-    #[Flow\Inject]
     protected PersistenceManagerInterface $persistenceManager;
 
-    /** @var array{enabled: bool, throttle: array{perIdentifier: array{window: string}, perIp: array{window: string}}} */
+    /** @var array{enabled: bool} */
     #[Flow\InjectConfiguration(path: 'userManagement')]
     protected array $settings;
 
@@ -91,13 +87,11 @@ class UserManagementCommandController extends CommandController
     }
 
     /**
-     * Delete expired and consumed tokens and old throttle entries - run this as a cron job, e.g. daily
+     * Delete expired and consumed tokens - run this as a cron job, e.g. daily
      */
     public function pruneTokensCommand(): void
     {
-        $tokens = $this->tokenService->prune();
-        $throttleEntries = $this->throttle->prune('P1D');
-        $this->outputLine('Removed %d token(s) and %d throttle entr(y/ies).', [$tokens, $throttleEntries]);
+        $this->outputLine('Removed %d token(s).', [$this->tokenService->prune()]);
     }
 
     /**

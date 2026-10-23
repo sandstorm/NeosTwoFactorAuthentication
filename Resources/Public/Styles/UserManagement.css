@@ -53,6 +53,10 @@
     font-size: 16px;
 }
 
+.neos-user-management__section > p {
+    margin-bottom: 12px;
+}
+
 .neos-user-management__account {
     margin-bottom: 16px;
 }
@@ -81,6 +85,33 @@
     margin-top: 4px;
     font-size: 12px;
     opacity: 0.8;
+}
+
+/* form fields side by side, wrapping on narrow screens */
+.neos-user-management__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 0 24px;
+    max-width: 960px;
+}
+
+.neos-user-management .neos-user-management__row input,
+.neos-user-management .neos-user-management__row select {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* roles as a grid, each checkbox on its own line within its cell */
+.neos-user-management__roles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 8px 24px;
+    margin-bottom: 12px;
+}
+
+.neos-user-management .neos-user-management__roles .neos-checkbox {
+    display: block;
+    margin: 0;
 }
 
 .neos-user-management__fieldset {

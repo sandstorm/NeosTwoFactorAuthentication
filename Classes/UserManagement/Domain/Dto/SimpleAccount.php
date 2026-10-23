@@ -21,6 +21,7 @@ final class SimpleAccount
         public readonly ?\DateTimeInterface $expirationDate,
         public readonly ?\DateTimeInterface $lastSuccessfulAuthentication,
         public readonly int $secondFactorCount,
+        public readonly bool $hasPassword = true,
     ) {
     }
 }

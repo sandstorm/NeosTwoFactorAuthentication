@@ -53,14 +53,10 @@ export function sendPasswordMailViaCli(kind: 'initialpassword' | 'reset', userna
   )
 }
 
-// The forgot-password throttle is stored in the database and outlives a scenario.
+// The forgot-password throttle (rate limiter state in a Flow cache) outlives a scenario.
 export function clearUserManagementThrottle() {
-  try {
-    execSync(
-      `docker exec ${(process.env.SUT || 'neos8')}-db-1 mariadb -uneos -pneos neos -e "DELETE FROM sandstorm_neostwofactorauthentication_throttleentry"`,
-      { stdio: 'ignore', cwd: dirname('.') }
-    )
-  } catch {
-    // table not migrated yet - nothing to clear
-  }
+  execSync(
+    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow flow:cache:flushone Sandstorm_NeosTwoFactorAuthentication_Throttle"`,
+    { stdio: 'ignore', cwd: dirname('.') }
+  )
 }

@@ -22,6 +22,12 @@ use Sandstorm\NeosTwoFactorAuthentication\UserManagement\Domain\UserActionType;
 #[Flow\Scope('singleton')]
 class UserCommandService
 {
+    /**
+     * Credentials of an account created without password: no valid bcrypt hash, so password_verify() never matches.
+     * Lets the module tell "no password set yet" apart from a real password.
+     */
+    public const NO_PASSWORD_CREDENTIALS = 'bcrypt=>!no-password-set';
+
     #[Flow\Inject]
     protected UserService $userService;
 
@@ -44,8 +50,8 @@ class UserCommandService
     protected bool $usernameIsEmail = false;
 
     /**
-     * Creates a user with an unapproved primary email. Without $password, the account gets a random password
-     * nobody knows (Neos needs credentials) - send the initial password mail afterwards.
+     * Creates a user with an unapproved primary email. Without $password, the account gets credentials no password
+     * matches ({@see self::NO_PASSWORD_CREDENTIALS}) - send the initial password mail afterwards.
      *
      * @param list<string> $roleIdentifiers
      * @throws UserManagementException
@@ -89,6 +95,12 @@ class UserCommandService
             $roleIdentifiers,
             $authenticationProviderName
         );
+        if ($password === null) {
+            foreach ($user->getAccounts() as $account) {
+                $account->setCredentialsSource(self::NO_PASSWORD_CREDENTIALS);
+                $this->accountRepository->update($account);
+            }
+        }
         return $user;
     }
 

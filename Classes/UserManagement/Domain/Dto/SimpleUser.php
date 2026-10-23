@@ -38,6 +38,20 @@ final class SimpleUser
     }
 
     /**
+     * Whether an account was created without password and none has been set since - then the initial password
+     * mail makes sense.
+     */
+    public function hasAccountWithoutPassword(): bool
+    {
+        foreach ($this->accounts as $account) {
+            if (!$account->hasPassword) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * @return list<string>
      */
     public function getAccountIdentifiers(): array

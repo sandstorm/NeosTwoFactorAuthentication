@@ -149,7 +149,8 @@ self-service flows to the backend login:
 Links are validated on GET but only used on POST (mail scanners prefetch links), stored as SHA-256 hashes, expire,
 and are invalidated when a newer link of the same kind is sent or the email changed. Setting a password logs out all
 sessions of the user and never logs in automatically, so 2FA stays in force. Forgot-password requests are throttled
-per username/email and per IP.
+per username/email and per IP ([symfony/rate-limiter](https://symfony.com/doc/current/rate_limiter.html), sliding
+window, with [symfony/lock](https://symfony.com/doc/current/lock.html)).
 
 ### Enabling it
 
@@ -181,10 +182,11 @@ Neos:
             enabled: true
 ```
 
-Run `./flow doctrine:migrate` and add a daily cron job for `./flow usermanagement:prunetokens`.
+Run `./flow doctrine:migrate` and add a daily cron job for `./flow usermanagement:prunetokens`. Running more than
+one Neos container? See [Running several Neos containers](#running-several-neos-containers).
 
 All settings with their defaults are in `Configuration/Settings.UserManagement.yaml` (authentication providers,
-`requireValidatedEmail`, `usernameIsEmail`, link lifetimes, throttle, password length).
+`requireValidatedEmail`, `usernameIsEmail`, link lifetimes, throttle limits and lock store, password length).
 
 Permissions mirror the core user module: `Neos.Neos:Administrator` may manage everybody, `Neos.Neos:UserManager`
 only users with the same or a subset of their roles. Nobody can delete, deactivate or lock out themselves.
@@ -197,7 +199,35 @@ only users with the same or a subset of their roles. Nobody can delete, deactiva
 | `usermanagement:sendreset <username>` | mail a "reset your password" link |
 | `usermanagement:setemail <username> <email> [--validated]` | set the primary email, e.g. of legacy users |
 | `usermanagement:duplicateemails` | list users sharing a primary email (legacy data; the module prevents new ones) |
-| `usermanagement:prunetokens` | delete used/expired links and old throttle entries (cron) |
+| `usermanagement:prunetokens` | delete used/expired links (cron) |
+
+### Running several Neos containers
+
+For the user management, the **forgot-password throttle** needs extra configuration if you run Neos in multiple containers. Its limiter state and lock
+default to the local file system, so every container would count on its own and the limit would multiply by the
+number of containers - silently. Point both to a shared cache, e.g. Redis:
+
+```yaml
+# Configuration/Caches.yaml of your project
+Sandstorm_NeosTwoFactorAuthentication_Throttle:
+  backend: Neos\Cache\Backend\RedisBackend
+  backendOptions:
+    hostname: 'redis'
+    port: 6379
+    database: 2
+```
+
+```yaml
+# Configuration/Settings.yaml of your project
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    userManagement:
+      throttle:
+        # any symfony/lock DSN; redis:// needs `composer require symfony/cache`
+        lockStore: 'redis://redis:6379'
+```
+
+Both need the PHP `redis` extension. Tokens of mailed links are stored in the database and need nothing extra.
 
 ### Package structure
 
@@ -206,7 +236,7 @@ management is a separate vertical slice, so further features can be added the sa
 
 ```
 Classes/UserManagement/
-  Domain/        UserActionToken + ThrottleEntry entities, SimpleUser DTO, UserActionType
+  Domain/        UserActionToken entity, SimpleUser DTO, UserActionType
   Application/   SimpleUserFinder (read) + UserCommandService (write) hide Neos' User/Person/Account model;
                  token service, forgot-password handler, mailer, throttle
   Controller/    public Password + EmailVerification controllers, backend ModuleController

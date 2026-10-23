@@ -245,6 +245,9 @@
       <trans-unit id="module.edit.userData" xml:space="preserve">
         <source>User data</source>
       </trans-unit>
+      <trans-unit id="module.edit.emailVerificationStatus" xml:space="preserve">
+        <source>Email verification status</source>
+      </trans-unit>
       <trans-unit id="module.edit.emailChangeHint" xml:space="preserve">
         <source>Changing the email address resets its validation and sends a confirmation mail.</source>
       </trans-unit>

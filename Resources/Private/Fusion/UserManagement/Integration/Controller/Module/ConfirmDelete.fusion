@@ -4,8 +4,8 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.confirmDel
     }
     content = afx`
         <div class="neos-user-management">
-            <legend><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.delete.title" /></legend>
-            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.delete.text" /></p>
+            <legend><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.delete.title" /></legend>
+            <p><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.delete.text" /></p>
             <ul class="neos-user-management__delete-list">
                 <Neos.Fusion:Loop items={users} itemName="user">
                     <li>{user.displayName} ({Array.join(user.accountIdentifiers, ', ')})</li>
@@ -13,9 +13,9 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.confirmDel
             </ul>
             <Neos.Fusion.Form:Form form.target.action="delete" form.target.arguments={{userIds: Array.map(users, user => user.userId)}}>
                 <div class="neos-footer">
-                    <a href={indexUri} class="neos-button"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="cancel" /></a>
+                    <a href={indexUri} class="neos-button"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="cancel" /></a>
                     <Neos.Fusion.Form:Button attributes.class="neos-button neos-button-danger" attributes.data-test-id="confirm-delete">
-                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.delete.confirm" />
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id="module.delete.confirm" />
                     </Neos.Fusion.Form:Button>
                 </div>
             </Neos.Fusion.Form:Form>

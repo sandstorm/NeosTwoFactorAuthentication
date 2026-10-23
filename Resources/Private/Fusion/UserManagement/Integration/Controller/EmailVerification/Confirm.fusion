@@ -17,7 +17,7 @@ Sandstorm.NeosTwoFactorAuthentication.UserManagement.EmailVerificationController
                             {I18n.id('email.confirm.intro').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
                         </p>
                         <div class="neos-actions">
-                            <Neos.Fusion.Form:Button attributes.class="neos-span12 neos-button neos-login-btn" attributes.data-test-id="confirm-email">
+                            <Neos.Fusion.Form:Button attributes.class="neos-button neos-login-btn" attributes.data-test-id="confirm-email">
                                 {I18n.id('email.confirm.submit').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
                             </Neos.Fusion.Form:Button>
                         </div>

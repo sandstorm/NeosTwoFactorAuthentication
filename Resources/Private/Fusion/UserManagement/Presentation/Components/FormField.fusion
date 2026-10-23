@@ -8,7 +8,7 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.FormFie
     renderer = afx`
         <div class="neos-control-group">
             <label class="neos-control-label" for={props.for}>
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id={props.labelId} />
+                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id={props.labelId} />
             </label>
             <div class="neos-controls">
                 {props.content}
@@ -25,18 +25,20 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.RoleChe
     idPrefix = 'role'
 
     renderer = afx`
-        <Neos.Fusion:Loop items={props.roles} itemName="role" iterationName="iteration">
-            <label class="neos-checkbox neos-user-management__checkbox" for={props.idPrefix + '-' + iteration.index}>
-                <Neos.Fusion.Form:Checkbox
-                    field.name="roleIdentifiers"
-                    field.multiple={true}
-                    field.value={role.identifier}
-                    attributes.id={props.idPrefix + '-' + iteration.index}
-                    attributes.checked={Array.indexOf(props.selectedRoleIdentifiers, role.identifier) > -1}
-                />
-                <span></span>
-                {role.label} <small>({role.identifier})</small>
-            </label>
-        </Neos.Fusion:Loop>
+        <div class="neos-user-management__roles">
+            <Neos.Fusion:Loop items={props.roles} itemName="role" iterationName="iteration">
+                <label class="neos-checkbox neos-user-management__checkbox" for={props.idPrefix + '-' + iteration.index}>
+                    <Neos.Fusion.Form:Checkbox
+                        field.name="roleIdentifiers"
+                        field.multiple={true}
+                        field.value={role.identifier}
+                        attributes.id={props.idPrefix + '-' + iteration.index}
+                        attributes.checked={Array.indexOf(props.selectedRoleIdentifiers, role.identifier) > -1}
+                    />
+                    <span></span>
+                    {role.label} <small>({role.identifier})</small>
+                </label>
+            </Neos.Fusion:Loop>
+        </div>
     `
 }

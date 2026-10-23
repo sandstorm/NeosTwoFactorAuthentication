@@ -21,7 +21,9 @@
         "spomky-labs/otphp": "^11.5",
         "chillerlan/php-qrcode": "^5.0",
         "web-auth/webauthn-lib": "^5.3.5",
-        "symfony/serializer": "^6.4 | ^7.0 | ^8.0"
+        "symfony/serializer": "^6.4 | ^7.0 | ^8.0",
+        "symfony/rate-limiter": "^6.4 | ^7.0 | ^8.0",
+        "symfony/lock": "^6.4 | ^7.0 | ^8.0"
     },
     "autoload": {
         "psr-4": {

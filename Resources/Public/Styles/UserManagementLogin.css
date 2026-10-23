@@ -12,7 +12,7 @@
 
 .neos-user-management__forgot-password a,
 .neos-user-management__back-to-login a {
-    color: #fff;
+    color: #000000;
     opacity: 0.85;
     text-decoration: underline;
 }
@@ -25,7 +25,7 @@
 }
 
 .neos-user-management__message {
-    color: #fff;
+    color: #000000;
     font-size: 14px;
     line-height: 1.5;
     text-align: left;

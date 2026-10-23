@@ -119,3 +119,82 @@
       '@action': 'verify'
       '@format': 'json'
   httpMethods: ['POST']
+
+# User management (public, unauthenticated) - gated at runtime by `userManagement.enabled`
+- name: 'Sandstorm User Management - Forgot password form'
+  uriPattern: 'neos/password/request'
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'Password'
+    '@action': 'request'
+    '@format': 'html'
+  httpMethods: ['GET']
+
+- name: 'Sandstorm User Management - Forgot password submit'
+  uriPattern: 'neos/password/request'
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'Password'
+    '@action': 'requestSubmit'
+    '@format': 'html'
+  httpMethods: ['POST']
+
+- name: 'Sandstorm User Management - Forgot password sent'
+  uriPattern: 'neos/password/request/sent'
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'Password'
+    '@action': 'requestSent'
+    '@format': 'html'
+  httpMethods: ['GET']
+
+- name: 'Sandstorm User Management - Set password form'
+  uriPattern: 'neos/password/set/{token}'
+  # the token is case-sensitive - Flow lowercases generated URIs by default
+  toLowerCase: false
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'Password'
+    '@action': 'set'
+    '@format': 'html'
+  httpMethods: ['GET']
+
+- name: 'Sandstorm User Management - Set password submit'
+  uriPattern: 'neos/password/set/{token}'
+  # the token is case-sensitive - Flow lowercases generated URIs by default
+  toLowerCase: false
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'Password'
+    '@action': 'setSubmit'
+    '@format': 'html'
+  httpMethods: ['POST']
+
+- name: 'Sandstorm User Management - Confirm email form'
+  uriPattern: 'neos/email/confirm/{token}'
+  # the token is case-sensitive - Flow lowercases generated URIs by default
+  toLowerCase: false
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'EmailVerification'
+    '@action': 'confirm'
+    '@format': 'html'
+  httpMethods: ['GET']
+
+- name: 'Sandstorm User Management - Confirm email submit'
+  uriPattern: 'neos/email/confirm/{token}'
+  # the token is case-sensitive - Flow lowercases generated URIs by default
+  toLowerCase: false
+  defaults:
+    '@package': 'Sandstorm.NeosTwoFactorAuthentication'
+    '@subpackage': 'UserManagement'
+    '@controller': 'EmailVerification'
+    '@action': 'confirmSubmit'
+    '@format': 'html'
+  httpMethods: ['POST']

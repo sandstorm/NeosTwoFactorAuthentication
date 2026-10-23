@@ -1,0 +1,9 @@
+# A short text block on the public (login box) screens, e.g. "link expired" or "mail sent".
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.PublicMessage) < prototype(Neos.Fusion:Component) {
+    text = ''
+    testId = ''
+
+    renderer = afx`
+        <p class="neos-user-management__message" data-test-id={props.testId} role="status">{props.text}</p>
+    `
+}

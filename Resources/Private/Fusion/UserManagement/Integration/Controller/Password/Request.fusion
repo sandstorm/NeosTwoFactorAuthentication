@@ -1,0 +1,27 @@
+Sandstorm.NeosTwoFactorAuthentication.UserManagement.PasswordController.request = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.PublicPage {
+    body = afx`
+        <Neos.Fusion.Form:Form form.target.action="requestSubmit" attributes.class="neos-user-management__form">
+            <fieldset>
+                <label for="usernameOrEmail" class="neos-two-factor__login-label">
+                    {I18n.id('password.request.label').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                </label>
+                <div class="neos-controls">
+                    <Neos.Fusion.Form:Input
+                        field.name="usernameOrEmail"
+                        attributes.id="usernameOrEmail"
+                        attributes.required="required"
+                        attributes.autofocus={true}
+                        attributes.autocomplete="username"
+                        attributes.class="neos-span12"
+                        attributes.placeholder={I18n.id('password.request.placeholder').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                    />
+                </div>
+                <div class="neos-actions">
+                    <Neos.Fusion.Form:Button attributes.class="neos-span12 neos-button neos-login-btn" attributes.data-test-id="request-password-reset">
+                        {I18n.id('password.request.submit').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                    </Neos.Fusion.Form:Button>
+                </div>
+            </fieldset>
+        </Neos.Fusion.Form:Form>
+    `
+}

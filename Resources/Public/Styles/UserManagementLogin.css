@@ -1,0 +1,44 @@
+/*
+ * User management styles on the Neos login screen and the public screens (forgot / set password,
+ * confirm email), which reuse the login box layout. Loaded via Neos.Neos.userInterface.backendLoginForm.
+ */
+
+.neos-user-management__forgot-password,
+.neos-user-management__back-to-login {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 13px;
+}
+
+.neos-user-management__forgot-password a,
+.neos-user-management__back-to-login a {
+    color: #fff;
+    opacity: 0.85;
+    text-decoration: underline;
+}
+
+.neos-user-management__forgot-password a:hover,
+.neos-user-management__back-to-login a:hover,
+.neos-user-management__forgot-password a:focus-visible,
+.neos-user-management__back-to-login a:focus-visible {
+    opacity: 1;
+}
+
+.neos-user-management__message {
+    color: #fff;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+}
+
+.neos-user-management__form .neos-controls {
+    margin-bottom: 12px;
+}
+
+.neos-two-factor-flashmessage-error {
+    background-color: #ff460d;
+}
+
+.neos-two-factor-flashmessage-ok {
+    background-color: #00a338;
+}

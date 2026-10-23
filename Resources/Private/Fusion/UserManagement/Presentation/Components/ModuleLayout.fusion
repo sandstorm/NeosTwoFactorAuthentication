@@ -1,0 +1,40 @@
+# Backend module page of the user management, based on the 2FA module layout.
+# A Component wrapping the page, because `props` only exists inside a renderer, not in sibling props.
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.ModulePage) < prototype(Neos.Fusion:Component) {
+    content = ''
+    footer = ''
+    renderer = Sandstorm.NeosTwoFactorAuthentication:Page.DefaultPage {
+        body = Sandstorm.NeosTwoFactorAuthentication:BodyLayout.Default {
+            flashMessages = ${flashMessages}
+            content = ${props.content}
+            footer = ${props.footer}
+        }
+    }
+}
+
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.EmailBadge) < prototype(Neos.Fusion:Component) {
+    approved = false
+    renderer = afx`
+        <span class={['neos-user-management__badge', props.approved ? 'neos-user-management__badge--ok' : 'neos-user-management__badge--warning']}>
+            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id={props.approved ? 'email.validated' : 'email.notValidated'} />
+        </span>
+    `
+}
+
+# A single-button POST form to a module action.
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.ActionButton) < prototype(Neos.Fusion:Component) {
+    action = ''
+    arguments = ${{}}
+    label = ''
+    class = 'neos-button'
+    testId = ''
+    disabled = false
+
+    renderer = afx`
+        <Neos.Fusion.Form:Form form.target.action={props.action} form.target.arguments={props.arguments} attributes.class="neos-inline neos-user-management__action-form">
+            <Neos.Fusion.Form:Button attributes.class={props.class} attributes.data-test-id={props.testId} attributes.disabled={props.disabled}>
+                {props.label}
+            </Neos.Fusion.Form:Button>
+        </Neos.Fusion.Form:Form>
+    `
+}

@@ -1,0 +1,111 @@
+Sandstorm.NeosTwoFactorAuthentication.UserManagement.ModuleController.index = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.ModulePage {
+    @context.newUri = Neos.Fusion:UriBuilder {
+        action = 'new'
+    }
+    content = afx`
+        <div class="neos-user-management">
+            <div @if={mailConfigurationWarning} class="neos-user-management__notice neos-user-management__notice--warning" role="alert">
+                {mailConfigurationWarning}
+            </div>
+
+            <div class="neos-user-management__toolbar">
+                <Neos.Fusion.Form:Form form.target.action="index" form.data.searchTerm={searchTerm} form.data.authenticationProviderName={authenticationProviderName} attributes.class="neos-user-management__search">
+                    <Neos.Fusion.Form:Input
+                        field.name="searchTerm"
+                        attributes.placeholder={I18n.id('module.index.search').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                        attributes.data-test-id="search"
+                    />
+                    <Neos.Fusion.Form:Select field.name="authenticationProviderName" @if={Array.length(providers) > 1}>
+                        <Neos.Fusion.Form:Select.Option option.value="">
+                            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.allProviders" />
+                        </Neos.Fusion.Form:Select.Option>
+                        <Neos.Fusion:Loop items={providers} itemName="provider">
+                            <Neos.Fusion.Form:Select.Option option.value={provider}>{provider}</Neos.Fusion.Form:Select.Option>
+                        </Neos.Fusion:Loop>
+                    </Neos.Fusion.Form:Select>
+                    <Neos.Fusion.Form:Button attributes.class="neos-button">
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.searchSubmit" />
+                    </Neos.Fusion.Form:Button>
+                </Neos.Fusion.Form:Form>
+
+                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.ActionButton
+                    action="sendTestMail"
+                    testId="send-test-mail"
+                    label={I18n.id('module.index.sendTestMail').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                />
+            </div>
+
+            <Neos.Fusion.Form:Form form.target.action="confirmDelete">
+                <table class="neos-table neos-user-management__table">
+                    <thead>
+                        <tr>
+                            <th><span class="neos-user-management__visually-hidden"><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.select" /></span></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.name" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.username" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.email" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.roles" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.active" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.secondFactors" /></th>
+                            <th><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="field.lastLogin" /></th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <Neos.Fusion:Loop items={users} itemName="user">
+                            <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.UserRow user={user} isSelf={user.userId == currentUserId} />
+                        </Neos.Fusion:Loop>
+                    </tbody>
+                </table>
+                <p @if={Array.length(users) == 0}><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.noUsers" /></p>
+
+                <div class="neos-footer">
+                    <a href={newUri} class="neos-button neos-button-primary" data-test-id="new-user">
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.newUser" />
+                    </a>
+                    <Neos.Fusion.Form:Button attributes.class="neos-button neos-button-danger" attributes.data-test-id="delete-selected">
+                        <Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id="module.index.deleteSelected" />
+                    </Neos.Fusion.Form:Button>
+                </div>
+            </Neos.Fusion.Form:Form>
+        </div>
+    `
+}
+
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.UserRow) < prototype(Neos.Fusion:Component) {
+    user = null
+    isSelf = false
+
+    editUri = Neos.Fusion:UriBuilder {
+        action = 'edit'
+        arguments.userId = ${user.userId}
+    }
+
+    renderer = afx`
+        <tr data-test-id="user-row" data-username={Array.join(props.user.accountIdentifiers, ',')}>
+            <td>
+                <Neos.Fusion.Form:Checkbox
+                    @if={!props.isSelf}
+                    field.name="userIds"
+                    field.multiple={true}
+                    field.value={props.user.userId}
+                    attributes.aria-label={props.user.displayName}
+                />
+            </td>
+            <td><a href={props.editUri}>{props.user.displayName}</a></td>
+            <td>{Array.join(props.user.accountIdentifiers, ', ')}</td>
+            <td>
+                {props.user.primaryEmail || '-'}
+                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.EmailBadge @if={props.user.primaryEmail} approved={props.user.emailApproved} />
+            </td>
+            <td>{Array.join(props.user.roleIdentifiers, ', ')}</td>
+            <td><Sandstorm.NeosTwoFactorAuthentication:UserManagement.T id={props.user.active ? 'yes' : 'no'} /></td>
+            <td>{props.user.secondFactorCount}</td>
+            <td>{props.user.lastSuccessfulAuthentication ? Date.format(props.user.lastSuccessfulAuthentication, 'Y-m-d H:i') : '-'}</td>
+            <td>
+                <a href={props.editUri} class="neos-button neos-button-primary" title={I18n.id('module.index.edit').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}>
+                    <i class="fas fa-pencil-alt icon-white"></i>
+                </a>
+            </td>
+        </tr>
+    `
+}

@@ -1,0 +1,39 @@
+# Mails are rendered by Sandstorm\NeosTwoFactorAuthentication\UserManagement\Application\UserMailer:
+# each mail is a path below Sandstorm.NeosTwoFactorAuthentication.UserManagement.Mail with subject, html and text.
+# AFX does not escape - all user-provided values go through String.htmlSpecialChars in the HTML parts.
+
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.HtmlLayout) < prototype(Neos.Fusion:Component) {
+    content = ''
+
+    # the doctype breaks AFX, so it is prepended
+    @process.addDocType = ${'<!DOCTYPE html>' + value}
+
+    renderer = afx`
+        <html>
+        <head>
+            <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+        </head>
+        <body style="margin: 0; padding: 24px; background: #f5f5f5; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 15px; line-height: 1.5; color: #222;">
+            <div style="max-width: 560px; margin: 0 auto; padding: 24px; background: #fff;">
+                {props.content}
+            </div>
+        </body>
+        </html>
+    `
+}
+
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.Button) < prototype(Neos.Fusion:Component) {
+    href = ''
+    label = ''
+
+    renderer = afx`
+        <p style="margin: 24px 0;">
+            <a href={String.htmlSpecialChars(props.href)} style="display: inline-block; padding: 10px 20px; background: #00adee; color: #fff; text-decoration: none; font-weight: bold;">{props.label}</a>
+        </p>
+        <p style="font-size: 13px; color: #666; word-break: break-all;">{String.htmlSpecialChars(props.href)}</p>
+    `
+}
+
+# Translation shorthand for mails
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Mail.T) < prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.T)

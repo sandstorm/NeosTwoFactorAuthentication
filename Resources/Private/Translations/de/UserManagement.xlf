@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file original="" product-name="Sandstorm.NeosTwoFactorAuthentication" source-language="en" datatype="plaintext" target-language="de">
+    <body>
+      <trans-unit id="module.label" xml:space="preserve">
+        <source>User Management</source>
+        <target>Benutzer*innenverwaltung</target>
+      </trans-unit>
+      <trans-unit id="module.description" xml:space="preserve">
+        <source>Manage backend users: create, edit, delete, password mails and email validation.</source>
+        <target>Backend-Benutzer*innen verwalten: anlegen, bearbeiten, löschen, Passwort-Mails und E-Mail-Validierung.</target>
+      </trans-unit>
+      <trans-unit id="login.forgotPassword" xml:space="preserve">
+        <source>Forgot your password?</source>
+        <target>Passwort vergessen?</target>
+      </trans-unit>
+      <trans-unit id="login.backToLogin" xml:space="preserve">
+        <source>Back to login</source>
+        <target>Zurück zum Login</target>
+      </trans-unit>
+      <trans-unit id="password.request.label" xml:space="preserve">
+        <source>Enter your username or email address. If an account exists, we will send you a link to set a new password.</source>
+        <target>Geben Sie Ihren Benutzernamen oder Ihre E-Mail-Adresse ein. Falls ein Konto existiert, senden wir Ihnen einen Link, um ein neues Passwort zu setzen.</target>
+      </trans-unit>
+      <trans-unit id="password.request.placeholder" xml:space="preserve">
+        <source>Username or email</source>
+        <target>Benutzername oder E-Mail</target>
+      </trans-unit>
+      <trans-unit id="password.request.submit" xml:space="preserve">
+        <source>Reset password</source>
+        <target>Passwort zurücksetzen</target>
+      </trans-unit>
+      <trans-unit id="password.request.sent" xml:space="preserve">
+        <source>If an account exists for your input, we have sent you an email with a link to set a new password. Please also check your spam folder.</source>
+        <target>Falls zu Ihrer Eingabe ein Konto existiert, haben wir Ihnen eine E-Mail mit einem Link zum Setzen eines neuen Passworts gesendet. Bitte prüfen Sie auch Ihren Spam-Ordner.</target>
+      </trans-unit>
+      <trans-unit id="link.invalid" xml:space="preserve">
+        <source>This link is invalid or has expired. Please request a new one.</source>
+        <target>Dieser Link ist ungültig oder abgelaufen. Bitte fordern Sie einen neuen an.</target>
+      </trans-unit>
+      <trans-unit id="password.set.introReset" xml:space="preserve">
+        <source>Set a new password for {0}.</source>
+        <target>Neues Passwort für {0} setzen.</target>
+      </trans-unit>
+      <trans-unit id="password.set.introInitial" xml:space="preserve">
+        <source>Welcome! Set your password for {0}.</source>
+        <target>Willkommen! Setzen Sie Ihr Passwort für {0}.</target>
+      </trans-unit>
+      <trans-unit id="password.set.password" xml:space="preserve">
+        <source>New password</source>
+        <target>Neues Passwort</target>
+      </trans-unit>
+      <trans-unit id="password.set.passwordConfirmation" xml:space="preserve">
+        <source>Repeat new password</source>
+        <target>Neues Passwort wiederholen</target>
+      </trans-unit>
+      <trans-unit id="password.set.submit" xml:space="preserve">
+        <source>Set password</source>
+        <target>Passwort setzen</target>
+      </trans-unit>
+      <trans-unit id="password.set.success" xml:space="preserve">
+        <source>Your password has been set. You can log in now.</source>
+        <target>Ihr Passwort wurde gesetzt. Sie können sich jetzt anmelden.</target>
+      </trans-unit>
+      <trans-unit id="password.error.mismatch" xml:space="preserve">
+        <source>The passwords do not match.</source>
+        <target>Die Passwörter stimmen nicht überein.</target>
+      </trans-unit>
+      <trans-unit id="password.error.length" xml:space="preserve">
+        <source>The password must be between {0} and {1} characters long.</source>
+        <target>Das Passwort muss zwischen {0} und {1} Zeichen lang sein.</target>
+      </trans-unit>
+      <trans-unit id="email.confirm.intro" xml:space="preserve">
+        <source>Please confirm that this is your email address.</source>
+        <target>Bitte bestätigen Sie, dass dies Ihre E-Mail-Adresse ist.</target>
+      </trans-unit>
+      <trans-unit id="email.confirm.submit" xml:space="preserve">
+        <source>Confirm email address</source>
+        <target>E-Mail-Adresse bestätigen</target>
+      </trans-unit>
+      <trans-unit id="email.confirm.success" xml:space="preserve">
+        <source>Thank you, your email address has been confirmed.</source>
+        <target>Vielen Dank, Ihre E-Mail-Adresse wurde bestätigt.</target>
+      </trans-unit>
+      <trans-unit id="email.validated" xml:space="preserve">
+        <source>validated</source>
+        <target>validiert</target>
+      </trans-unit>
+      <trans-unit id="email.notValidated" xml:space="preserve">
+        <source>not validated</source>
+        <target>nicht validiert</target>
+      </trans-unit>
+      <trans-unit id="error.usernameRequired" xml:space="preserve">
+        <source>Please enter a username.</source>
+        <target>Bitte geben Sie einen Benutzernamen ein.</target>
+      </trans-unit>
+      <trans-unit id="error.invalidProvider" xml:space="preserve">
+        <source>This authentication provider is not managed here.</source>
+        <target>Dieser Authentifizierungs-Provider wird hier nicht verwaltet.</target>
+      </trans-unit>
+      <trans-unit id="error.usernameTaken" xml:space="preserve">
+        <source>This username is already taken.</source>
+        <target>Dieser Benutzername ist bereits vergeben.</target>
+      </trans-unit>
+      <trans-unit id="error.emailTaken" xml:space="preserve">
+        <source>This email address is already used by another user.</source>
+        <target>Diese E-Mail-Adresse wird bereits von einer anderen Person verwendet.</target>
+      </trans-unit>
+      <trans-unit id="error.noEmail" xml:space="preserve">
+        <source>The user has no email address.</source>
+        <target>Für diese Person ist keine E-Mail-Adresse hinterlegt.</target>
+      </trans-unit>
+      <trans-unit id="error.noActiveAccount" xml:space="preserve">
+        <source>The user has no active account.</source>
+        <target>Diese Person hat kein aktives Konto.</target>
+      </trans-unit>
+      <trans-unit id="error.invalidEmail" xml:space="preserve">
+        <source>Please enter a valid email address.</source>
+        <target>Bitte geben Sie eine gültige E-Mail-Adresse ein.</target>
+      </trans-unit>
+      <trans-unit id="error.noEmailForTestMail" xml:space="preserve">
+        <source>Your own user has no email address, so no test mail can be sent.</source>
+        <target>Für Ihr eigenes Konto ist keine E-Mail-Adresse hinterlegt, daher kann keine Test-Mail gesendet werden.</target>
+      </trans-unit>
+      <trans-unit id="error.rolesNotAllowed" xml:space="preserve">
+        <source>You may only assign roles you have yourself.</source>
+        <target>Sie dürfen nur Rollen vergeben, die Sie selbst haben.</target>
+      </trans-unit>
+      <trans-unit id="error.doNotLockYourselfOut" xml:space="preserve">
+        <source>You cannot remove your own access to the user management.</source>
+        <target>Sie können sich nicht selbst den Zugriff auf die Benutzer*innenverwaltung entziehen.</target>
+      </trans-unit>
+      <trans-unit id="error.nothingToDelete" xml:space="preserve">
+        <source>No users selected that you may delete. You cannot delete yourself.</source>
+        <target>Keine löschbaren Benutzer*innen ausgewählt. Sie können sich nicht selbst löschen.</target>
+      </trans-unit>
+      <trans-unit id="error.editingNotAllowed" xml:space="preserve">
+        <source>You may not edit this user, because they have roles you do not have.</source>
+        <target>Sie dürfen diese Person nicht bearbeiten, da sie Rollen hat, die Sie nicht haben.</target>
+      </trans-unit>
+      <trans-unit id="warning.mailFromMissing" xml:space="preserve">
+        <source>No sender address is configured (Sandstorm.NeosTwoFactorAuthentication.userManagement.mail.from.address) - no mails can be sent.</source>
+        <target>Es ist keine Absendeadresse konfiguriert (Sandstorm.NeosTwoFactorAuthentication.userManagement.mail.from.address) - es können keine Mails gesendet werden.</target>
+      </trans-unit>
+      <trans-unit id="warning.mailerDsnMissing" xml:space="preserve">
+        <source>No mail transport is configured (Neos.SymfonyMailer.mailer.dsn) - no mails will be delivered.</source>
+        <target>Es ist kein Mail-Transport konfiguriert (Neos.SymfonyMailer.mailer.dsn) - es werden keine Mails zugestellt.</target>
+      </trans-unit>
+      <trans-unit id="flash.testMailSent" xml:space="preserve">
+        <source>A test mail has been sent to {0}.</source>
+        <target>Eine Test-Mail wurde an {0} gesendet.</target>
+      </trans-unit>
+      <trans-unit id="flash.testMailFailed" xml:space="preserve">
+        <source>Sending the test mail failed</source>
+        <target>Der Versand der Test-Mail ist fehlgeschlagen</target>
+      </trans-unit>
+      <trans-unit id="flash.mailFailed" xml:space="preserve">
+        <source>Sending the mail failed</source>
+        <target>Der Mail-Versand ist fehlgeschlagen</target>
+      </trans-unit>
+      <trans-unit id="flash.userCreated" xml:space="preserve">
+        <source>The user {0} has been created.</source>
+        <target>Die Person {0} wurde angelegt.</target>
+      </trans-unit>
+      <trans-unit id="flash.userUpdated" xml:space="preserve">
+        <source>The user {0} has been updated.</source>
+        <target>Die Person {0} wurde aktualisiert.</target>
+      </trans-unit>
+      <trans-unit id="flash.rolesUpdated" xml:space="preserve">
+        <source>The roles of {0} have been updated.</source>
+        <target>Die Rollen von {0} wurden aktualisiert.</target>
+      </trans-unit>
+      <trans-unit id="flash.passwordSet" xml:space="preserve">
+        <source>The password has been set.</source>
+        <target>Das Passwort wurde gesetzt.</target>
+      </trans-unit>
+      <trans-unit id="flash.initialPasswordMailSent" xml:space="preserve">
+        <source>A mail to set the initial password has been sent.</source>
+        <target>Eine Mail zum Setzen des initialen Passworts wurde gesendet.</target>
+      </trans-unit>
+      <trans-unit id="flash.resetPasswordMailSent" xml:space="preserve">
+        <source>A mail to reset the password has been sent.</source>
+        <target>Eine Mail zum Zurücksetzen des Passworts wurde gesendet.</target>
+      </trans-unit>
+      <trans-unit id="flash.emailVerificationMailSent" xml:space="preserve">
+        <source>A mail to confirm the email address has been sent.</source>
+        <target>Eine Mail zur Bestätigung der E-Mail-Adresse wurde gesendet.</target>
+      </trans-unit>
+      <trans-unit id="flash.emailMarkedValidated" xml:space="preserve">
+        <source>The email address has been marked as validated.</source>
+        <target>Die E-Mail-Adresse wurde als validiert markiert.</target>
+      </trans-unit>
+      <trans-unit id="flash.secondFactorsReset" xml:space="preserve">
+        <source>{0} second factor(s) have been removed.</source>
+        <target>{0} zweite(r) Faktor(en) wurde(n) entfernt.</target>
+      </trans-unit>
+      <trans-unit id="flash.usersDeleted" xml:space="preserve">
+        <source>{0} user(s) deleted.</source>
+        <target>{0} Benutzer*in(nen) gelöscht.</target>
+      </trans-unit>
+      <trans-unit id="module.index.search" xml:space="preserve">
+        <source>Search name, username or email</source>
+        <target>Name, Benutzername oder E-Mail suchen</target>
+      </trans-unit>
+      <trans-unit id="module.index.allProviders" xml:space="preserve">
+        <source>All authentication providers</source>
+        <target>Alle Authentifizierungs-Provider</target>
+      </trans-unit>
+      <trans-unit id="module.index.searchSubmit" xml:space="preserve">
+        <source>Search</source>
+        <target>Suchen</target>
+      </trans-unit>
+      <trans-unit id="module.index.sendTestMail" xml:space="preserve">
+        <source>Send test mail to me</source>
+        <target>Test-Mail an mich senden</target>
+      </trans-unit>
+      <trans-unit id="module.index.select" xml:space="preserve">
+        <source>Select</source>
+        <target>Auswählen</target>
+      </trans-unit>
+      <trans-unit id="module.index.noUsers" xml:space="preserve">
+        <source>No users found.</source>
+        <target>Keine Benutzer*innen gefunden.</target>
+      </trans-unit>
+      <trans-unit id="module.index.newUser" xml:space="preserve">
+        <source>Create user</source>
+        <target>Benutzer*in anlegen</target>
+      </trans-unit>
+      <trans-unit id="module.index.deleteSelected" xml:space="preserve">
+        <source>Delete selected</source>
+        <target>Ausgewählte löschen</target>
+      </trans-unit>
+      <trans-unit id="module.index.edit" xml:space="preserve">
+        <source>Edit</source>
+        <target>Bearbeiten</target>
+      </trans-unit>
+      <trans-unit id="field.name" xml:space="preserve">
+        <source>Name</source>
+        <target>Name</target>
+      </trans-unit>
+      <trans-unit id="field.firstName" xml:space="preserve">
+        <source>First name</source>
+        <target>Vorname</target>
+      </trans-unit>
+      <trans-unit id="field.lastName" xml:space="preserve">
+        <source>Last name</source>
+        <target>Nachname</target>
+      </trans-unit>
+      <trans-unit id="field.username" xml:space="preserve">
+        <source>Username</source>
+        <target>Benutzername</target>
+      </trans-unit>
+      <trans-unit id="field.email" xml:space="preserve">
+        <source>Email</source>
+        <target>E-Mail</target>
+      </trans-unit>
+      <trans-unit id="field.roles" xml:space="preserve">
+        <source>Roles</source>
+        <target>Rollen</target>
+      </trans-unit>
+      <trans-unit id="field.active" xml:space="preserve">
+        <source>Active</source>
+        <target>Aktiv</target>
+      </trans-unit>
+      <trans-unit id="field.secondFactors" xml:space="preserve">
+        <source>2FA</source>
+        <target>2FA</target>
+      </trans-unit>
+      <trans-unit id="field.lastLogin" xml:space="preserve">
+        <source>Last login</source>
+        <target>Letzter Login</target>
+      </trans-unit>
+      <trans-unit id="field.authenticationProvider" xml:space="preserve">
+        <source>Authentication provider</source>
+        <target>Authentifizierungs-Provider</target>
+      </trans-unit>
+      <trans-unit id="field.password" xml:space="preserve">
+        <source>Password</source>
+        <target>Passwort</target>
+      </trans-unit>
+      <trans-unit id="field.passwordConfirmation" xml:space="preserve">
+        <source>Repeat password</source>
+        <target>Passwort wiederholen</target>
+      </trans-unit>
+      <trans-unit id="yes" xml:space="preserve">
+        <source>yes</source>
+        <target>ja</target>
+      </trans-unit>
+      <trans-unit id="no" xml:space="preserve">
+        <source>no</source>
+        <target>nein</target>
+      </trans-unit>
+      <trans-unit id="cancel" xml:space="preserve">
+        <source>Cancel</source>
+        <target>Abbrechen</target>
+      </trans-unit>
+      <trans-unit id="save" xml:space="preserve">
+        <source>Save</source>
+        <target>Speichern</target>
+      </trans-unit>
+      <trans-unit id="back" xml:space="preserve">
+        <source>Back</source>
+        <target>Zurück</target>
+      </trans-unit>
+      <trans-unit id="module.new.title" xml:space="preserve">
+        <source>Create user</source>
+        <target>Benutzer*in anlegen</target>
+      </trans-unit>
+      <trans-unit id="module.new.usernameIsEmailHint" xml:space="preserve">
+        <source>The email address is used as username.</source>
+        <target>Die E-Mail-Adresse wird als Benutzername verwendet.</target>
+      </trans-unit>
+      <trans-unit id="module.new.sendPasswordMail" xml:space="preserve">
+        <source>Send a mail to set the password (recommended)</source>
+        <target>Mail zum Setzen des Passworts senden (empfohlen)</target>
+      </trans-unit>
+      <trans-unit id="module.new.passwordHint" xml:space="preserve">
+        <source>Only fill in a password if no mail is sent.</source>
+        <target>Nur ausfüllen, wenn keine Mail gesendet wird.</target>
+      </trans-unit>
+      <trans-unit id="module.new.submit" xml:space="preserve">
+        <source>Create</source>
+        <target>Anlegen</target>
+      </trans-unit>
+      <trans-unit id="module.edit.userData" xml:space="preserve">
+        <source>User data</source>
+        <target>Daten</target>
+      </trans-unit>
+      <trans-unit id="module.edit.emailChangeHint" xml:space="preserve">
+        <source>Changing the email address resets its validation and sends a confirmation mail.</source>
+        <target>Eine Änderung der E-Mail-Adresse setzt die Validierung zurück und sendet eine Bestätigungs-Mail.</target>
+      </trans-unit>
+      <trans-unit id="module.edit.emailChangeHintUsernameIsEmail" xml:space="preserve">
+        <source>Changing the email address resets its validation and sends a confirmation mail. The username is NOT changed.</source>
+        <target>Eine Änderung der E-Mail-Adresse setzt die Validierung zurück und sendet eine Bestätigungs-Mail. Der Benutzername wird NICHT geändert.</target>
+      </trans-unit>
+      <trans-unit id="module.edit.activeHint" xml:space="preserve">
+        <source>Inactive users cannot log in.</source>
+        <target>Inaktive Benutzer*innen können sich nicht anmelden.</target>
+      </trans-unit>
+      <trans-unit id="module.edit.cannotDeactivateYourself" xml:space="preserve">
+        <source>You cannot deactivate yourself.</source>
+        <target>Sie können sich nicht selbst deaktivieren.</target>
+      </trans-unit>
+      <trans-unit id="module.edit.sendEmailVerification" xml:space="preserve">
+        <source>Send confirmation mail</source>
+        <target>Bestätigungs-Mail senden</target>
+      </trans-unit>
+      <trans-unit id="module.edit.markEmailValidated" xml:space="preserve">
+        <source>Mark as validated</source>
+        <target>Als validiert markieren</target>
+      </trans-unit>
+      <trans-unit id="module.edit.sendResetMail" xml:space="preserve">
+        <source>Send password reset mail</source>
+        <target>Mail zum Zurücksetzen des Passworts senden</target>
+      </trans-unit>
+      <trans-unit id="module.edit.sendInitialMail" xml:space="preserve">
+        <source>Send initial password mail</source>
+        <target>Mail für initiales Passwort senden</target>
+      </trans-unit>
+      <trans-unit id="module.edit.setPassword" xml:space="preserve">
+        <source>Set password</source>
+        <target>Passwort setzen</target>
+      </trans-unit>
+      <trans-unit id="module.edit.accounts" xml:space="preserve">
+        <source>Accounts</source>
+        <target>Konten</target>
+      </trans-unit>
+      <trans-unit id="module.edit.saveRoles" xml:space="preserve">
+        <source>Save roles</source>
+        <target>Rollen speichern</target>
+      </trans-unit>
+      <trans-unit id="module.edit.impersonate" xml:space="preserve">
+        <source>Log in as this user</source>
+        <target>Als diese Person anmelden</target>
+      </trans-unit>
+      <trans-unit id="module.edit.secondFactorCount" xml:space="preserve">
+        <source>{0} second factor(s) registered.</source>
+        <target>{0} zweite(r) Faktor(en) registriert.</target>
+      </trans-unit>
+      <trans-unit id="module.edit.resetSecondFactors" xml:space="preserve">
+        <source>Remove all second factors</source>
+        <target>Alle zweiten Faktoren entfernen</target>
+      </trans-unit>
+      <trans-unit id="module.edit.delete" xml:space="preserve">
+        <source>Delete user</source>
+        <target>Benutzer*in löschen</target>
+      </trans-unit>
+      <trans-unit id="module.delete.title" xml:space="preserve">
+        <source>Delete users</source>
+        <target>Benutzer*innen löschen</target>
+      </trans-unit>
+      <trans-unit id="module.delete.text" xml:space="preserve">
+        <source>The following users and their personal workspaces will be deleted. This cannot be undone.</source>
+        <target>Die folgenden Benutzer*innen und ihre persönlichen Workspaces werden gelöscht. Dies kann nicht rückgängig gemacht werden.</target>
+      </trans-unit>
+      <trans-unit id="module.delete.confirm" xml:space="preserve">
+        <source>Delete</source>
+        <target>Löschen</target>
+      </trans-unit>
+      <trans-unit id="mail.greeting" xml:space="preserve">
+        <source>Hello {0},</source>
+        <target>Hallo {0},</target>
+      </trans-unit>
+      <trans-unit id="mail.forUsername" xml:space="preserve">
+        <source>For the username {0}:</source>
+        <target>Für den Benutzernamen {0}:</target>
+      </trans-unit>
+      <trans-unit id="mail.expires" xml:space="preserve">
+        <source>The link is valid until {0} and can be used once.</source>
+        <target>Der Link ist bis {0} gültig und kann einmal verwendet werden.</target>
+      </trans-unit>
+      <trans-unit id="mail.resetPassword.subject" xml:space="preserve">
+        <source>Reset your password</source>
+        <target>Passwort zurücksetzen</target>
+      </trans-unit>
+      <trans-unit id="mail.resetPassword.intro" xml:space="preserve">
+        <source>we received a request to reset your password. Use the following link to set a new one:</source>
+        <target>wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten. Über den folgenden Link können Sie ein neues setzen:</target>
+      </trans-unit>
+      <trans-unit id="mail.resetPassword.button" xml:space="preserve">
+        <source>Set new password</source>
+        <target>Neues Passwort setzen</target>
+      </trans-unit>
+      <trans-unit id="mail.resetPassword.ignore" xml:space="preserve">
+        <source>If you did not request this, you can ignore this mail - your password stays unchanged.</source>
+        <target>Falls Sie dies nicht angefordert haben, können Sie diese Mail ignorieren - Ihr Passwort bleibt unverändert.</target>
+      </trans-unit>
+      <trans-unit id="mail.initialPassword.subject" xml:space="preserve">
+        <source>Your new account - set your password</source>
+        <target>Ihr neues Konto - Passwort setzen</target>
+      </trans-unit>
+      <trans-unit id="mail.initialPassword.intro" xml:space="preserve">
+        <source>an account has been created for you. Use the following link to set your password:</source>
+        <target>für Sie wurde ein Konto angelegt. Über den folgenden Link können Sie Ihr Passwort setzen:</target>
+      </trans-unit>
+      <trans-unit id="mail.initialPassword.button" xml:space="preserve">
+        <source>Set password</source>
+        <target>Passwort setzen</target>
+      </trans-unit>
+      <trans-unit id="mail.initialPassword.ignore" xml:space="preserve">
+        <source>If you did not expect this mail, please contact your administrator.</source>
+        <target>Falls Sie diese Mail nicht erwartet haben, wenden Sie sich bitte an Ihre Administration.</target>
+      </trans-unit>
+      <trans-unit id="mail.emailVerification.subject" xml:space="preserve">
+        <source>Confirm your email address</source>
+        <target>E-Mail-Adresse bestätigen</target>
+      </trans-unit>
+      <trans-unit id="mail.emailVerification.intro" xml:space="preserve">
+        <source>please confirm your email address with the following link:</source>
+        <target>bitte bestätigen Sie Ihre E-Mail-Adresse über den folgenden Link:</target>
+      </trans-unit>
+      <trans-unit id="mail.emailVerification.button" xml:space="preserve">
+        <source>Confirm email address</source>
+        <target>E-Mail-Adresse bestätigen</target>
+      </trans-unit>
+      <trans-unit id="mail.emailVerification.ignore" xml:space="preserve">
+        <source>If you did not expect this mail, you can ignore it.</source>
+        <target>Falls Sie diese Mail nicht erwartet haben, können Sie sie ignorieren.</target>
+      </trans-unit>
+      <trans-unit id="mail.testMail.subject" xml:space="preserve">
+        <source>Test mail from the Neos user management</source>
+        <target>Test-Mail der Neos Benutzer*innenverwaltung</target>
+      </trans-unit>
+      <trans-unit id="mail.testMail.body" xml:space="preserve">
+        <source>this is a test mail - the mail configuration works.</source>
+        <target>dies ist eine Test-Mail - die Mail-Konfiguration funktioniert.</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

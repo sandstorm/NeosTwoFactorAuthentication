@@ -42,6 +42,7 @@ services:
     depends_on:
       - db
       - redis
+      - mailpit
 
   db:
     image: mariadb:10.11
@@ -63,6 +64,15 @@ services:
   redis:
     image: redis:7
     restart: always
+    networks:
+      - neos_SUT
+
+  # catches the user management mails; the tests read them via the HTTP API on port 8025
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - 8025:8025
     networks:
       - neos_SUT
 

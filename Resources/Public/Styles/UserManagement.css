@@ -1,0 +1,97 @@
+/*
+ * Styles used ONLY by the user management backend module
+ * (Sandstorm\...\UserManagement\Controller\ModuleController). Loaded after Shared.css.
+ */
+
+.neos-user-management__toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.neos-user-management__search {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.neos-user-management__notice {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border-left: 3px solid #ff8700;
+    background: rgba(255, 135, 0, .2);
+}
+
+.neos-user-management__badge {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 6px;
+    font-size: 11px;
+    border-radius: 2px;
+    color: #fff;
+}
+
+.neos-user-management__badge--ok {
+    background: #00a338;
+}
+
+.neos-user-management__badge--warning {
+    background: #ff8700;
+}
+
+.neos-user-management__section {
+    margin: 24px 0;
+    padding-top: 16px;
+    border-top: 1px solid #3f3f3f;
+}
+
+.neos-user-management__section h2 {
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.neos-user-management__account {
+    margin-bottom: 16px;
+}
+
+.neos-user-management__account h3 {
+    font-size: 14px;
+}
+
+.neos-user-management__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.neos-user-management__action-form {
+    display: inline-block;
+}
+
+.neos-user-management__checkbox {
+    display: block;
+    margin-bottom: 6px;
+}
+
+.neos-user-management__hint {
+    margin-top: 4px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.neos-user-management__fieldset {
+    margin: 16px 0;
+}
+
+.neos-user-management__visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}

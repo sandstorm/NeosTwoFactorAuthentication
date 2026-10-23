@@ -1,0 +1,51 @@
+Sandstorm.NeosTwoFactorAuthentication.UserManagement.PasswordController.set = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.PublicPage {
+    body = Neos.Fusion:Case {
+        invalid {
+            condition = ${!valid}
+            renderer = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.PublicMessage {
+                testId = 'link-invalid'
+                text = ${I18n.id('link.invalid').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+            }
+        }
+        form {
+            condition = true
+            renderer = afx`
+                <Neos.Fusion.Form:Form form.target.action="setSubmit" form.target.arguments={{token: token}} attributes.class="neos-user-management__form">
+                    <fieldset>
+                        <p class="neos-two-factor__login-label">
+                            {I18n.id(action == 'initialPassword' ? 'password.set.introInitial' : 'password.set.introReset').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').arguments([username]).translate()}
+                        </p>
+                        <input type="text" name="username" value={username} autocomplete="username" hidden="hidden" readonly="readonly" />
+                        <div class="neos-controls">
+                            <Neos.Fusion.Form:Password
+                                field.name="password"
+                                attributes.id="password"
+                                attributes.required="required"
+                                attributes.autofocus={true}
+                                attributes.autocomplete="new-password"
+                                attributes.minlength={passwordMinimumLength}
+                                attributes.class="neos-span12"
+                                attributes.placeholder={I18n.id('password.set.password').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                            />
+                        </div>
+                        <div class="neos-controls">
+                            <Neos.Fusion.Form:Password
+                                field.name="passwordConfirmation"
+                                attributes.id="passwordConfirmation"
+                                attributes.required="required"
+                                attributes.autocomplete="new-password"
+                                attributes.class="neos-span12"
+                                attributes.placeholder={I18n.id('password.set.passwordConfirmation').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                            />
+                        </div>
+                        <div class="neos-actions">
+                            <Neos.Fusion.Form:Button attributes.class="neos-span12 neos-button neos-login-btn" attributes.data-test-id="set-password">
+                                {I18n.id('password.set.submit').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+                            </Neos.Fusion.Form:Button>
+                        </div>
+                    </fieldset>
+                </Neos.Fusion.Form:Form>
+            `
+        }
+    }
+}

@@ -1,0 +1,9 @@
+# Append a "Forgot password?" link to the core Neos backend login form (only when the user management is enabled).
+# Same technique as the passwordless button: Neos.Fusion:Join keeps the rendered form HTML unescaped.
+prototype(Neos.Neos:Component.Login.Form) {
+    renderer.@process.appendForgotPasswordLink = Neos.Fusion:Join {
+        @position = 'start'
+        loginForm = ${value}
+        forgotPasswordLink = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.ForgotPasswordLink
+    }
+}

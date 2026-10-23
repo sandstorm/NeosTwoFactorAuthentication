@@ -130,6 +130,92 @@ verification — independent of the `userVerification` setting.
 
 ![NeosTwoFactorAuthPackage-ListOfAll2ndFactors](docs/NeosTwoFactorAuth-ListOf2ndFactors.png)
 
+## User management (forgot password, initial password, user module)
+
+**Opt-in, off by default.** Besides 2FA, this package can replace the core Neos user module and add the missing
+self-service flows to the backend login:
+
+- **Forgot password** – "Forgot your password?" link on the login screen. Users enter their username **or** email
+  address and get a single-use link to set a new password. The answer is always the same, whether an account exists
+  or not. Several accounts sharing one email get **one** mail with one link per username.
+- **Initial password** – administrators create users without typing a password; the user gets a link to set it
+  (default: valid for 7 days). Setting a password via a link also validates the email address.
+- **Email validation** – the user's *primary* email (Neos.Party `ElectronicAddress`, `approved` = validated). Changing
+  it resets the validation and sends a confirmation mail; admins can also mark it as validated.
+- **Backend module** `Administration > User Management` replacing the core user module: search, bulk delete,
+  create, edit (name, email, roles per account, active, password), send reset / initial password / confirmation
+  mails, reset second factors, impersonate, and a "send test mail to me" button to check the mail setup.
+
+Links are validated on GET but only used on POST (mail scanners prefetch links), stored as SHA-256 hashes, expire,
+and are invalidated when a newer link of the same kind is sent or the email changed. Setting a password logs out all
+sessions of the user and never logs in automatically, so 2FA stays in force. Forgot-password requests are throttled
+per username/email and per IP.
+
+### Enabling it
+
+Mails are sent with [neos/symfonymailer](https://github.com/neos/symfonymailer) - configure
+`Neos.SymfonyMailer.mailer.dsn`. Then:
+
+```yaml
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    userManagement:
+      enabled: true
+      mail:
+        from:
+          address: 'no-reply@example.com'   # required
+          name: 'My CMS'
+
+Neos:
+  Flow:
+    http:
+      # required for the CLI commands, which have no request to build the links from
+      baseUri: 'https://cms.example.com/'
+  Neos:
+    modules:
+      administration:
+        submodules:
+          users:
+            enabled: false          # the core user module
+          userManagement:
+            enabled: true
+```
+
+Run `./flow doctrine:migrate` and add a daily cron job for `./flow usermanagement:prunetokens`.
+
+All settings with their defaults are in `Configuration/Settings.UserManagement.yaml` (authentication providers,
+`requireValidatedEmail`, `usernameIsEmail`, link lifetimes, throttle, password length).
+
+Permissions mirror the core user module: `Neos.Neos:Administrator` may manage everybody, `Neos.Neos:UserManager`
+only users with the same or a subset of their roles. Nobody can delete, deactivate or lock out themselves.
+
+### CLI
+
+| Command | |
+|---|---|
+| `usermanagement:sendinitialpassword <username>` | mail a "set your password" link |
+| `usermanagement:sendreset <username>` | mail a "reset your password" link |
+| `usermanagement:setemail <username> <email> [--validated]` | set the primary email, e.g. of legacy users |
+| `usermanagement:duplicateemails` | list users sharing a primary email (legacy data; the module prevents new ones) |
+| `usermanagement:prunetokens` | delete used/expired links and old throttle entries (cron) |
+
+### Package structure
+
+The 2FA code lives in the top-level namespaces (`Controller`, `Domain`, `Service`, ...) as before. The user
+management is a separate vertical slice, so further features can be added the same way:
+
+```
+Classes/UserManagement/
+  Domain/        UserActionToken + ThrottleEntry entities, SimpleUser DTO, UserActionType
+  Application/   SimpleUserFinder (read) + UserCommandService (write) hide Neos' User/Person/Account model;
+                 token service, forgot-password handler, mailer, throttle
+  Controller/    public Password + EmailVerification controllers, backend ModuleController
+  Command/       usermanagement:* CLI
+Configuration/Settings.UserManagement.yaml
+Resources/Private/Fusion/UserManagement/   screens, module views, mail templates
+Resources/Private/Translations/*/UserManagement.xlf
+```
+
 ## Versioning Scheme
 
 | Package Version | Neos / Flow Version | Supported | Remarks       |
@@ -411,6 +497,7 @@ The `FLOW_CONTEXT` environment variable is passed into the docker compose enviro
 | `@enforce-for-role` | `Production/E2E-SUT/EnforceForRole` | Enforcement scoped to `Neos.Neos:Administrator` |
 | `@enforce-for-provider` | `Production/E2E-SUT/EnforceForProvider` | Enforcement scoped to an authentication provider |
 | `@passwordless` | `Production/E2E-SUT/Passwordless` | `webAuthn.passwordlessLoginEnabled: true` — passwordless passkey login |
+| `@user-management` | `Production/E2E-SUT/UserManagement` | User management enabled — mails are read from the SUT's Mailpit (`localhost:8025`) |
 
 #### Test isolation
 

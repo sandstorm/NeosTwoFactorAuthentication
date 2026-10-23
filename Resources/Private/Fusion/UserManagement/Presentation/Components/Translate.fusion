@@ -1,0 +1,6 @@
+# Shorthand for translations of the UserManagement.xlf source.
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.T) < prototype(Neos.Fusion:Component) {
+    id = ''
+    arguments = ${[]}
+    renderer = ${I18n.id(props.id).package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').arguments(props.arguments).translate()}
+}

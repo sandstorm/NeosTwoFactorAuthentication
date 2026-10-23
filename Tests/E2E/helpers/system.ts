@@ -38,3 +38,29 @@ export function destroyAllSessions() {
     { stdio: 'ignore', cwd: dirname('.') }
   )
 }
+
+export function setEmail(username: string, email: string, validated: boolean) {
+  execSync(
+    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow usermanagement:setemail ${username} ${email}${validated ? ' --validated' : ''}"`,
+    { stdio: 'ignore', cwd: dirname('.') }
+  )
+}
+
+export function sendPasswordMailViaCli(kind: 'initialpassword' | 'reset', username: string) {
+  execSync(
+    `docker exec -u www-data -w /app ${CONTAINER} bash -c "./flow usermanagement:send${kind} ${username}"`,
+    { stdio: 'ignore', cwd: dirname('.') }
+  )
+}
+
+// The forgot-password throttle is stored in the database and outlives a scenario.
+export function clearUserManagementThrottle() {
+  try {
+    execSync(
+      `docker exec ${(process.env.SUT || 'neos8')}-db-1 mariadb -uneos -pneos neos -e "DELETE FROM sandstorm_neostwofactorauthentication_throttleentry"`,
+      { stdio: 'ignore', cwd: dirname('.') }
+    )
+  } catch {
+    // table not migrated yet - nothing to clear
+  }
+}

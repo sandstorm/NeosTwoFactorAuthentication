@@ -1,8 +1,9 @@
 import { createBdd } from 'playwright-bdd';
 import { state } from "../helpers/state.ts";
-import { logout, removeAllUsers } from "../helpers/system.ts";
+import { clearUserManagementThrottle, logout, removeAllUsers } from "../helpers/system.ts";
+import { deleteAllMails } from "../helpers/mailpit.ts";
 
-const { AfterScenario } = createBdd();
+const { AfterScenario, BeforeScenario } = createBdd();
 
 // reset db after each scenario
 AfterScenario(async ({ page }) => {
@@ -11,4 +12,11 @@ AfterScenario(async ({ page }) => {
 
   // clear state
   state.deviceNameSecretMap.clear();
+  state.lastLink = '';
+});
+
+// user management scenarios read mails and are subject to the forgot-password throttle
+BeforeScenario({ tags: '@user-management' }, async () => {
+  await deleteAllMails();
+  clearUserManagementThrottle();
 });

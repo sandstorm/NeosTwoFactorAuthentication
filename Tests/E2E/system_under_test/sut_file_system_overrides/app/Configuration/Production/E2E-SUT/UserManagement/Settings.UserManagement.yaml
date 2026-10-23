@@ -1,0 +1,25 @@
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    userManagement:
+      enabled: true
+      mail:
+        from:
+          address: 'no-reply@neos-2fa-sut.example'
+          name: 'Neos SUT'
+
+Neos:
+  Flow:
+    http:
+      # links in mails sent from the CLI (usermanagement:sendinitialpassword)
+      baseUri: 'http://localhost:8081/'
+  SymfonyMailer:
+    mailer:
+      dsn: 'smtp://mailpit:1025'
+  Neos:
+    modules:
+      administration:
+        submodules:
+          users:
+            enabled: false
+          userManagement:
+            enabled: true

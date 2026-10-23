@@ -1,0 +1,6 @@
+Sandstorm.NeosTwoFactorAuthentication.UserManagement.PasswordController.requestSent = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.PublicPage {
+    body = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.PublicMessage {
+        testId = 'request-sent'
+        text = ${I18n.id('password.request.sent').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}
+    }
+}

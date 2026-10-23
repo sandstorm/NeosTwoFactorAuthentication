@@ -1,0 +1,7 @@
+# Login box layout for the unauthenticated user management screens.
+prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Page.PublicPage) < prototype(Sandstorm.NeosTwoFactorAuthentication:Page.LoginBoxPage) {
+    site = ${site}
+    styles = ${styles}
+    flashMessages = ${flashMessages}
+    footerAction = Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.BackToLoginLink
+}

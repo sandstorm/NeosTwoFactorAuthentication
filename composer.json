@@ -17,6 +17,7 @@
         "neos/fusion": "*",
         "neos/fusion-afx": "*",
         "neos/fusion-form": "*",
+        "neos/symfonymailer": "^1.0",
         "spomky-labs/otphp": "^11.5",
         "chillerlan/php-qrcode": "^5.0",
         "web-auth/webauthn-lib": "^5.3.5",

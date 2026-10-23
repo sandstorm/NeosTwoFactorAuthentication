@@ -1,0 +1,71 @@
+Sandstorm:
+  NeosTwoFactorAuthentication:
+    # User management: "forgot password", initial password via mail, email validation and a backend module
+    # replacing the core user module. OFF by default - see README "User management" for how to enable it.
+    userManagement:
+      # Gates the public endpoints (forgot password, set password, confirm email), the login screen link
+      # and the CLI commands. The backend module is toggled via its "enabled" flag below.
+      enabled: false
+      # Only accounts of these providers are managed / can reset their password.
+      authenticationProviders: ['Neos.Neos:Backend']
+      # Forgot password only sends a mail to validated (approved) primary email addresses.
+      requireValidatedEmail: true
+      # On create, the account identifier is the email address; the username field is hidden.
+      # Changing the email later does NOT rename the account identifier.
+      usernameIsEmail: false
+      # ISO 8601 durations
+      tokenLifetime:
+        resetPassword: 'PT24H'
+        initialPassword: 'P7D'
+        verifyEmail: 'P7D'
+      throttle:
+        perIdentifier:
+          limit: 3
+          window: 'PT15M'
+        perIp:
+          limit: 10
+          window: 'PT15M'
+      # Mirrors the core user module (Neos\Neos\Validation\Validator\PasswordValidator, minimum 1).
+      passwordPolicy:
+        minimumLength: 1
+        maximumLength: 255
+      mail:
+        # REQUIRED once enabled - sending fails loudly if unset.
+        # Links in mails are built from Neos.Flow.http.baseUri (required for the CLI commands) or the current request.
+        from:
+          address: ~
+          name: 'Neos'
+
+Neos:
+  Neos:
+    userInterface:
+      backendLoginForm:
+        stylesheets:
+          'Sandstorm.NeosTwoFactorAuthentication:UserManagementStyles': 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/UserManagementLogin.css'
+    modules:
+      administration:
+        submodules:
+          userManagement:
+            # Enable together with userManagement.enabled, and disable the core module
+            # (Neos.Neos.modules.administration.submodules.users.enabled: false)
+            enabled: false
+            label: 'Sandstorm.NeosTwoFactorAuthentication:UserManagement:module.label'
+            controller: 'Sandstorm\NeosTwoFactorAuthentication\UserManagement\Controller\ModuleController'
+            description: 'Sandstorm.NeosTwoFactorAuthentication:UserManagement:module.description'
+            icon: 'fas fa-users'
+            mainStylesheet: 'Lite'
+            additionalResources:
+              styleSheets:
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/Shared.css'
+                - 'resource://Sandstorm.NeosTwoFactorAuthentication/Public/Styles/UserManagement.css'
+
+  Flow:
+    security:
+      authentication:
+        providers:
+          'Neos.Neos:Backend':
+            requestPatterns:
+              'Sandstorm.NeosTwoFactorAuthentication:UserManagementModule':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'Sandstorm\NeosTwoFactorAuthentication\UserManagement\Controller\ModuleController'

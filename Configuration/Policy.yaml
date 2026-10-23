@@ -14,11 +14,28 @@ privilegeTargets:
     'Sandstorm.NeosTwoFactorAuthentication:PasswordlessLogin':
       matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\Controller\PasswordlessLoginController->(options|verify)Action())'
 
+    # User management: forgot password / set password / confirm email must work unauthenticated. The token
+    # in the link is the authorization; the actions are hard-gated at runtime by `userManagement.enabled`.
+    'Sandstorm.NeosTwoFactorAuthentication:UserManagement.PublicActions':
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\UserManagement\Controller\(PasswordController|EmailVerificationController)->(?!initialize).*Action())'
+
+    'Sandstorm.NeosTwoFactorAuthentication:UserManagement.Module':
+      matcher: 'method(Sandstorm\NeosTwoFactorAuthentication\UserManagement\Controller\ModuleController->(?!initialize).*Action())'
+
+  'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
+
+    'Sandstorm.NeosTwoFactorAuthentication:Backend.Module.Administration.UserManagement':
+      label: General access to the user management module
+      matcher: 'administration/userManagement'
+
 roles:
   'Neos.Flow:Everybody':
     privileges:
       -
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:PasswordlessLogin'
+        permission: GRANT
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:UserManagement.PublicActions'
         permission: GRANT
 
   'Neos.Neos:AbstractEditor':
@@ -30,8 +47,24 @@ roles:
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
         permission: GRANT
 
+  # Same as the core user module: user managers may manage users having the same or a subset of their roles
+  'Neos.Neos:UserManager':
+    privileges:
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:UserManagement.Module'
+        permission: GRANT
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:Backend.Module.Administration.UserManagement'
+        permission: GRANT
+
   'Neos.Neos:Administrator':
     privileges:
       -
         privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:BackendModule'
+        permission: GRANT
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:UserManagement.Module'
+        permission: GRANT
+      -
+        privilegeTarget: 'Sandstorm.NeosTwoFactorAuthentication:Backend.Module.Administration.UserManagement'
         permission: GRANT

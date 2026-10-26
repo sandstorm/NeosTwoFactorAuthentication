@@ -11,6 +11,10 @@ Neos:
         dbname: '%env:DB_NEOS_DATABASE%'
     cache:
       applicationIdentifier: 'app'
+    core:
+      # The frankenphp image ships without a php.ini, so Flow cannot resolve one for its
+      # sub-requests ("Could not resolve ini file", #1744460624). Let sub-requests run without one.
+      subRequestPhpIniPathAndFilename: false
 
   Imagine:
     driver: Gd

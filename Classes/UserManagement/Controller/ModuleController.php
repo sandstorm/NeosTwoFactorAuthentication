@@ -109,9 +109,9 @@ class ModuleController extends AbstractModuleController
         try {
             $this->userMailer->sendTestMail($primaryEmail->getIdentifier(), $currentUser);
             $this->addTranslatedFlashMessage('flash.testMailSent', [$primaryEmail->getIdentifier()]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $exception) {
             $this->addFlashMessage(
-                $e->getMessage(),
+                $exception->getMessage(),
                 $this->translate('flash.testMailFailed'),
                 Message::SEVERITY_ERROR
             );

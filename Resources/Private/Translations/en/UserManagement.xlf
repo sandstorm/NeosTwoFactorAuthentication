@@ -269,9 +269,6 @@
       <trans-unit id="module.edit.activeHint" xml:space="preserve">
         <source>Inactive users cannot log in.</source>
       </trans-unit>
-      <trans-unit id="module.edit.cannotDeactivateYourself" xml:space="preserve">
-        <source>You cannot deactivate yourself.</source>
-      </trans-unit>
       <trans-unit id="module.edit.sendEmailVerification" xml:space="preserve">
         <source>Send confirmation mail</source>
       </trans-unit>

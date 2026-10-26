@@ -358,10 +358,6 @@
         <source>Inactive users cannot log in.</source>
         <target>Inaktive Benutzer*innen können sich nicht anmelden.</target>
       </trans-unit>
-      <trans-unit id="module.edit.cannotDeactivateYourself" xml:space="preserve">
-        <source>You cannot deactivate yourself.</source>
-        <target>Sie können sich nicht selbst deaktivieren.</target>
-      </trans-unit>
       <trans-unit id="module.edit.sendEmailVerification" xml:space="preserve">
         <source>Send confirmation mail</source>
         <target>Bestätigungs-Mail senden</target>

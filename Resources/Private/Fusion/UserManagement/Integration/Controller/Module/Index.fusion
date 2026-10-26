@@ -95,14 +95,18 @@ prototype(Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.UserRow
             <td>{Array.join(props.user.accountIdentifiers, ', ')}</td>
             <td>
                 {props.user.primaryEmail || '-'}
-                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.EmailBadge @if={props.user.primaryEmail} approved={props.user.emailApproved} />
+                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Component.EmailBadge @if={props.user.primaryEmail}
+                                                                                           approved={props.user.emailApproved}/>
             </td>
             <td>{Array.join(props.user.roleIdentifiers, ', ')}</td>
-            <td><Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id={props.user.active ? 'yes' : 'no'} /></td>
-            <td>{props.user.secondFactorCount}</td>
+            <td>
+                <Sandstorm.NeosTwoFactorAuthentication:UserManagement.Translate id={props.user.active ? 'yes' : 'no'}/>
+            </td>
+            <td>{props.user.secondFactorCount > 0 ? 'yes' : 'no'}</td>
             <td>{props.user.lastSuccessfulAuthentication ? Date.format(props.user.lastSuccessfulAuthentication, 'Y-m-d H:i') : '-'}</td>
             <td>
-                <a href={props.editUri} class="neos-button neos-button-primary" title={I18n.id('module.index.edit').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}>
+                <a href={props.editUri} class="neos-button neos-button-primary"
+                   title={I18n.id('module.index.edit').package('Sandstorm.NeosTwoFactorAuthentication').source('UserManagement').translate()}>
                     <i class="fas fa-pencil-alt icon-white"></i>
                 </a>
             </td>

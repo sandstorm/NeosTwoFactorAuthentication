@@ -61,7 +61,7 @@ class ModuleController extends AbstractModuleController
     protected ImpersonateService $impersonateService;
 
     #[Flow\Inject]
-    protected PersistenceManagerInterface $persistenceManager;
+    protected PersistenceManagerInterface $userPersistenceManager;
 
     #[Flow\Inject]
     protected FlashMessageService $flashMessageService;
@@ -142,7 +142,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param array<string> $roleIdentifiers
+     * @param string[] $roleIdentifiers
      */
     public function createAction(
         string $firstName,
@@ -187,11 +187,11 @@ class ModuleController extends AbstractModuleController
                 $authenticationProviderName,
                 $sendPasswordMail ? null : $password
             );
-        } catch (UserManagementException $e) {
-            $this->addTranslatedFlashMessage($e->getMessage(), [], Message::SEVERITY_ERROR);
+        } catch (UserManagementException $exception) {
+            $this->addTranslatedFlashMessage($exception->getMessage(), [], Message::SEVERITY_ERROR);
             $this->forward('new', null, null, ['formValues' => $formValues]);
         }
-        $this->persistenceManager->persistAll();
+        $this->userPersistenceManager->persistAll();
         $this->addTranslatedFlashMessage('flash.userCreated', [$user->getName()->getFullName()]);
 
         // the initial password link validates the email implicitly, so only one of the two mails is needed
@@ -199,7 +199,7 @@ class ModuleController extends AbstractModuleController
             ? $this->userCommandService->sendPasswordMail($user, UserActionType::INITIAL_PASSWORD)
             : $this->userCommandService->sendEmailVerificationMail($user), $sendPasswordMail ? 'flash.initialPasswordMailSent' : 'flash.emailVerificationMailSent');
 
-        $this->redirect('edit', null, null, ['userId' => $this->persistenceManager->getIdentifierByObject($user)]);
+        $this->redirect('edit', null, null, ['userId' => $this->userPersistenceManager->getIdentifierByObject($user)]);
     }
 
     public function editAction(string $userId): void
@@ -232,7 +232,7 @@ class ModuleController extends AbstractModuleController
         if (!$isSelf && $simpleUser !== null && $simpleUser->isActive() !== $active) {
             $this->userCommandService->setActive($user, $active);
         }
-        $this->persistenceManager->persistAll();
+        $this->userPersistenceManager->persistAll();
         $this->addTranslatedFlashMessage('flash.userUpdated', [$user->getName()->getFullName()]);
 
         if ($emailChanged) {
@@ -242,7 +242,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param array<string> $roleIdentifiers
+     * @param string[]$roleIdentifiers
      */
     public function updateAccountRolesAction(string $userId, string $accountId, array $roleIdentifiers = []): void
     {
@@ -335,9 +335,23 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * The user ids also come as link / form target arguments, which - unlike form fields - are not trusted properties.
+     * Safe to allow: every id is checked again by filterDeletableUserIds().
+     */
+    protected function initializeConfirmDeleteAction(): void
+    {
+        $this->arguments->getArgument('userIds')->getPropertyMappingConfiguration()->allowAllProperties();
+    }
+
+    protected function initializeDeleteAction(): void
+    {
+        $this->initializeConfirmDeleteAction();
+    }
+
+    /**
      * Confirmation page for deleting one or several (bulk) users.
      *
-     * @param array<string> $userIds
+     * @param string[] $userIds
      */
     public function confirmDeleteAction(array $userIds = []): void
     {
@@ -353,7 +367,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param array<string> $userIds
+     * @param string[] $userIds
      */
     public function deleteAction(array $userIds = []): void
     {
@@ -422,7 +436,7 @@ class ModuleController extends AbstractModuleController
     {
         $account = $this->simpleUserFinder->findAccountEntityById($accountId);
         $owner = $account !== null ? $this->simpleUserFinder->findUserOfAccount($account) : null;
-        if ($account === null || $owner === null || $this->persistenceManager->getIdentifierByObject($owner) !== $userId) {
+        if ($account === null || $owner === null || $this->userPersistenceManager->getIdentifierByObject($owner) !== $userId) {
             $this->throwStatus(404);
         }
         return $account;
@@ -431,7 +445,7 @@ class ModuleController extends AbstractModuleController
     private function currentUserId(): ?string
     {
         $currentUser = $this->userService->getCurrentUser();
-        return $currentUser !== null ? (string)$this->persistenceManager->getIdentifierByObject($currentUser) : null;
+        return $currentUser !== null ? (string)$this->userPersistenceManager->getIdentifierByObject($currentUser) : null;
     }
 
     /**

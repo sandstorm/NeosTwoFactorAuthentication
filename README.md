@@ -1,5 +1,7 @@
 # Neos Backend 2FA
 
+# ⚠️ This package is abandoned and won't be maintained anymore. The 2FA feature now lives in the successor of this package, [Sandstorm.BackendUserManagement](https://github.com/sandstorm/BackendUserManagement) ⚠️ 
+
 Extend the Neos backend login to support second factors and passwordless passkey login. We support
 TOTP tokens (Authenticator apps) and WebAuthn / FIDO2 passkeys — both platform authenticators
 (Touch ID, Windows Hello) and hardware security keys (e.g. Yubikey).
